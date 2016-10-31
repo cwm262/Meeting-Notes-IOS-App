@@ -12,6 +12,8 @@
 		770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */; };
 		770F82C41DBA847000B68E6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 770F82C31DBA847000B68E6F /* Assets.xcassets */; };
 		770F82C71DBA847000B68E6F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */; };
+		77DB89271DC7A40A00B1C99D /* NoteViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DB89261DC7A40A00B1C99D /* NoteViewController.swift */; };
+		77DB89291DC7A52000B1C99D /* NoteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -22,6 +24,8 @@
 		770F82C31DBA847000B68E6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		770F82C61DBA847000B68E6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		770F82C81DBA847000B68E6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		77DB89261DC7A40A00B1C99D /* NoteViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteViewController.swift; sourceTree = "<group>"; };
+		77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -60,6 +64,8 @@
 				770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */,
 				770F82C81DBA847000B68E6F /* Info.plist */,
 				770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */,
+				77DB89261DC7A40A00B1C99D /* NoteViewController.swift */,
+				77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */,
 			);
 			path = "Meeting Notes";
 			sourceTree = "<group>";
@@ -137,6 +143,8 @@
 			buildActionMask = 2147483647;
 			files = (
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
+				77DB89291DC7A52000B1C99D /* NoteTableViewController.swift in Sources */,
+				77DB89271DC7A40A00B1C99D /* NoteViewController.swift in Sources */,
 				770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -299,6 +307,7 @@
 				770F82CD1DBA847000B68E6F /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 
