@@ -11,16 +11,20 @@ import UIKit
 class MeetingTableViewController: UITableViewController {
 
     @IBOutlet weak var startTimeLabel: UILabel!
+    @IBOutlet weak var endTimeLabel: UILabel!
     
     @IBOutlet weak var startTimeDatePicker: UIDatePicker!
+    @IBOutlet weak var endTimeDatePicker: UIDatePicker!
     
     var startDatePickerHidden: Bool = true
+    var endDatePickerHidden: Bool = true
     
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
+        datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
 
         // Uncomment the following line to preserve selection between presentations
         // self.clearsSelectionOnViewWillAppear = false
@@ -39,6 +43,10 @@ class MeetingTableViewController: UITableViewController {
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
     }
     
+    @IBAction func endDatePickerValueChanged(_ sender: Any) {
+        datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
+    }
+    
     func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
         label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .short, timeStyle: .short)
     }
@@ -55,10 +63,16 @@ class MeetingTableViewController: UITableViewController {
         if indexPath.section == 1 && indexPath.row == 0 {
             toggleDatePicker(&startDatePickerHidden)
         }
+        if indexPath.section == 2 && indexPath.row == 0 {
+            toggleDatePicker(&endDatePickerHidden)
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if startDatePickerHidden && indexPath.section == 1 && indexPath.row == 1 {
+            return 0
+        }
+        else if endDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
             return 0
         }
         else {
