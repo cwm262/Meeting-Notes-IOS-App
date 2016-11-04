@@ -105,18 +105,22 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate {
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         if indexPath.section == 1 && indexPath.row == 0 {
+            startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             toggleDatePicker(&startDatePickerHidden)
         }
         if indexPath.section == 2 && indexPath.row == 0 {
+            endTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             toggleDatePicker(&endDatePickerHidden)
         }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if startDatePickerHidden && indexPath.section == 1 && indexPath.row == 1 {
+            startTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
         }
         else if endDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
+            endTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
         }
         else {
