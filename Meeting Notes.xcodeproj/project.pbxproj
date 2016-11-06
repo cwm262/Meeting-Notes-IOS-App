@@ -15,7 +15,7 @@
 		77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77297F941DC997280026A26B /* MeetingTableViewController.swift */; };
 		778D1FB21DCC03B000269ECE /* ParticipantTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FB11DCC03B000269ECE /* ParticipantTableViewController.swift */; };
 		778D1FB41DCC03CA00269ECE /* AgendaTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FB31DCC03CA00269ECE /* AgendaTableViewController.swift */; };
-		778D1FD71DCC4B9600269ECE /* NoteListViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* NoteListViewController.swift */; };
+		778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */; };
 		77DB89291DC7A52000B1C99D /* NoteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */; };
 /* End PBXBuildFile section */
 
@@ -30,7 +30,7 @@
 		77297F941DC997280026A26B /* MeetingTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingTableViewController.swift; sourceTree = "<group>"; };
 		778D1FB11DCC03B000269ECE /* ParticipantTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ParticipantTableViewController.swift; sourceTree = "<group>"; };
 		778D1FB31DCC03CA00269ECE /* AgendaTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaTableViewController.swift; sourceTree = "<group>"; };
-		778D1FD61DCC4B9600269ECE /* NoteListViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteListViewController.swift; sourceTree = "<group>"; };
+		778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingsTblViewController.swift; sourceTree = "<group>"; };
 		77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteTableViewController.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -74,7 +74,7 @@
 				77297F941DC997280026A26B /* MeetingTableViewController.swift */,
 				778D1FB11DCC03B000269ECE /* ParticipantTableViewController.swift */,
 				778D1FB31DCC03CA00269ECE /* AgendaTableViewController.swift */,
-				778D1FD61DCC4B9600269ECE /* NoteListViewController.swift */,
+				778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */,
 			);
 			path = "Meeting Notes";
 			sourceTree = "<group>";
@@ -152,7 +152,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
-				778D1FD71DCC4B9600269ECE /* NoteListViewController.swift in Sources */,
+				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77DB89291DC7A52000B1C99D /* NoteTableViewController.swift in Sources */,
 				77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */,
 				778D1FB41DCC03CA00269ECE /* AgendaTableViewController.swift in Sources */,
