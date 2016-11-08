@@ -304,7 +304,7 @@
                                     </tableViewCell>
                                 </cells>
                             </tableViewSection>
-                            <tableViewSection headerTitle="Add Participants or Agendas" id="0RZ-R4-jyz">
+                            <tableViewSection headerTitle="Participants" id="0RZ-R4-jyz">
                                 <cells>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="IqQ-BN-eI0">
                                         <rect key="frame" x="0.0" y="868" width="375" height="44"/>
@@ -312,19 +312,6 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="IqQ-BN-eI0" id="DdS-2J-P26">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="6t4-xJ-suE">
-                                                    <rect key="frame" x="164" y="7" width="46" height="30"/>
-                                                    <state key="normal" title="Add Participants"/>
-                                                    <connections>
-                                                        <segue destination="v2Q-SS-WtY" kind="show" id="Cqs-rW-8dD"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="6t4-xJ-suE" firstAttribute="centerX" secondItem="DdS-2J-P26" secondAttribute="centerX" id="hVT-R7-jXo"/>
-                                                <constraint firstItem="6t4-xJ-suE" firstAttribute="centerY" secondItem="DdS-2J-P26" secondAttribute="centerY" id="l95-HJ-ehU"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="default" indentationWidth="10" id="PFr-Zd-zTM">
@@ -333,19 +320,6 @@
                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="PFr-Zd-zTM" id="LGw-sd-OhM">
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
-                                            <subviews>
-                                                <button opaque="NO" contentMode="scaleToFill" misplaced="YES" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="klO-dO-df4">
-                                                    <rect key="frame" x="164" y="7" width="46" height="30"/>
-                                                    <state key="normal" title="Add Agendas"/>
-                                                    <connections>
-                                                        <segue destination="hNn-Xa-bte" kind="show" id="053-ag-yxM"/>
-                                                    </connections>
-                                                </button>
-                                            </subviews>
-                                            <constraints>
-                                                <constraint firstItem="klO-dO-df4" firstAttribute="centerY" secondItem="LGw-sd-OhM" secondAttribute="centerY" id="a5w-5Y-9oN"/>
-                                                <constraint firstItem="klO-dO-df4" firstAttribute="centerX" secondItem="LGw-sd-OhM" secondAttribute="centerX" id="bnX-3Z-bp7"/>
-                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -356,6 +330,15 @@
                             <outlet property="delegate" destination="aW5-Lf-IzT" id="Dqx-pP-TZV"/>
                         </connections>
                     </tableView>
+                    <toolbarItems>
+                        <barButtonItem title="Add Agenda" id="N6B-et-yTB"/>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="4wo-0Y-1jN"/>
+                        <barButtonItem title="Add Participant" id="tCF-Mg-3Dc">
+                            <connections>
+                                <action selector="importParticipant:" destination="aW5-Lf-IzT" id="GEy-dl-efB"/>
+                            </connections>
+                        </barButtonItem>
+                    </toolbarItems>
                     <connections>
                         <outlet property="descriptionField" destination="yLs-Wk-J5f" id="Hky-Zg-0gJ"/>
                         <outlet property="descriptionLabel" destination="5ug-Zd-l2N" id="sEL-YR-tLV"/>
@@ -384,7 +367,7 @@
                                 <rect key="frame" x="0.0" y="28" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="mKA-h6-CT0" id="WUK-hb-LDV">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -475,7 +458,7 @@
                         <autoresizingMask key="autoresizingMask" widthSizable="YES" heightSizable="YES"/>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
                         <searchBar key="tableHeaderView" contentMode="redraw" id="UY2-h3-k5f">
-                            <rect key="frame" x="0.0" y="64" width="375" height="44"/>
+                            <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                             <autoresizingMask key="autoresizingMask" widthSizable="YES" flexibleMaxY="YES"/>
                             <textInputTraits key="textInputTraits"/>
                         </searchBar>
@@ -484,7 +467,7 @@
                                 <rect key="frame" x="0.0" y="72" width="375" height="44"/>
                                 <autoresizingMask key="autoresizingMask"/>
                                 <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="A1Q-IV-GGK" id="GvA-05-rtL">
-                                    <rect key="frame" x="0.0" y="0.0" width="375" height="43"/>
+                                    <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                     <autoresizingMask key="autoresizingMask"/>
                                 </tableViewCellContentView>
                             </tableViewCell>
@@ -506,13 +489,17 @@
         <!--Navigation Controller-->
         <scene sceneID="Jti-45-bRD">
             <objects>
-                <navigationController automaticallyAdjustsScrollViewInsets="NO" id="gea-UI-3uS" sceneMemberID="viewController">
+                <navigationController automaticallyAdjustsScrollViewInsets="NO" toolbarHidden="NO" id="gea-UI-3uS" sceneMemberID="viewController">
                     <toolbarItems/>
                     <navigationBar key="navigationBar" contentMode="scaleToFill" id="mZa-ki-XJb">
                         <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                         <autoresizingMask key="autoresizingMask"/>
                     </navigationBar>
                     <nil name="viewControllers"/>
+                    <toolbar key="toolbar" opaque="NO" clearsContextBeforeDrawing="NO" contentMode="scaleToFill" id="aT7-yc-ibl">
+                        <rect key="frame" x="0.0" y="623" width="375" height="44"/>
+                        <autoresizingMask key="autoresizingMask"/>
+                    </toolbar>
                     <connections>
                         <segue destination="Id8-bp-JDr" kind="relationship" relationship="rootViewController" id="RxI-6U-iT5"/>
                     </connections>

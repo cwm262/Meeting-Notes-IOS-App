@@ -17,6 +17,9 @@
 		778D1FB41DCC03CA00269ECE /* AgendaTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FB31DCC03CA00269ECE /* AgendaTableViewController.swift */; };
 		778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */; };
 		77DB89291DC7A52000B1C99D /* NoteTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */; };
+		77EC02121DD26E42006E8A1C /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77EC02101DD26E42006E8A1C /* Contacts.framework */; };
+		77EC02131DD26E42006E8A1C /* ContactsUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77EC02111DD26E42006E8A1C /* ContactsUI.framework */; };
+		77EC02151DD279E0006E8A1C /* Attendant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77EC02141DD279E0006E8A1C /* Attendant.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -32,6 +35,9 @@
 		778D1FB31DCC03CA00269ECE /* AgendaTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaTableViewController.swift; sourceTree = "<group>"; };
 		778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingsTblViewController.swift; sourceTree = "<group>"; };
 		77DB89281DC7A52000B1C99D /* NoteTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NoteTableViewController.swift; sourceTree = "<group>"; };
+		77EC02101DD26E42006E8A1C /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
+		77EC02111DD26E42006E8A1C /* ContactsUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = ContactsUI.framework; path = System/Library/Frameworks/ContactsUI.framework; sourceTree = SDKROOT; };
+		77EC02141DD279E0006E8A1C /* Attendant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Attendant.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -39,6 +45,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				77EC02121DD26E42006E8A1C /* Contacts.framework in Frameworks */,
+				77EC02131DD26E42006E8A1C /* ContactsUI.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -50,6 +58,7 @@
 			children = (
 				770F82B81DBA847000B68E6F /* Meeting Notes */,
 				770F82B71DBA847000B68E6F /* Products */,
+				77EC020F1DD26E42006E8A1C /* Frameworks */,
 			);
 			sourceTree = "<group>";
 		};
@@ -75,8 +84,18 @@
 				778D1FB11DCC03B000269ECE /* ParticipantTableViewController.swift */,
 				778D1FB31DCC03CA00269ECE /* AgendaTableViewController.swift */,
 				778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */,
+				77EC02141DD279E0006E8A1C /* Attendant.swift */,
 			);
 			path = "Meeting Notes";
+			sourceTree = "<group>";
+		};
+		77EC020F1DD26E42006E8A1C /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				77EC02101DD26E42006E8A1C /* Contacts.framework */,
+				77EC02111DD26E42006E8A1C /* ContactsUI.framework */,
+			);
+			name = Frameworks;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -154,6 +173,7 @@
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
 				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77DB89291DC7A52000B1C99D /* NoteTableViewController.swift in Sources */,
+				77EC02151DD279E0006E8A1C /* Attendant.swift in Sources */,
 				77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */,
 				778D1FB41DCC03CA00269ECE /* AgendaTableViewController.swift in Sources */,
 				770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */,
