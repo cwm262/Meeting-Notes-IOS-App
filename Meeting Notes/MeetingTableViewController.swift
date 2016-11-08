@@ -8,10 +8,13 @@
 
 import UIKit
 import CoreData
+import Contacts
+import ContactsUI
 
-class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
+class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate {
     
     var meeting: Meeting?
+    var attendants = [Attendant]()
 
     @IBOutlet weak var startTimeLabel: UILabel!
     @IBOutlet weak var endTimeLabel: UILabel!
@@ -107,6 +110,27 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
     }
     
+    @IBAction func importParticipant(_ sender: Any) {
+        let contactPicker = CNContactPickerViewController()
+        contactPicker.delegate = self
+        self.present(contactPicker, animated: true, completion: nil)
+    }
+    
+    
+    func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: [CNContact]) {
+        for n in contact{
+        
+            let givenName: String? = n.givenName
+            let familyName: String? = n.familyName
+            let email: String? = n.emailAddresses.first?.value as String?
+            
+            if let givenName = givenName, let familyName = familyName, let email = email{
+                let attendant = Attendant(givenName: givenName, familyName: familyName, email: email)
+                attendants.append(attendant)
+            }
+        }
+    }
+    
     func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
         label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .medium, timeStyle: .short)
     }
@@ -181,5 +205,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         
         return newLength <= characterCountLimit
     }
+    
 
 }
