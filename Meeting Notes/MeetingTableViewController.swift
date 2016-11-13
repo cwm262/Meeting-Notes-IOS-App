@@ -17,7 +17,9 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     var meeting: Meeting?
     var meetingAttendants: [MeetingAttendant]?
+    var meetingAgendas: [Agenda]?
     var attendantsToBeDeleted: [Attendant]?
+    var agendasToBeDeleted: [Agenda]?
     
     //MARK: IBOutlets
 
@@ -88,6 +90,18 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     //MARK: Functions that Load from DB or Save to DB
+    
+    func loadAgendas(){
+        if let meeting = meeting {
+            if let agendas = meeting.agendas {
+                meetingAgendas = [Agenda]()
+                for i in agendas {
+                    let currentAgenda = i as! Agenda
+                    meetingAgendas!.append(currentAgenda)
+                }
+            }
+        }
+    }
     
     func loadAttendants(){
         if let meeting = meeting{
@@ -303,6 +317,10 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             loadAttendants()
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.attendants = meetingAttendants
+        }else if segue.identifier == "showAgendas" {
+            loadAgendas()
+            let agendaTableViewController = segue.destination as! AgendaTableViewController
+            agendaTableViewController.agendas = meetingAgendas
         }
     }
     

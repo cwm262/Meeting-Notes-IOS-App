@@ -98,7 +98,20 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "attendantCell", for: indexPath)
         
-        cell.textLabel?.text = attendants?[indexPath.row].givenName
+        let givenName = attendants?[indexPath.row].givenName
+        let familyName = attendants?[indexPath.row].familyName
+        let email = attendants?[indexPath.row].email
+        let titleString: String?
+        
+        if let givenName = givenName, let familyName = familyName {
+            titleString = givenName + " " + familyName
+            cell.textLabel?.text = titleString
+        }
+        if let email = email {
+            cell.detailTextLabel?.text = email
+        }
+        
+        
         
         return cell
     }
