@@ -32,19 +32,13 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     
-    func getContext() -> NSManagedObjectContext {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.persistentContainer.viewContext
-    }
-    
-    
     func getMeetings() -> [Meeting] {
-        let fetchRequest = NSFetchRequest<Meeting>(entityName: "Meeting")
+        let fetchRequest: NSFetchRequest<Meeting> = Meeting.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
         
         do {
-            let foundTasks = try getContext().fetch(fetchRequest)
-            return foundTasks
+            let foundMeetings = try DatabaseController.getContext().fetch(fetchRequest)
+            return foundMeetings
         } catch {
             print ("Error retrieving notes")
         }
@@ -58,13 +52,9 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         if (row < meetings.count) {
             let meeting = meetings[row]
             meetings.remove(at: row)
-            getContext().delete(meeting)
+            DatabaseController.getContext().delete(meeting)
             
-            do {
-                try getContext().save()
-            } catch let error as NSError {
-                print("Could not save \(error), \(error.userInfo)")
-            }
+            DatabaseController.saveContext()
             
             tableView.deleteRows(at: [indexPath], with: .fade)
         }

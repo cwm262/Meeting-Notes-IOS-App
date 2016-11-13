@@ -13,8 +13,13 @@ import ContactsUI
 
 class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate {
     
+    //MARK: Meeting Variables
+    
     var meeting: Meeting?
-    var attendants = [Attendant]()
+    var meetingAttendants: [MeetingAttendant]?
+    var attendantsToBeDeleted: [Attendant]?
+    
+    //MARK: IBOutlets
 
     @IBOutlet weak var startTimeLabel: UILabel!
     @IBOutlet weak var endTimeLabel: UILabel!
@@ -27,9 +32,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var descriptionField: UITextView!
     
+    //MARK: Booleans for Whether or Not Section is Expanded
+    
     var startDatePickerHidden: Bool = true
     var endDatePickerHidden: Bool = true
     var descTextHidden: Bool = true
+    
+    //MARK: DidLoad and WillAppear Functions
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -61,6 +70,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             
             startTimeDatePicker.date = meeting.startTime as! Date
             endTimeDatePicker.date = meeting.endTime as! Date
+            
+
         }
         
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
@@ -76,15 +87,30 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         super.didReceiveMemoryWarning()
     }
     
-    func getContext() -> NSManagedObjectContext {
-        let appDelegate = UIApplication.shared.delegate as! AppDelegate
-        return appDelegate.persistentContainer.viewContext
+    //MARK: Functions that Load from DB or Save to DB
+    
+    func loadAttendants(){
+        if let meeting = meeting{
+            if let attendants = meeting.attendants {
+                meetingAttendants = [MeetingAttendant]()
+                for attendant in attendants {
+                    let currentAttendant = attendant as! Attendant
+                    let givenName = currentAttendant.givenName
+                    let familyName = currentAttendant.familyName
+                    let email = currentAttendant.email
+                    let meetingAttendant = MeetingAttendant(givenName: givenName!, familyName: familyName!, email: email!)
+                    meetingAttendants!.append(meetingAttendant)
+                }
+            }
+        }
+        
     }
     
     func saveMeeting(){
-        let context = getContext()
+        let context = DatabaseController.getContext()
         if meeting == nil {
-            meeting = Meeting(context: context)
+            let desc = NSEntityDescription.entity(forEntityName: "Meeting", in: context)
+            meeting = Meeting(entity: desc!, insertInto: context)
         }
         if let meeting = meeting {
             meeting.title = titleField.text
@@ -92,15 +118,51 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             meeting.desc = descriptionField.text
             meeting.startTime = startTimeDatePicker.date as NSDate?
             meeting.endTime = endTimeDatePicker.date as NSDate?
-            do {
-                try context.save()
-            } catch let error as NSError {
-                print("Could not save \(error), \(error.userInfo)")
+            
+            if let meetingAttendants = meetingAttendants{
+                for meetingAttendant in meetingAttendants{
+                    if let ma = meeting.attendants {
+                        var alreadyAdded = false
+                        for m in ma {
+                            let curr = m as! Attendant
+                            if curr.email == meetingAttendant.email {
+                                alreadyAdded = true
+                            }
+                        }
+                        if(!alreadyAdded){
+                            let attendantDesc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
+                            let attendant = Attendant(entity: attendantDesc!, insertInto: context)
+                            attendant.setValue(meetingAttendant.givenName, forKey: "givenName")
+                            attendant.setValue(meetingAttendant.familyName, forKey: "familyName")
+                            attendant.setValue(meetingAttendant.email, forKey: "email")
+                            
+                            meeting.addToAttendants(attendant)
+                        }
+                    }else{
+                        let attendantDesc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
+                        let attendant = Attendant(entity: attendantDesc!, insertInto: context)
+                        attendant.setValue(meetingAttendant.givenName, forKey: "givenName")
+                        attendant.setValue(meetingAttendant.familyName, forKey: "familyName")
+                        attendant.setValue(meetingAttendant.email, forKey: "email")
+                        
+                        meeting.addToAttendants(attendant)
+                    }
+                    
+                }
+                
             }
+            if let attendantsToBeDeleted = attendantsToBeDeleted {
+                for attendantTBD in attendantsToBeDeleted {
+                    meeting.removeFromAttendants(attendantTBD)
+                }
+            }
+            DatabaseController.saveContext()
         }
+        
         _ = navigationController?.popToRootViewController(animated: true)
     }
-
+    
+    //MARK: Datepicker Functions
     
     @IBAction func startDatePickerValueChanged(_ sender: Any) {
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
@@ -116,24 +178,51 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         self.present(contactPicker, animated: true, completion: nil)
     }
     
+    func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
+        label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .medium, timeStyle: .short)
+    }
     
-    func contactPicker(_ picker: CNContactPickerViewController, didSelect contact: [CNContact]) {
-        for n in contact{
-        
-            let givenName: String? = n.givenName
-            let familyName: String? = n.familyName
-            let email: String? = n.emailAddresses.first?.value as String?
+    //MARK: Import a Contact from ContactPicker
+    
+    func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
+        for contact in contacts{
+            let givenName: String? = contact.givenName
+            let familyName: String? = contact.familyName
+            let email: String? = contact.emailAddresses.first?.value as String?
             
             if let givenName = givenName, let familyName = familyName, let email = email{
-                let attendant = Attendant(givenName: givenName, familyName: familyName, email: email)
-                attendants.append(attendant)
+                if let currAttendants = meetingAttendants{
+                    var alreadyAdded = false
+                    for meetingAttendant in currAttendants{
+                        if meetingAttendant.email == email {
+                            alreadyAdded = true
+                        }
+                    }
+                    if(!alreadyAdded){
+                        let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
+                        meetingAttendants!.append(newAttendant)
+                    }
+                }else{
+                    let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
+                    meetingAttendants = [MeetingAttendant]()
+                    meetingAttendants!.append(newAttendant)
+                }
+                
+                let embeddedController: AttendantViewController = self.childViewControllers.first as! AttendantViewController
+                embeddedController.attendants = meetingAttendants
+                embeddedController.attendantTableView.reloadData()
+                
+            }else{
+                let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
+                let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                alert.addAction(confirmAction)
+                picker.dismiss(animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
             }
         }
     }
     
-    func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
-        label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .medium, timeStyle: .short)
-    }
+    //MARK: Functions that Control Whether Section is Expanded or Not on Table
     
     func fieldViewToggled(_ whichField: inout Bool){
         whichField = !whichField
@@ -174,6 +263,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         }
     }
     
+    //MARK: Functions that Deal with TextViews and TextFields
     func textViewDidChange(_ textView: UITextView) {
         switch (textView) {
             case descriptionField:
@@ -204,6 +294,16 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         let newLength = startingLength + lengthToAdd - lengthToReplace
         
         return newLength <= characterCountLimit
+    }
+    
+    //MARK: Prepare for Segue
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if (segue.identifier == "attendantViewSegue") {
+            loadAttendants()
+            let attendantViewController = segue.destination as! AttendantViewController
+            attendantViewController.attendants = meetingAttendants
+        }
     }
     
 
