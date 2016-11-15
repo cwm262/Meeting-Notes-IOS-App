@@ -17,7 +17,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentState: UISegmentedControl!
     
-    @IBAction func segmentSwitched(_ sender: Any) {
+    @IBAction func segmentDidSwitch(_ sender: Any) {
         changeFilter()
     }
     
@@ -41,7 +41,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     
     func getMeetings() -> [Meeting] {
         let fetchRequest: NSFetchRequest<Meeting> = Meeting.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
         fetchRequest.predicate = startPredicate
         
         do {

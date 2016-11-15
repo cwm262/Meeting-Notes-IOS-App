@@ -107,7 +107,7 @@ class AgendaTableViewController: UITableViewController, AgendaSharing {
     // In a storyboard-based application, you will often want to do a little preparation before navigation
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         let destination = segue.destination as? AgendaViewController
-        destination?.delegate = self
+        //destination?.delegate = self
     }
     
 

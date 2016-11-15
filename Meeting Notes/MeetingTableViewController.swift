@@ -24,10 +24,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     //MARK: IBOutlets
 
     @IBOutlet weak var startTimeLabel: UILabel!
-    @IBOutlet weak var endTimeLabel: UILabel!
     
     @IBOutlet weak var startTimeDatePicker: UIDatePicker!
-    @IBOutlet weak var endTimeDatePicker: UIDatePicker!
     
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var locationField: UITextField!
@@ -37,7 +35,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     //MARK: Booleans for Whether or Not Section is Expanded
     
     var startDatePickerHidden: Bool = true
-    var endDatePickerHidden: Bool = true
     var descTextHidden: Bool = true
     
     //MARK: DidLoad and WillAppear Functions
@@ -71,13 +68,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             }
             
             startTimeDatePicker.date = meeting.startTime as! Date
-            endTimeDatePicker.date = meeting.endTime as! Date
             
 
         }
         
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
-        datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
 
     }
     
@@ -131,7 +126,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             meeting.location = locationField.text
             meeting.desc = descriptionField.text
             meeting.startTime = startTimeDatePicker.date as NSDate?
-            meeting.endTime = endTimeDatePicker.date as NSDate?
             
             if let meetingAttendants = meetingAttendants{
                 for meetingAttendant in meetingAttendants{
@@ -181,12 +175,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBAction func startDatePickerValueChanged(_ sender: Any) {
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
         
-        endTimeDatePicker.minimumDate = startTimeDatePicker.date
     }
     
-    @IBAction func endDatePickerValueChanged(_ sender: Any) {
-        datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
-    }
     
     @IBAction func importParticipant(_ sender: Any) {
         let contactPicker = CNContactPickerViewController()
@@ -224,7 +214,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                     meetingAttendants!.append(newAttendant)
                 }
                 
-                let embeddedController: AttendantViewController = self.childViewControllers.first as! AttendantViewController
+                let embeddedController: AttendantViewController = self.childViewControllers[1] as! AttendantViewController
                 embeddedController.attendants = meetingAttendants
                 embeddedController.attendantTableView.reloadData()
                 
@@ -251,10 +241,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&startDatePickerHidden)
         }
-        if indexPath.section == 3 && indexPath.row == 0 {
-            endTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
-            fieldViewToggled(&endDatePickerHidden)
-        }
         if indexPath.section == 1 && indexPath.row == 0 {
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
@@ -264,10 +250,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if startDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
             startTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            return 0
-        }
-        else if endDatePickerHidden && indexPath.section == 3 && indexPath.row == 1 {
-            endTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
         }
         else if descTextHidden && indexPath.section == 1 && indexPath.row == 1{
