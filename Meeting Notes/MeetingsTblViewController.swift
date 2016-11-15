@@ -12,8 +12,14 @@ import CoreData
 class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     var meetings = [Meeting]()
-
+    var startPredicate: NSPredicate?
+    
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var segmentState: UISegmentedControl!
+    
+    @IBAction func segmentSwitched(_ sender: Any) {
+        changeFilter()
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -25,8 +31,9 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         navigationController?.setToolbarHidden(false, animated: false)
         meetings = getMeetings()
         tableView.reloadData()
+        changeFilter()
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -35,6 +42,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     func getMeetings() -> [Meeting] {
         let fetchRequest: NSFetchRequest<Meeting> = Meeting.fetchRequest()
         fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+        fetchRequest.predicate = startPredicate
         
         do {
             let foundMeetings = try DatabaseController.getContext().fetch(fetchRequest)
@@ -42,6 +50,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         } catch {
             print ("Error retrieving notes")
         }
+        
         
         return [Meeting]()
     }
@@ -103,6 +112,21 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
             confirmDelete(indexPath: indexPath)
         } else if editingStyle == .insert {
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }
+    }
+    
+    func changeFilter() {
+        let currDate = NSDate() as Date
+        
+        if (segmentState.selectedSegmentIndex == 0) {
+            self.startPredicate = NSPredicate(format: "startTime > %@", currDate as NSDate)
+            self.meetings = self.getMeetings()
+            self.tableView.reloadData()
+        }
+        else {
+            self.startPredicate = NSPredicate(format: "startTime < %@", currDate as NSDate)
+            self.meetings = self.getMeetings()
+            self.tableView.reloadData()
         }
     }
     
