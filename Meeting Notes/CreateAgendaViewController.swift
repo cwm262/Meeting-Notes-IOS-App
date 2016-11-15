@@ -24,7 +24,7 @@ class CreateAgendaViewController: UIViewController {
     override func viewDidLoad() {
         super.viewDidLoad()
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Confirm", style: .plain, target: self, action: #selector(CreateAgendaViewController.addAgenda))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CreateAgendaViewController.addAgenda))
     }
 
     override func didReceiveMemoryWarning() {

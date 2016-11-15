@@ -41,8 +41,15 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     
     func getMeetings() -> [Meeting] {
         let fetchRequest: NSFetchRequest<Meeting> = Meeting.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
-        fetchRequest.predicate = startPredicate
+        
+        if (segmentState.selectedSegmentIndex == 0) {
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+            fetchRequest.predicate = startPredicate
+        } else {
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
+            fetchRequest.predicate = startPredicate
+        }
+        
         
         do {
             let foundMeetings = try DatabaseController.getContext().fetch(fetchRequest)
@@ -69,6 +76,13 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    func editMeeting(indexPath: IndexPath) {
+        let row = indexPath.row
+        let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "MeetingTableViewController") as? MeetingTableViewController
+        nextViewController?.meeting = meetings[row]
+        self.navigationController?.pushViewController(nextViewController!, animated: true)
+    }
+    
     func confirmDelete(indexPath: IndexPath) {
         let alert = UIAlertController(title: "Delete Meeting", message: "Are you sure you want to delete the meeting?", preferredStyle: .actionSheet)
         
@@ -81,6 +95,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
             (action) in
             self.tableView.reloadRows(at: [indexPath], with: .right)
         })
+    
         
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
@@ -106,14 +121,27 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         return cell
     }
     
-    // Override to support editing the table view.
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            confirmDelete(indexPath: indexPath)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Edit") { (action , indexPath) -> Void in
+            self.editMeeting(indexPath: indexPath)
         }
+        editAction.backgroundColor = #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1)
+        
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.destructive, title: "Delete") { (action , indexPath) -> Void in
+            self.confirmDelete(indexPath: indexPath)
+        }
+        deleteAction.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+        return [editAction, deleteAction]
     }
+    
+    // Override to support editing the table view.
+//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+//        if editingStyle == .delete {
+//            confirmDelete(indexPath: indexPath)
+//        } else if editingStyle == .insert {
+//            self.editMeeting()
+//        }
+//    }
     
     func changeFilter() {
         let currDate = NSDate() as Date
@@ -130,11 +158,9 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "show"),
-            let destination = segue.destination as? MeetingTableViewController,
-            let indexPath = tableView.indexPathForSelectedRow {
-            destination.meeting = meetings[indexPath.row]
+        if(segue.identifier == "show"){
             
         }
     }

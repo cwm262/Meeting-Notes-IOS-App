@@ -301,10 +301,10 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             loadAttendants()
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.attendants = meetingAttendants
-        }else if segue.identifier == "showAgendas" {
+        }else if segue.identifier == "agendaViewSegue" {
             loadAgendas()
-            let agendaTableViewController = segue.destination as! AgendaTableViewController
-            agendaTableViewController.agendas = meetingAgendas
+            let agendaViewController = segue.destination as! AgendaViewController
+            agendaViewController.agendas = meetingAgendas
         }
     }
     
