@@ -180,6 +180,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     @IBAction func startDatePickerValueChanged(_ sender: Any) {
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
+        
+        endTimeDatePicker.minimumDate = startTimeDatePicker.date
     }
     
     @IBAction func endDatePickerValueChanged(_ sender: Any) {
