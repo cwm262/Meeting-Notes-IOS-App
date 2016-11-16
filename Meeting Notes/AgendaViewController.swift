@@ -16,8 +16,10 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Do any additional setup after loading the view.
+    }
+    
+    override func viewWillAppear(_ animated: Bool) {
+        agendaTableView.reloadData()
     }
 
     override func didReceiveMemoryWarning() {
@@ -38,9 +40,9 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "meetingCell", for: indexPath)
+        let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
         
-        
+        cell.textLabel?.text = agendas?[indexPath.row].title
         
         return cell
     }

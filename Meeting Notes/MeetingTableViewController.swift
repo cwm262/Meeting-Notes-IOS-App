@@ -11,7 +11,7 @@ import CoreData
 import Contacts
 import ContactsUI
 
-class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate {
+class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate, AgendaSharing {
     
     //MARK: Meeting Variables
     
@@ -78,10 +78,21 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
+        let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
+        agendaController.agendaTableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func shareAgenda(agenda: Agenda) {
+        if self.meetingAgendas != nil {
+            self.meetingAgendas!.append(agenda)
+        }else{
+            self.meetingAgendas = [Agenda]()
+            self.meetingAgendas!.append(agenda)
+        }
     }
     
     //MARK: Functions that Load from DB or Save to DB
@@ -177,18 +188,17 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         
     }
     
+    func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
+        label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .medium, timeStyle: .short)
+    }
+    
+    //MARK: Import a Contact from ContactPicker
     
     @IBAction func importParticipant(_ sender: Any) {
         let contactPicker = CNContactPickerViewController()
         contactPicker.delegate = self
         self.present(contactPicker, animated: true, completion: nil)
     }
-    
-    func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
-        label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .medium, timeStyle: .short)
-    }
-    
-    //MARK: Import a Contact from ContactPicker
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
         for contact in contacts{
@@ -302,9 +312,12 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.attendants = meetingAttendants
         }else if segue.identifier == "agendaViewSegue" {
-            loadAgendas()
+            //loadAgendas()
             let agendaViewController = segue.destination as! AgendaViewController
             agendaViewController.agendas = meetingAgendas
+        }else if segue.identifier == "createAgendaSegue" {
+            let createAgendaViewController = segue.destination as! CreateAgendaViewController
+            createAgendaViewController.delegate = self
         }
     }
     

@@ -34,13 +34,12 @@ class CreateAgendaViewController: UIViewController {
     
     func addAgenda(){
         let context = DatabaseController.getContext()
-        if agenda == nil {
-            let desc = NSEntityDescription.entity(forEntityName: "Agenda", in: context)
-            agenda = Agenda(entity: desc!, insertInto: context)
-            agenda?.setValue(titleField.text, forKey: "title")
-            agenda?.setValue(taskField.text, forKey: "task")
-            self.delegate?.shareAgenda(agenda: agenda!)
-        }
+        let desc = NSEntityDescription.entity(forEntityName: "Agenda", in: context)
+        agenda = Agenda(entity: desc!, insertInto: context)
+        agenda?.setValue(titleField.text, forKey: "title")
+        agenda?.setValue(taskField.text, forKey: "task")
+        
+        self.delegate?.shareAgenda(agenda: agenda!)
         
         _ = navigationController?.popViewController(animated: true)
     }

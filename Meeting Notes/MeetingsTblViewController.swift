@@ -9,22 +9,32 @@
 import UIKit
 import CoreData
 
-class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
     
     var meetings = [Meeting]()
+    var filteredMeetings = [Meeting]()
     var startPredicate: NSPredicate?
+    var searchController: UISearchController!
     
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var segmentState: UISegmentedControl!
     
     @IBAction func segmentDidSwitch(_ sender: Any) {
         changeFilter()
+        updateSearchResults(for: searchController)
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Meetings"
+        
+        searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.sizeToFit()
+        tableView.tableHeaderView = searchController.searchBar
+        definesPresentationContext = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -32,6 +42,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         meetings = getMeetings()
         tableView.reloadData()
         changeFilter()
+        updateSearchResults(for: searchController)
     }
     
     override func didReceiveMemoryWarning() {
@@ -50,7 +61,6 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
             fetchRequest.predicate = startPredicate
         }
         
-        
         do {
             let foundMeetings = try DatabaseController.getContext().fetch(fetchRequest)
             return foundMeetings
@@ -58,22 +68,24 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
             print ("Error retrieving notes")
         }
         
-        
         return [Meeting]()
     }
     
     func deleteMeeting(indexPath: IndexPath) {
         let row = indexPath.row
         
-        if (row < meetings.count) {
-            let meeting = meetings[row]
-            meetings.remove(at: row)
+        if (row < filteredMeetings.count) {
+            let meeting = filteredMeetings[row]
+            filteredMeetings.remove(at: row)
             DatabaseController.getContext().delete(meeting)
             
             DatabaseController.saveContext()
             
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
+        
+        changeFilter()
+        updateSearchResults(for: searchController)
     }
     
     func editMeeting(indexPath: IndexPath) {
@@ -103,45 +115,40 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         present(alert, animated: true, completion: nil)
     }
     
+    //MARK: Configure table cells
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return meetings.count
+        return filteredMeetings.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "meetingCell", for: indexPath)
+        let startTimeString = filteredMeetings[indexPath.row].startTime as? Date
         
-        cell.textLabel?.text = meetings[indexPath.row].title //Set cell title
-        let startTimeString = meetings[indexPath.row].startTime as! Date
-        cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString, dateStyle: .medium, timeStyle: .short)
+        cell.textLabel?.text = filteredMeetings[indexPath.row].title //Set cell title
+        cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString!, dateStyle: .medium, timeStyle: .short)
         
         return cell
     }
     
+    //MARK: Show edit and delete buttons on table row
     func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
-        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Edit") { (action , indexPath) -> Void in
-            self.editMeeting(indexPath: indexPath)
-        }
-        editAction.backgroundColor = #colorLiteral(red: 0.9764705896, green: 0.850980401, blue: 0.5490196347, alpha: 1)
         
         let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.destructive, title: "Delete") { (action , indexPath) -> Void in
             self.confirmDelete(indexPath: indexPath)
         }
         deleteAction.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
-        return [editAction, deleteAction]
+        
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Edit") { (action , indexPath) -> Void in
+            self.editMeeting(indexPath: indexPath)
+        }
+        editAction.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
+        
+        return [deleteAction, editAction]
     }
-    
-    // Override to support editing the table view.
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            confirmDelete(indexPath: indexPath)
-//        } else if editingStyle == .insert {
-//            self.editMeeting()
-//        }
-//    }
     
     func changeFilter() {
         let currDate = NSDate() as Date
@@ -158,10 +165,37 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    func filter(_ searchText: String) -> [Meeting] {
+        var filteredMeeting = [Meeting]()
+        
+        if searchText.isEmpty {
+            filteredMeeting = meetings
+        } else {
+            for meeting in meetings {
+                if meeting.title?.range(of: searchText, options: .caseInsensitive) != nil {
+                    filteredMeeting.append(meeting)
+                } else if meeting.description.range(of: searchText, options: .caseInsensitive) != nil {
+                    filteredMeeting.append(meeting)
+                }
+            }
+        }
+        return filteredMeeting
+    }
     
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text {
+            filteredMeetings = filter(searchText)
+            tableView.reloadData()
+        }
+    }
+    
+    
+    //MARK: Prepare for Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if(segue.identifier == "show"){
-            
+        if(segue.identifier == "show"),
+            let destination = segue.destination as? MeetingTableViewController,
+            let indexPath = tableView.indexPathForSelectedRow {
+                destination.meeting = filteredMeetings[indexPath.row]
         }
     }
 }
