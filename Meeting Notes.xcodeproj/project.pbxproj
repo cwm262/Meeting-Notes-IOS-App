@@ -7,13 +7,13 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		770F30BB1DD83F1500CE493B /* AgendaTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F30BA1DD83F1500CE493B /* AgendaTableViewController.swift */; };
-		770F30C01DD842E000CE493B /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F30BF1DD842E000CE493B /* AgendaViewController.swift */; };
+		770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */; };
 		770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F82B91DBA847000B68E6F /* AppDelegate.swift */; };
 		770F82BF1DBA847000B68E6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 770F82BD1DBA847000B68E6F /* Main.storyboard */; };
 		770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */ = {isa = PBXBuildFile; fileRef = 770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */; };
 		770F82C41DBA847000B68E6F /* Assets.xcassets in Resources */ = {isa = PBXBuildFile; fileRef = 770F82C31DBA847000B68E6F /* Assets.xcassets */; };
 		770F82C71DBA847000B68E6F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */; };
+		7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727C2481DDA3F9300051506 /* AgendaViewController.swift */; };
 		77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77297F941DC997280026A26B /* MeetingTableViewController.swift */; };
 		774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */; };
 		778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */; };
@@ -24,8 +24,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		770F30BA1DD83F1500CE493B /* AgendaTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaTableViewController.swift; sourceTree = "<group>"; };
-		770F30BF1DD842E000CE493B /* AgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
+		770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAgendaViewController.swift; sourceTree = "<group>"; };
 		770F82B61DBA847000B68E6F /* Meeting Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Meeting Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		770F82B91DBA847000B68E6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		770F82BE1DBA847000B68E6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/Main.storyboard; sourceTree = "<group>"; };
@@ -33,6 +32,7 @@
 		770F82C31DBA847000B68E6F /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		770F82C61DBA847000B68E6F /* Base */ = {isa = PBXFileReference; lastKnownFileType = file.storyboard; name = Base; path = Base.lproj/LaunchScreen.storyboard; sourceTree = "<group>"; };
 		770F82C81DBA847000B68E6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		7727C2481DDA3F9300051506 /* AgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
 		77297F941DC997280026A26B /* MeetingTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingTableViewController.swift; sourceTree = "<group>"; };
 		774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingAttendant.swift; sourceTree = "<group>"; };
 		778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingsTblViewController.swift; sourceTree = "<group>"; };
@@ -89,8 +89,8 @@
 				77297F941DC997280026A26B /* MeetingTableViewController.swift */,
 				778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */,
 				77A49DA41DD6AC10002495DF /* AttendantViewController.swift */,
-				770F30BA1DD83F1500CE493B /* AgendaTableViewController.swift */,
-				770F30BF1DD842E000CE493B /* AgendaViewController.swift */,
+				770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */,
+				7727C2481DDA3F9300051506 /* AgendaViewController.swift */,
 				770F82BD1DBA847000B68E6F /* Main.storyboard */,
 				770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */,
 				770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */,
@@ -182,14 +182,14 @@
 			buildActionMask = 2147483647;
 			files = (
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
-				770F30BB1DD83F1500CE493B /* AgendaTableViewController.swift in Sources */,
 				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */,
 				77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */,
 				774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */,
 				770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */,
 				77A49DD21DD7EC96002495DF /* DatabaseController.swift in Sources */,
-				770F30C01DD842E000CE493B /* AgendaViewController.swift in Sources */,
+				7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */,
+				770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};

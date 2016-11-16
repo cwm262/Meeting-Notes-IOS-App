@@ -9,24 +9,42 @@
 import UIKit
 import CoreData
 
-class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
     
     var meetings = [Meeting]()
-
+    var filteredMeetings = [Meeting]()
+    var startPredicate: NSPredicate?
+    var searchController: UISearchController!
+    
     @IBOutlet weak var tableView: UITableView!
+    @IBOutlet weak var segmentState: UISegmentedControl!
+    
+    @IBAction func segmentDidSwitch(_ sender: Any) {
+        changeFilter()
+        updateSearchResults(for: searchController)
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
         title = "Meetings"
+        
+        searchController = UISearchController(searchResultsController: nil)
+        searchController.searchResultsUpdater = self
+        searchController.dimsBackgroundDuringPresentation = false
+        searchController.searchBar.sizeToFit()
+        tableView.tableHeaderView = searchController.searchBar
+        definesPresentationContext = true
     }
     
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setToolbarHidden(false, animated: false)
         meetings = getMeetings()
         tableView.reloadData()
+        changeFilter()
+        updateSearchResults(for: searchController)
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
@@ -34,7 +52,14 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     
     func getMeetings() -> [Meeting] {
         let fetchRequest: NSFetchRequest<Meeting> = Meeting.fetchRequest()
-        fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+        
+        if (segmentState.selectedSegmentIndex == 0) {
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: true)]
+            fetchRequest.predicate = startPredicate
+        } else {
+            fetchRequest.sortDescriptors = [NSSortDescriptor(key: "startTime", ascending: false)]
+            fetchRequest.predicate = startPredicate
+        }
         
         do {
             let foundMeetings = try DatabaseController.getContext().fetch(fetchRequest)
@@ -49,15 +74,25 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     func deleteMeeting(indexPath: IndexPath) {
         let row = indexPath.row
         
-        if (row < meetings.count) {
-            let meeting = meetings[row]
-            meetings.remove(at: row)
+        if (row < filteredMeetings.count) {
+            let meeting = filteredMeetings[row]
+            filteredMeetings.remove(at: row)
             DatabaseController.getContext().delete(meeting)
             
             DatabaseController.saveContext()
             
             tableView.deleteRows(at: [indexPath], with: .fade)
         }
+        
+        changeFilter()
+        updateSearchResults(for: searchController)
+    }
+    
+    func editMeeting(indexPath: IndexPath) {
+        let row = indexPath.row
+        let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "MeetingTableViewController") as? MeetingTableViewController
+        nextViewController?.meeting = meetings[row]
+        self.navigationController?.pushViewController(nextViewController!, animated: true)
     }
     
     func confirmDelete(indexPath: IndexPath) {
@@ -72,6 +107,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
             (action) in
             self.tableView.reloadRows(at: [indexPath], with: .right)
         })
+    
         
         alert.addAction(deleteAction)
         alert.addAction(cancelAction)
@@ -79,39 +115,87 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         present(alert, animated: true, completion: nil)
     }
     
+    //MARK: Configure table cells
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return meetings.count
+        return filteredMeetings.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "meetingCell", for: indexPath)
+        let startTimeString = filteredMeetings[indexPath.row].startTime as? Date
         
-        cell.textLabel?.text = meetings[indexPath.row].title //Set cell title
-        let startTimeString = meetings[indexPath.row].startTime as! Date
-        cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString, dateStyle: .medium, timeStyle: .short)
+        cell.textLabel?.text = filteredMeetings[indexPath.row].title //Set cell title
+        cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString!, dateStyle: .medium, timeStyle: .short)
         
         return cell
     }
     
-    // Override to support editing the table view.
-    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-        if editingStyle == .delete {
-            confirmDelete(indexPath: indexPath)
-        } else if editingStyle == .insert {
-            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+    //MARK: Show edit and delete buttons on table row
+    func tableView(_ tableView: UITableView, editActionsForRowAt indexPath: IndexPath) -> [UITableViewRowAction]? {
+        
+        let deleteAction = UITableViewRowAction(style: UITableViewRowActionStyle.destructive, title: "Delete") { (action , indexPath) -> Void in
+            self.confirmDelete(indexPath: indexPath)
+        }
+        deleteAction.backgroundColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+        
+        let editAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Edit") { (action , indexPath) -> Void in
+            self.editMeeting(indexPath: indexPath)
+        }
+        editAction.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
+        
+        return [deleteAction, editAction]
+    }
+    
+    func changeFilter() {
+        let currDate = NSDate() as Date
+        
+        if (segmentState.selectedSegmentIndex == 0) {
+            self.startPredicate = NSPredicate(format: "startTime > %@", currDate as NSDate)
+            self.meetings = self.getMeetings()
+            self.tableView.reloadData()
+        }
+        else {
+            self.startPredicate = NSPredicate(format: "startTime < %@", currDate as NSDate)
+            self.meetings = self.getMeetings()
+            self.tableView.reloadData()
         }
     }
     
+    func filter(_ searchText: String) -> [Meeting] {
+        var filteredMeeting = [Meeting]()
+        
+        if searchText.isEmpty {
+            filteredMeeting = meetings
+        } else {
+            for meeting in meetings {
+                if meeting.title?.range(of: searchText, options: .caseInsensitive) != nil {
+                    filteredMeeting.append(meeting)
+                } else if meeting.description.range(of: searchText, options: .caseInsensitive) != nil {
+                    filteredMeeting.append(meeting)
+                }
+            }
+        }
+        return filteredMeeting
+    }
+    
+    func updateSearchResults(for searchController: UISearchController) {
+        if let searchText = searchController.searchBar.text {
+            filteredMeetings = filter(searchText)
+            tableView.reloadData()
+        }
+    }
+    
+    
+    //MARK: Prepare for Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if (segue.identifier == "show"),
+        if(segue.identifier == "show"),
             let destination = segue.destination as? MeetingTableViewController,
             let indexPath = tableView.indexPathForSelectedRow {
-            destination.meeting = meetings[indexPath.row]
-            
+                destination.meeting = filteredMeetings[indexPath.row]
         }
     }
 }

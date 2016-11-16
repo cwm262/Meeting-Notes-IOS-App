@@ -11,7 +11,7 @@ import CoreData
 import Contacts
 import ContactsUI
 
-class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate {
+class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate, AgendaSharing {
     
     //MARK: Meeting Variables
     
@@ -24,10 +24,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     //MARK: IBOutlets
 
     @IBOutlet weak var startTimeLabel: UILabel!
-    @IBOutlet weak var endTimeLabel: UILabel!
     
     @IBOutlet weak var startTimeDatePicker: UIDatePicker!
-    @IBOutlet weak var endTimeDatePicker: UIDatePicker!
     
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var locationField: UITextField!
@@ -37,7 +35,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     //MARK: Booleans for Whether or Not Section is Expanded
     
     var startDatePickerHidden: Bool = true
-    var endDatePickerHidden: Bool = true
     var descTextHidden: Bool = true
     
     //MARK: DidLoad and WillAppear Functions
@@ -71,22 +68,31 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             }
             
             startTimeDatePicker.date = meeting.startTime as! Date
-            endTimeDatePicker.date = meeting.endTime as! Date
             
 
         }
         
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
-        datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
 
     }
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
+        let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
+        agendaController.agendaTableView.reloadData()
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
+    }
+    
+    func shareAgenda(agenda: Agenda) {
+        if self.meetingAgendas != nil {
+            self.meetingAgendas!.append(agenda)
+        }else{
+            self.meetingAgendas = [Agenda]()
+            self.meetingAgendas!.append(agenda)
+        }
     }
     
     //MARK: Functions that Load from DB or Save to DB
@@ -131,7 +137,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             meeting.location = locationField.text
             meeting.desc = descriptionField.text
             meeting.startTime = startTimeDatePicker.date as NSDate?
-            meeting.endTime = endTimeDatePicker.date as NSDate?
             
             if let meetingAttendants = meetingAttendants{
                 for meetingAttendant in meetingAttendants{
@@ -180,16 +185,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     @IBAction func startDatePickerValueChanged(_ sender: Any) {
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
-    }
-    
-    @IBAction func endDatePickerValueChanged(_ sender: Any) {
-        datePickerChanged(label: endTimeLabel, datePicker: endTimeDatePicker)
-    }
-    
-    @IBAction func importParticipant(_ sender: Any) {
-        let contactPicker = CNContactPickerViewController()
-        contactPicker.delegate = self
-        self.present(contactPicker, animated: true, completion: nil)
+        
     }
     
     func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
@@ -197,6 +193,12 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     //MARK: Import a Contact from ContactPicker
+    
+    @IBAction func importParticipant(_ sender: Any) {
+        let contactPicker = CNContactPickerViewController()
+        contactPicker.delegate = self
+        self.present(contactPicker, animated: true, completion: nil)
+    }
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
         for contact in contacts{
@@ -222,7 +224,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                     meetingAttendants!.append(newAttendant)
                 }
                 
-                let embeddedController: AttendantViewController = self.childViewControllers.first as! AttendantViewController
+                let embeddedController: AttendantViewController = self.childViewControllers[1] as! AttendantViewController
                 embeddedController.attendants = meetingAttendants
                 embeddedController.attendantTableView.reloadData()
                 
@@ -249,10 +251,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&startDatePickerHidden)
         }
-        if indexPath.section == 3 && indexPath.row == 0 {
-            endTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
-            fieldViewToggled(&endDatePickerHidden)
-        }
         if indexPath.section == 1 && indexPath.row == 0 {
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
@@ -262,10 +260,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         if startDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
             startTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-            return 0
-        }
-        else if endDatePickerHidden && indexPath.section == 3 && indexPath.row == 1 {
-            endTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
         }
         else if descTextHidden && indexPath.section == 1 && indexPath.row == 1{
@@ -317,10 +311,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             loadAttendants()
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.attendants = meetingAttendants
-        }else if segue.identifier == "showAgendas" {
-            loadAgendas()
-            let agendaTableViewController = segue.destination as! AgendaTableViewController
-            agendaTableViewController.agendas = meetingAgendas
+        }else if segue.identifier == "agendaViewSegue" {
+            //loadAgendas()
+            let agendaViewController = segue.destination as! AgendaViewController
+            agendaViewController.agendas = meetingAgendas
+        }else if segue.identifier == "createAgendaSegue" {
+            let createAgendaViewController = segue.destination as! CreateAgendaViewController
+            createAgendaViewController.delegate = self
         }
     }
     
