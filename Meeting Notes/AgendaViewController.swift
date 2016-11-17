@@ -16,6 +16,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -35,7 +36,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let agendas = agendas {
             return agendas.count
         }else {
-            return 1
+            return 0
         }
     }
     
@@ -43,6 +44,16 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
         
         cell.textLabel?.text = agendas?[indexPath.row].title
+        if var duration = agendas?[indexPath.row].duration {
+            var detailText: String = ""
+            if duration == 60 {
+                detailText = "1 minute"
+            }else if duration > 60 {
+                duration = duration / 60
+                detailText = "\(duration) minutes"
+            }
+            cell.detailTextLabel?.text = detailText
+        }
         
         return cell
     }
