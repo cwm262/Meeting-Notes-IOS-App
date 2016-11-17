@@ -20,6 +20,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     var meetingAgendas: [Agenda]?
     var attendantsToBeDeleted: [Attendant]?
     var agendasToBeDeleted: [Agenda]?
+    var duration: Int32 = 0
     
     //MARK: IBOutlets
 
@@ -31,6 +32,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var locationField: UITextField!
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var descriptionField: UITextView!
+    @IBOutlet weak var durationField: UILabel!
     
     //MARK: Booleans for Whether or Not Section is Expanded
     
@@ -79,6 +81,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
         let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
+        agendaController.agendas = meetingAgendas
         agendaController.agendaTableView.reloadData()
     }
     
@@ -93,6 +96,23 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             self.meetingAgendas = [Agenda]()
             self.meetingAgendas!.append(agenda)
         }
+        duration += agenda.duration
+        calculateAndSetDuration(duration: duration)
+        
+        
+    }
+    
+    func calculateAndSetDuration(duration: Int32){
+        if duration == 60 {
+            durationField.text = "1 minute"
+        }else if duration > 60 && duration < 3600 {
+            let numMinutes = duration / 60
+            durationField.text = "\(numMinutes) minutes"
+        }else if duration > 3600 {
+            let numHours = duration / 3600
+            let numMinutes = (duration % 3600) / 60
+            durationField.text = "\(numHours) hours, \(numMinutes) minutes"
+        }
     }
     
     //MARK: Functions that Load from DB or Save to DB
@@ -101,10 +121,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         if let meeting = meeting {
             if let agendas = meeting.agendas {
                 meetingAgendas = [Agenda]()
+                duration = 0
                 for i in agendas {
                     let currentAgenda = i as! Agenda
                     meetingAgendas!.append(currentAgenda)
+                    duration += currentAgenda.duration
                 }
+                calculateAndSetDuration(duration: duration)
             }
         }
     }
@@ -312,12 +335,12 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.attendants = meetingAttendants
         }else if segue.identifier == "agendaViewSegue" {
-            //loadAgendas()
+            loadAgendas()
             let agendaViewController = segue.destination as! AgendaViewController
             agendaViewController.agendas = meetingAgendas
         }else if segue.identifier == "createAgendaSegue" {
             let createAgendaViewController = segue.destination as! CreateAgendaViewController
-            createAgendaViewController.delegate = self
+            createAgendaViewController.meetingTableController = self
         }
     }
     

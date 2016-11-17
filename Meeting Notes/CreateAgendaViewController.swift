@@ -16,10 +16,11 @@ protocol AgendaSharing {
 class CreateAgendaViewController: UIViewController {
     
     var agenda: Agenda?
-    var delegate: AgendaSharing?
+    var meetingTableController: AgendaSharing?
 
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var taskField: UITextView!
+    @IBOutlet weak var countdownTimer: UIDatePicker!
     
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -38,8 +39,10 @@ class CreateAgendaViewController: UIViewController {
         agenda = Agenda(entity: desc!, insertInto: context)
         agenda?.setValue(titleField.text, forKey: "title")
         agenda?.setValue(taskField.text, forKey: "task")
+        let duration = countdownTimer?.countDownDuration
+        agenda?.setValue(duration, forKey: "duration")
         
-        self.delegate?.shareAgenda(agenda: agenda!)
+        self.meetingTableController?.shareAgenda(agenda: agenda!)
         
         _ = navigationController?.popViewController(animated: true)
     }

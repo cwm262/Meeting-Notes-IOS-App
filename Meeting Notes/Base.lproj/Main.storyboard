@@ -290,14 +290,17 @@
                                             <rect key="frame" x="0.0" y="0.0" width="375" height="44"/>
                                             <autoresizingMask key="autoresizingMask"/>
                                             <subviews>
-                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" fixedFrame="YES" text="Duration" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hbX-hd-6sN">
-                                                    <rect key="frame" x="154" y="12" width="66" height="21"/>
-                                                    <autoresizingMask key="autoresizingMask" flexibleMaxX="YES" flexibleMaxY="YES"/>
+                                                <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="hbX-hd-6sN">
+                                                    <rect key="frame" x="187" y="22.5" width="0.0" height="0.0"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <nil key="textColor"/>
                                                     <nil key="highlightedColor"/>
                                                 </label>
                                             </subviews>
+                                            <constraints>
+                                                <constraint firstItem="hbX-hd-6sN" firstAttribute="centerY" secondItem="qI5-Dw-9nT" secondAttribute="centerY" id="T2t-ev-u84"/>
+                                                <constraint firstItem="hbX-hd-6sN" firstAttribute="centerX" secondItem="qI5-Dw-9nT" secondAttribute="centerX" id="zNl-Ni-zuM"/>
+                                            </constraints>
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </cells>
@@ -376,6 +379,7 @@
                     <connections>
                         <outlet property="descriptionField" destination="yLs-Wk-J5f" id="Hky-Zg-0gJ"/>
                         <outlet property="descriptionLabel" destination="5ug-Zd-l2N" id="sEL-YR-tLV"/>
+                        <outlet property="durationField" destination="hbX-hd-6sN" id="Ap5-4J-QBQ"/>
                         <outlet property="locationField" destination="2kB-e5-Itg" id="Lha-mc-XI6"/>
                         <outlet property="startTimeDatePicker" destination="suo-iu-fBa" id="vaW-Nj-KBk"/>
                         <outlet property="startTimeLabel" destination="oXL-0B-um6" id="hyN-Qj-qsT"/>
@@ -454,6 +458,7 @@
                         <barButtonItem style="plain" systemItem="flexibleSpace" id="sXJ-xF-WEU"/>
                     </toolbarItems>
                     <connections>
+                        <outlet property="countdownTimer" destination="7dF-sZ-iM2" id="jNs-MQ-BoD"/>
                         <outlet property="taskField" destination="486-8b-xkd" id="k4E-gF-8gi"/>
                         <outlet property="titleField" destination="4M9-wd-zFk" id="dXn-ws-xki"/>
                     </connections>
@@ -590,6 +595,10 @@
                                         </tableViewCellContentView>
                                     </tableViewCell>
                                 </prototypes>
+                                <connections>
+                                    <outlet property="dataSource" destination="OnL-ZG-25t" id="A1J-6A-EgU"/>
+                                    <outlet property="delegate" destination="OnL-ZG-25t" id="6Kx-7R-N11"/>
+                                </connections>
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" white="1" alpha="1" colorSpace="calibratedWhite"/>
