@@ -193,6 +193,25 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                 }
                 
             }
+            if let meetingAgendas = meetingAgendas {
+                if let savedAgendas = meeting.agendas as? Set<Agenda>, savedAgendas.count > 0 {
+                    for meetingAgenda in meetingAgendas {
+                        for savedAgenda in savedAgendas {
+                            if savedAgenda === meetingAgenda {
+                                savedAgenda.duration = meetingAgenda.duration
+                                savedAgenda.task = meetingAgenda.task
+                                savedAgenda.title = meetingAgenda.title
+                            }else{
+                                meeting.addToAgendas(meetingAgenda)
+                            }
+                        }
+                    }
+                }else{
+                    for meetingAgenda in meetingAgendas {
+                        meeting.addToAgendas(meetingAgenda)
+                    }
+                }
+            }
             if let attendantsToBeDeleted = attendantsToBeDeleted {
                 for attendantTBD in attendantsToBeDeleted {
                     meeting.removeFromAttendants(attendantTBD)
@@ -341,6 +360,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         }else if segue.identifier == "createAgendaSegue" {
             let createAgendaViewController = segue.destination as! CreateAgendaViewController
             createAgendaViewController.meetingTableController = self
+            createAgendaViewController.meeting = self.meeting
         }
     }
     

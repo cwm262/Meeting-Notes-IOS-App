@@ -17,10 +17,13 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        agendaTableView.setEditing(true, animated: true)
+        
     }
     
     override func viewWillAppear(_ animated: Bool) {
         agendaTableView.reloadData()
+        
     }
 
     override func didReceiveMemoryWarning() {
@@ -44,18 +47,39 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
         
         cell.textLabel?.text = agendas?[indexPath.row].title
-        if var duration = agendas?[indexPath.row].duration {
-            var detailText: String = ""
+        if let duration = agendas?[indexPath.row].duration {
             if duration == 60 {
-                detailText = "1 minute"
-            }else if duration > 60 {
-                duration = duration / 60
-                detailText = "\(duration) minutes"
+                cell.detailTextLabel?.text = "1 minute"
+            }else if duration > 60 && duration < 3600 {
+                let numMinutes = duration / 60
+                cell.detailTextLabel?.text = "\(numMinutes) minutes"
+            }else if duration > 3600 {
+                let numHours = duration / 3600
+                let numMinutes = (duration % 3600) / 60
+                cell.detailTextLabel?.text = "\(numHours) hours, \(numMinutes) minutes"
             }
-            cell.detailTextLabel?.text = detailText
         }
         
         return cell
+    }
+    
+    func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
+        let sourceRow = agendas?[sourceIndexPath.row]
+        //let destinationRow = agendas?[sourceIndexPath.row]
+        agendas?.remove(at: sourceIndexPath.row)
+        agendas?.insert(sourceRow!, at: destinationIndexPath.row)
+        
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return UITableViewCellEditingStyle.none
+    }
+    
+    func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
+        return true
+    }
+    func tableView(_ tableView: UITableView, shouldIndentWhileEditingRowAt indexPath: IndexPath) -> Bool {
+        return false
     }
     
 //    // Override to support editing the table view.
