@@ -18,6 +18,7 @@ class CreateAgendaViewController: UIViewController {
     var agenda: Agenda?
     var meetingTableController: AgendaSharing?
     var meeting: Meeting?
+    var meetingAgendas: [Agenda]?
 
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var taskField: UITextView!
@@ -42,9 +43,6 @@ class CreateAgendaViewController: UIViewController {
         agenda?.setValue(taskField.text, forKey: "task")
         let duration = countdownTimer?.countDownDuration
         agenda?.setValue(duration, forKey: "duration")
-        
-        //TODO: Create order property and set
-        
         
         self.meetingTableController?.shareAgenda(agenda: agenda!)
         

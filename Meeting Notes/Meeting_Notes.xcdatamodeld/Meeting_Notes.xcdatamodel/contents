@@ -2,7 +2,6 @@
 <model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="15G1108" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
     <entity name="Agenda" representedClassName="Agenda" syncable="YES" codeGenerationType="class">
         <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
-        <attribute name="order" optional="YES" attributeType="Double" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
         <attribute name="task" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="attendants" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendant" inverseName="agenda" inverseEntity="Attendant" syncable="YES"/>
@@ -20,11 +19,11 @@
         <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="agendas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Agenda" inverseName="meeting" inverseEntity="Agenda" syncable="YES"/>
+        <relationship name="agendas" optional="YES" toMany="YES" minCount="1" deletionRule="Cascade" ordered="YES" destinationEntity="Agenda" inverseName="meeting" inverseEntity="Agenda" syncable="YES"/>
         <relationship name="attendants" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attendant" inverseName="meeting" inverseEntity="Attendant" syncable="YES"/>
     </entity>
     <elements>
-        <element name="Agenda" positionX="-38" positionY="207" width="128" height="135"/>
+        <element name="Agenda" positionX="-38" positionY="207" width="128" height="120"/>
         <element name="Attendant" positionX="232" positionY="50" width="128" height="118"/>
         <element name="Meeting" positionX="-63" positionY="-18" width="128" height="135"/>
     </elements>

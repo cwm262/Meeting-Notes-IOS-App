@@ -217,6 +217,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                     meeting.removeFromAttendants(attendantTBD)
                 }
             }
+            if let agendasToBeDeleted = agendasToBeDeleted {
+                for agendaTBD in agendasToBeDeleted {
+                    meeting.removeFromAgendas(agendaTBD)
+                }
+            }
             DatabaseController.saveContext()
         }
         
@@ -357,10 +362,12 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             loadAgendas()
             let agendaViewController = segue.destination as! AgendaViewController
             agendaViewController.agendas = meetingAgendas
+            agendaViewController.meeting = self.meeting
         }else if segue.identifier == "createAgendaSegue" {
             let createAgendaViewController = segue.destination as! CreateAgendaViewController
             createAgendaViewController.meetingTableController = self
             createAgendaViewController.meeting = self.meeting
+            createAgendaViewController.meetingAgendas = self.meetingAgendas
         }
     }
     

@@ -11,6 +11,8 @@ import UIKit
 class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
     var agendas: [Agenda]?
+    var agendasToBeDeleted: [Agenda]?
+    var meeting: Meeting?
 
     @IBOutlet weak var agendaTableView: UITableView!
     
@@ -65,14 +67,16 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let sourceRow = agendas?[sourceIndexPath.row]
-        //let destinationRow = agendas?[sourceIndexPath.row]
+        let myAgendaSet = meeting?.mutableOrderedSetValue(forKey: "agendas")
+        myAgendaSet?.removeObject(at: sourceIndexPath.row)
+        myAgendaSet?.insert(sourceRow!, at: destinationIndexPath.row)
         agendas?.remove(at: sourceIndexPath.row)
         agendas?.insert(sourceRow!, at: destinationIndexPath.row)
         
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-        return UITableViewCellEditingStyle.none
+        return UITableViewCellEditingStyle.delete
     }
     
     func tableView(_ tableView: UITableView, canMoveRowAt indexPath: IndexPath) -> Bool {
@@ -82,14 +86,55 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         return false
     }
     
-//    // Override to support editing the table view.
-//    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
-//        if editingStyle == .delete {
-//            confirmDelete(indexPath: indexPath)
-//        } else if editingStyle == .insert {
-//            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
-//        }
-//    }
+    // Override to support editing the table view.
+    func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCellEditingStyle, forRowAt indexPath: IndexPath) {
+        if editingStyle == .delete {
+            confirmDelete(indexPath: indexPath)
+        } else if editingStyle == .insert {
+            // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
+        }
+    }
+    
+    func confirmDelete(indexPath: IndexPath) {
+        let alert = UIAlertController(title: "Delete Agenda", message: "Are you sure you want to delete this agenda?", preferredStyle: .actionSheet)
+        
+        let deleteAction = UIAlertAction(title: "Delete", style: .destructive, handler: {
+            (action) in
+            self.deleteAgenda(indexPath: indexPath)
+        })
+        
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: {
+            (action) in
+            self.agendaTableView.reloadRows(at: [indexPath], with: .right)
+        })
+        
+        alert.addAction(deleteAction)
+        alert.addAction(cancelAction)
+        
+        present(alert, animated: true, completion: nil)
+    }
+    
+    func deleteAgenda(indexPath: IndexPath) {
+        let row = indexPath.row
+        
+        if (row < agendas!.count) {
+            agendas!.remove(at: row)
+        
+            if var agendasToBeDeleted = agendasToBeDeleted {
+                agendasToBeDeleted.append(agendas![row])
+            }else {
+                agendasToBeDeleted = [Agenda]()
+                agendasToBeDeleted!.append(agendas![row])
+            }
+            
+            let parentController: MeetingTableViewController = self.parent as! MeetingTableViewController
+        
+            parentController.meetingAgendas = agendas
+            parentController.agendasToBeDeleted = agendasToBeDeleted
+            
+            agendaTableView.deleteRows(at: [indexPath], with: .fade)
+        }
+    }
     
 
     /*
