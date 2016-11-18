@@ -17,6 +17,8 @@ class CreateAgendaViewController: UIViewController {
     
     var agenda: Agenda?
     var meetingTableController: AgendaSharing?
+    var meeting: Meeting?
+    var meetingAgendas: [Agenda]?
 
     @IBOutlet weak var titleField: UITextField!
     @IBOutlet weak var taskField: UITextView!

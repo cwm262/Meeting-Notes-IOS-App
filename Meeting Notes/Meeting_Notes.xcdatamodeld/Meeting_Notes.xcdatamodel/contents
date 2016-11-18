@@ -19,7 +19,7 @@
         <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
-        <relationship name="agendas" optional="YES" toMany="YES" deletionRule="Cascade" destinationEntity="Agenda" inverseName="meeting" inverseEntity="Agenda" syncable="YES"/>
+        <relationship name="agendas" optional="YES" toMany="YES" minCount="1" deletionRule="Cascade" ordered="YES" destinationEntity="Agenda" inverseName="meeting" inverseEntity="Agenda" syncable="YES"/>
         <relationship name="attendants" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attendant" inverseName="meeting" inverseEntity="Attendant" syncable="YES"/>
     </entity>
     <elements>
