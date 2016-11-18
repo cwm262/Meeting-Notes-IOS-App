@@ -68,10 +68,12 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
         let sourceRow = agendas?[sourceIndexPath.row]
         let myAgendaSet = meeting?.mutableOrderedSetValue(forKey: "agendas")
+        //myAgendaSet?.exchangeObject(at: sourceIndexPath.row, withObjectAt: destinationIndexPath.row)
         myAgendaSet?.removeObject(at: sourceIndexPath.row)
         myAgendaSet?.insert(sourceRow!, at: destinationIndexPath.row)
         agendas?.remove(at: sourceIndexPath.row)
         agendas?.insert(sourceRow!, at: destinationIndexPath.row)
+        DatabaseController.saveContext()
         
     }
     
@@ -118,7 +120,6 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let row = indexPath.row
         
         if (row < agendas!.count) {
-            agendas!.remove(at: row)
         
             if var agendasToBeDeleted = agendasToBeDeleted {
                 agendasToBeDeleted.append(agendas![row])
@@ -126,6 +127,8 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
                 agendasToBeDeleted = [Agenda]()
                 agendasToBeDeleted!.append(agendas![row])
             }
+            
+            agendas!.remove(at: row)
             
             let parentController: MeetingTableViewController = self.parent as! MeetingTableViewController
         
