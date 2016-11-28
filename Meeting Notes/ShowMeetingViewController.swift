@@ -34,7 +34,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             let startDateString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .short)
             
             startLabel.text = "\(startDateString)"
-            durationLabel.text = "0:00"
+            durationLabel.text = "0 hr 0 min"
             
             
         }
@@ -65,26 +65,16 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     func calculateAndSetDuration(duration: Int32, field: UILabel){
         if duration == 60 {
-            field.text = "1 minute"
+            field.text = "1 min"
         }else if duration > 60 && duration < 3600 {
             let numMinutes = duration / 60
-            field.text = "\(numMinutes) minutes"
+            field.text = "\(numMinutes) min"
         }else if duration > 3600 {
             let numHours = duration / 3600
             let numMinutes = (duration % 3600) / 60
-            var hourStr = ""
-            var minuteStr = ""
-            if numHours == 1 {
-                hourStr = "hour"
-            }else{
-                hourStr = "hours"
-            }
-            if numMinutes == 1 {
-                minuteStr = "minute"
-            }else {
-                minuteStr = "minutes"
-            }
-            field.text = "\(numHours) \(hourStr), \(numMinutes) \(minuteStr)"
+            let hourStr = "hr"
+            let minuteStr = "min"
+            field.text = "\(numHours) \(hourStr) \(numMinutes) \(minuteStr)"
         }
     }
     
@@ -102,14 +92,14 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         cell.textLabel?.text = meetingAgendas?[indexPath.row].title
         if let duration = meetingAgendas?[indexPath.row].duration {
             if duration == 60 {
-                cell.detailTextLabel?.text = "1 minute"
+                cell.detailTextLabel?.text = "1 min"
             }else if duration > 60 && duration < 3600 {
                 let numMinutes = duration / 60
-                cell.detailTextLabel?.text = "\(numMinutes) minutes"
+                cell.detailTextLabel?.text = "\(numMinutes) min"
             }else if duration > 3600 {
                 let numHours = duration / 3600
                 let numMinutes = (duration % 3600) / 60
-                cell.detailTextLabel?.text = "\(numHours) hours, \(numMinutes) minutes"
+                cell.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
             }
         }
         
