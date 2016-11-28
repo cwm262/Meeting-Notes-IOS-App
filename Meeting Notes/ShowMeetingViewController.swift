@@ -17,9 +17,11 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var durationLabel: UILabel!
     
     @IBOutlet weak var agendaTableView: UITableView!
+    @IBOutlet weak var participantTableView: UITableView!
     
     var meeting: Meeting?
     var meetingAgendas: [Agenda]?
+    var meetingAttendants: [Attendant]?
     var duration: Int32 = 0
     
     override func viewDidLoad() {
@@ -40,6 +42,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         loadAgendas()
+        loadAttendants()
         
     }
 
@@ -59,6 +62,18 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                     duration += currentAgenda.duration
                 }
                 calculateAndSetDuration(duration: duration, field: durationLabel)
+            }
+        }
+    }
+    
+    func loadAttendants(){
+        if let meeting = meeting {
+            if let attendants = meeting.attendants {
+                meetingAttendants = [Attendant]()
+                for i in attendants {
+                    let currentAttendant = i as! Attendant
+                    meetingAttendants!.append(currentAttendant)
+                }
             }
         }
     }
@@ -93,27 +108,57 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return (meetingAgendas?.count)!
+        
+        var count:Int?
+        
+        if tableView == self.agendaTableView {
+            count = meetingAgendas?.count
+        }
+        
+        if tableView == self.participantTableView {
+            count = meetingAttendants?.count
+        }
+        
+        return count!
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
-        let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
         
-        cell.textLabel?.text = meetingAgendas?[indexPath.row].title
-        if let duration = meetingAgendas?[indexPath.row].duration {
-            if duration == 60 {
-                cell.detailTextLabel?.text = "1 minute"
-            }else if duration > 60 && duration < 3600 {
-                let numMinutes = duration / 60
-                cell.detailTextLabel?.text = "\(numMinutes) minutes"
-            }else if duration > 3600 {
-                let numHours = duration / 3600
-                let numMinutes = (duration % 3600) / 60
-                cell.detailTextLabel?.text = "\(numHours) hours, \(numMinutes) minutes"
+        var cell:UITableViewCell?
+        
+        if tableView == self.agendaTableView {
+            cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
+            cell?.textLabel?.text = meetingAgendas?[indexPath.row].title
+            if let duration = meetingAgendas?[indexPath.row].duration {
+                if duration == 60 {
+                    cell?.detailTextLabel?.text = "1 minute"
+                }else if duration > 60 && duration < 3600 {
+                    let numMinutes = duration / 60
+                    cell?.detailTextLabel?.text = "\(numMinutes) minutes"
+                }else if duration > 3600 {
+                    let numHours = duration / 3600
+                    let numMinutes = (duration % 3600) / 60
+                    cell?.detailTextLabel?.text = "\(numHours) hours, \(numMinutes) minutes"
+                }
             }
         }
         
-        return cell
+        if tableView == self.participantTableView {
+            cell = tableView.dequeueReusableCell(withIdentifier: "viewParticipantCell", for: indexPath)
+            let givenName = meetingAttendants?[indexPath.row].givenName
+            let familyName = meetingAttendants?[indexPath.row].familyName
+            let email = meetingAttendants?[indexPath.row].email
+            let titleString: String?
+            if let givenName = givenName, let familyName = familyName {
+                titleString = givenName + " " + familyName
+                cell?.textLabel?.text = titleString
+            }
+            if let email = email {
+                cell?.detailTextLabel?.text = email
+            }
+        }
+        
+        return cell!
     }
 
     /*
