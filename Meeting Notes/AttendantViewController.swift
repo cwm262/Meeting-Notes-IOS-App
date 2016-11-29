@@ -19,6 +19,8 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        attendantTableView.setEditing(true, animated: true)
+        
         // Do any additional setup after loading the view.
     }
     
@@ -93,6 +95,10 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         }else{
             return 0
         }
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return UITableViewCellEditingStyle.delete
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
