@@ -24,8 +24,16 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var meetingAttendants: [Attendant]?
     var duration: Int32 = 0
     
+    var alert = UIAlertController()
+    var cancelAction = UIAlertAction()
+    var timer: Int = 0
+    var currentAgenda = 0
+    var agendaTimer = Timer()
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        participantTableView.allowsSelection = false
         
         if let meeting = meeting {
             titleLabel.text = meeting.title
@@ -93,6 +101,42 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    func countdown() {
+        if timer > 0 {
+            timer -= 1
+            cancelAction.setValue("\(timer)", forKey: "title")
+        } else {
+            alert.dismiss(animated: true, completion: nil)
+            agendaTimer.invalidate()
+            
+            currentAgenda += 1
+            
+            if currentAgenda < (meetingAgendas?.count)! {
+                let path = IndexPath(row: currentAgenda, section: 0)
+                tableView(self.agendaTableView, didSelectRowAt: path)
+            }
+        }
+        
+    }
+    
+    func showAgenda(indexPath: IndexPath) {
+        
+        if let agenda = meetingAgendas?[indexPath.row] {
+            
+            timer = Int(agenda.duration)
+            
+            alert = UIAlertController(title: "\(agenda.title!)", message: "Task: \(agenda.task!)", preferredStyle: .alert)
+            cancelAction = UIAlertAction(title: "Close", style: .destructive, handler: nil)
+            alert.addAction(cancelAction)
+            
+            agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+            
+            present(alert, animated: true, completion: nil)
+            
+        }
+        
+    }
+    
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
     }
@@ -110,6 +154,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         return count!
+    }
+    
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if tableView == self.agendaTableView {
+            showAgenda(indexPath: indexPath)
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -131,6 +182,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                     cell?.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
                 }
             }
+            
         }
         
         if tableView == self.participantTableView {
@@ -148,6 +200,14 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
         return cell!
+    }
+    
+    @IBAction func startMeetingButton(_ sender: Any) {
+        
+        agendaTimer.invalidate()
+        let path = IndexPath(row: 0, section: 0)
+        tableView(self.agendaTableView, didSelectRowAt: path)
+        
     }
 
     /*
