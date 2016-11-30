@@ -9,7 +9,7 @@
 import UIKit
 
 class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
-
+    
     @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var descriptionTextView: UITextView!
@@ -24,8 +24,17 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var meetingAttendants: [Attendant]?
     var duration: Int32 = 0
     
+    var alert = UIAlertController()
+    var cancelAction = UIAlertAction()
+    var timer: Int = 0
+    var currentAgenda = 0
+    var agendaTimer = Timer()
+    var meetingBegin = false
+    
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        participantTableView.allowsSelection = false
         
         if let meeting = meeting {
             titleLabel.text = meeting.title
@@ -45,7 +54,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         loadAttendants()
         
     }
-
+    
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
@@ -78,6 +87,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    func timeFormatted(totalSeconds: Int) -> String {
+        let seconds: Int = totalSeconds % 60
+        let minutes: Int = (totalSeconds / 60) % 60
+        let hours: Int = totalSeconds / 3600
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
+    }
+    
     func calculateAndSetDuration(duration: Int32, field: UILabel){
         if duration == 60 {
             field.text = "1 min"
@@ -91,6 +107,77 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             let minuteStr = "min"
             field.text = "\(numHours) \(hourStr) \(numMinutes) \(minuteStr)"
         }
+    }
+    
+    func countdown() {
+        if timer > 0 {
+            timer -= 1
+            let timeString: String = timeFormatted(totalSeconds: timer)
+            cancelAction.setValue("Close(\(timeString))", forKey: "title")
+        } else {
+            alert.dismiss(animated: true, completion: nil)
+            agendaTimer.invalidate()
+            
+            var path = IndexPath(row: currentAgenda, section: 0)
+            self.agendaTableView.cellForRow(at: path)?.isSelected = false
+            
+            if currentAgenda < (meetingAgendas?.count)! - 1{
+                
+                currentAgenda += 1
+                
+                path = IndexPath(row: currentAgenda, section: 0)
+                tableView(self.agendaTableView, didSelectRowAt: path)
+                
+            } else {
+                meetingBegin = false
+            }
+        }
+        
+    }
+    
+    func runMeeting(indexPath: IndexPath) {
+        
+        if let agenda = meetingAgendas?[indexPath.row] {
+            
+            self.agendaTableView.cellForRow(at: indexPath)?.isSelected = true
+            
+//            alert = UIAlertController(title: "\(agenda.title!)", message: "Task: \(agenda.task!)", preferredStyle: .alert)
+//            cancelAction = UIAlertAction(title: "Close", style: .destructive, handler: {
+//                (action) in
+//                self.meetingBegin = false
+//                self.agendaTimer.invalidate()
+//                self.agendaTableView.cellForRow(at: indexPath)?.isSelected = false
+//            })
+//            alert.addAction(cancelAction)
+            
+            let modalViewController = self.storyboard?.instantiateViewController(withIdentifier: "myModal") as! AgendaModalViewController
+            modalViewController.modalPresentationStyle = .overCurrentContext
+            present(modalViewController, animated: true, completion: nil)
+            
+            timer = Int(agenda.duration)
+            agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+            
+            //present(alert, animated: true, completion: nil)
+            
+        }
+        
+    }
+    
+    func showAgenda(indexPath: IndexPath) {
+        
+        if let agenda = meetingAgendas?[indexPath.row] {
+            
+            alert = UIAlertController(title: "\(agenda.title!)", message: "Task: \(agenda.task!)", preferredStyle: .alert)
+            cancelAction = UIAlertAction(title: "Close", style: .cancel, handler: {
+                (action) in
+                self.agendaTableView.cellForRow(at: indexPath)?.isSelected = false
+            })
+            alert.addAction(cancelAction)
+            
+            present(alert, animated: true, completion: nil)
+            
+        }
+        
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -112,6 +199,17 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         return count!
     }
     
+    func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if tableView == self.agendaTableView {
+            if meetingBegin {
+                runMeeting(indexPath: indexPath)
+            } else {
+                showAgenda(indexPath: indexPath)
+            }
+        }
+    }
+    
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
         var cell:UITableViewCell?
@@ -131,6 +229,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                     cell?.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
                 }
             }
+            
         }
         
         if tableView == self.participantTableView {
@@ -150,14 +249,22 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         return cell!
     }
 
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
+    @IBAction func meetingDidStart(_ sender: Any) {
+        meetingBegin = true
+        currentAgenda = 0
+        agendaTimer.invalidate()
+        let path = IndexPath(row: 0, section: 0)
+        tableView(self.agendaTableView, didSelectRowAt: path)
     }
-    */
-
+    
+    /*
+     // MARK: - Navigation
+     
+     // In a storyboard-based application, you will often want to do a little preparation before navigation
+     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+     // Get the new view controller using segue.destinationViewController.
+     // Pass the selected object to the new view controller.
+     }
+     */
+    
 }
