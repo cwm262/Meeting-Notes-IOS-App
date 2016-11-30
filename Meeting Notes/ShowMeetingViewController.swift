@@ -28,11 +28,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var cancelAction = UIAlertAction()
     var timer: Int = 0
     var currentAgenda = 0
-    var agendaTimer = Timer()
     var meetingBegin = false
+    var checkForTableViewTransition = false
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        //NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: .UI, object: nil)
         
         participantTableView.allowsSelection = false
         
@@ -53,6 +55,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         loadAgendas()
         loadAttendants()
         
+    }
+    
+    func willEnterForeground(){
+        if checkForTableViewTransition == true {
+            let path = IndexPath(row: self.currentAgenda, section: 0)
+            self.tableView(self.agendaTableView, didSelectRowAt: path)
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -87,12 +96,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func timeFormatted(totalSeconds: Int) -> String {
-        let seconds: Int = totalSeconds % 60
-        let minutes: Int = (totalSeconds / 60) % 60
-        let hours: Int = totalSeconds / 3600
-        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
-    }
     
     func calculateAndSetDuration(duration: Int32, field: UILabel){
         if duration == 60 {
@@ -109,55 +112,24 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func countdown() {
-        if timer > 0 {
-            timer -= 1
-            let timeString: String = timeFormatted(totalSeconds: timer)
-            cancelAction.setValue("Close(\(timeString))", forKey: "title")
-        } else {
-            alert.dismiss(animated: true, completion: nil)
-            agendaTimer.invalidate()
-            
-            var path = IndexPath(row: currentAgenda, section: 0)
-            self.agendaTableView.cellForRow(at: path)?.isSelected = false
-            
-            if currentAgenda < (meetingAgendas?.count)! - 1{
-                
-                currentAgenda += 1
-                
-                path = IndexPath(row: currentAgenda, section: 0)
-                tableView(self.agendaTableView, didSelectRowAt: path)
-                
-            } else {
-                meetingBegin = false
-            }
-        }
-        
-    }
-    
     func runMeeting(indexPath: IndexPath) {
         
         if let agenda = meetingAgendas?[indexPath.row] {
             
             self.agendaTableView.cellForRow(at: indexPath)?.isSelected = true
             
-//            alert = UIAlertController(title: "\(agenda.title!)", message: "Task: \(agenda.task!)", preferredStyle: .alert)
-//            cancelAction = UIAlertAction(title: "Close", style: .destructive, handler: {
-//                (action) in
-//                self.meetingBegin = false
-//                self.agendaTimer.invalidate()
-//                self.agendaTableView.cellForRow(at: indexPath)?.isSelected = false
-//            })
-//            alert.addAction(cancelAction)
+            timer = Int(agenda.duration)
+            
             
             let modalViewController = self.storyboard?.instantiateViewController(withIdentifier: "myModal") as! AgendaModalViewController
             modalViewController.modalPresentationStyle = .overCurrentContext
+            modalViewController.meeting = self.meeting
+            modalViewController.agenda = agenda
+            modalViewController.timer = self.timer
+            modalViewController.showMeetingController = self
             present(modalViewController, animated: true, completion: nil)
             
-            timer = Int(agenda.duration)
-            agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
             
-            //present(alert, animated: true, completion: nil)
             
         }
         
@@ -252,19 +224,10 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func meetingDidStart(_ sender: Any) {
         meetingBegin = true
         currentAgenda = 0
-        agendaTimer.invalidate()
+        //agendaTimer.invalidate()
         let path = IndexPath(row: 0, section: 0)
         tableView(self.agendaTableView, didSelectRowAt: path)
     }
     
-    /*
-     // MARK: - Navigation
-     
-     // In a storyboard-based application, you will often want to do a little preparation before navigation
-     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-     // Get the new view controller using segue.destinationViewController.
-     // Pass the selected object to the new view controller.
-     }
-     */
     
 }
