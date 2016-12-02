@@ -15,12 +15,14 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
     var showMeetingController: ShowMeetingViewController?
     var timer: Int = 0
     var agendaTimer = Timer()
+    var runningTimer = true
 
     @IBOutlet weak var modalView: UIView!
     @IBOutlet weak var timerLabel: UILabel!
     @IBOutlet weak var taskTitle: UILabel!
     @IBOutlet weak var notesTextView: UITextView!
     @IBOutlet weak var taskTextView: UITextView!
+    @IBOutlet weak var pauseResumeBtn: UIButton!
     
     @IBAction func dismissEditingNotes(_ sender: UITapGestureRecognizer) {
         notesTextView.resignFirstResponder()
@@ -31,17 +33,13 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
             let path = IndexPath(row: showMeetingController.currentAgenda, section: 0)
             showMeetingController.agendaTableView.cellForRow(at: path)?.isSelected = false
         }
+        meeting!.notes = notesTextView.text
+        DatabaseController.saveContext()
         agendaTimer.invalidate()
         self.dismiss(animated: true, completion: {})
     }
     override func viewDidLoad() {
-        notesTextView.text = "Add Notes Here"
-        notesTextView.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
-        modalView.layer.cornerRadius = 13.0
-        modalView.clipsToBounds = true
-        notesTextView.layer.cornerRadius = 10.0
-        notesTextView.layer.borderWidth = 1
-        notesTextView.layer.borderColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1).cgColor
+        styleModal()
         agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
         if let agenda = agenda {
             timerLabel.text = timeFormatted(totalSeconds: Int(agenda.duration))
@@ -50,15 +48,28 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
             taskTextView.isEditable = false
             taskTextView.isSelectable = false
         }
-//        if let meeting = meeting {
-//            notesTextView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-//            notesTextView.text = meeting.notes
-//        }
+        if let meeting = meeting {
+            notesTextView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            notesTextView.text = meeting.notes
+        }
+        let range: NSRange = NSMakeRange(notesTextView.text.characters.count - 1, 0)
+        notesTextView.scrollRangeToVisible(range)
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    func styleModal(){
+        notesTextView.text = "Add Notes Here"
+        notesTextView.textColor = #colorLiteral(red: 0.6000000238, green: 0.6000000238, blue: 0.6000000238, alpha: 1)
+        
+        modalView.layer.cornerRadius = 13.0
+        modalView.clipsToBounds = true
+        notesTextView.layer.cornerRadius = 10.0
+        notesTextView.layer.borderWidth = 1
+        notesTextView.layer.borderColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1).cgColor
     }
     
     func countdown() {
@@ -82,7 +93,8 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
             } else {
                 showMeetingController?.meetingBegin = false
             }
-            
+            meeting!.notes = notesTextView.text
+            DatabaseController.saveContext()
             self.dismiss(animated: true, completion: {})
         }
         
@@ -101,6 +113,7 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
             notesTextView.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             notesTextView.text = ""
         }
+        
     }
     
     func textViewDidEndEditing(_ textView: UITextView) {
@@ -110,6 +123,19 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
         }
     }
     
+    @IBAction func changeTimerState(_ sender: Any) {
+        if runningTimer {
+            agendaTimer.invalidate()
+            runningTimer = false
+            pauseResumeBtn.setTitle("Resume", for: .normal)
+            timerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        }else{
+            agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+            runningTimer = true
+            pauseResumeBtn.setTitle("Pause", for: .normal)
+            timerLabel.textColor = #colorLiteral(red: 0.9254902005, green: 0.2352941185, blue: 0.1019607857, alpha: 1)
+        }
+    }
 
     /*
     // MARK: - Navigation
