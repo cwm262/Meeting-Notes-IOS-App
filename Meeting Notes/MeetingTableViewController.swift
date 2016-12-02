@@ -104,14 +104,14 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     func calculateAndSetDuration(duration: Int32){
         if duration == 60 {
-            durationField.text = "1 minute"
+            durationField.text = "1 min"
         }else if duration > 60 && duration < 3600 {
             let numMinutes = duration / 60
-            durationField.text = "\(numMinutes) minutes"
+            durationField.text = "\(numMinutes) min"
         }else if duration > 3600 {
             let numHours = duration / 3600
             let numMinutes = (duration % 3600) / 60
-            durationField.text = "\(numHours) hours, \(numMinutes) minutes"
+            durationField.text = "\(numHours) hr \(numMinutes) min"
         }
     }
     

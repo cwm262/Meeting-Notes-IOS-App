@@ -192,6 +192,10 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     
     //MARK: Prepare for Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-
+        if(segue.identifier == "show"),
+            let destination = segue.destination as? ShowMeetingViewController,
+            let indexPath = tableView.indexPathForSelectedRow {
+            destination.meeting = filteredMeetings[indexPath.row]
+        }
     }
 }
