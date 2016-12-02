@@ -90,6 +90,7 @@
 				770F82B91DBA847000B68E6F /* AppDelegate.swift */,
 				77A49DD11DD7EC96002495DF /* DatabaseController.swift */,
 				770F30BE1DD83F9300CE493B /* Models */,
+				777BB03D1DEE366F0019ADCA /* AgendaModalViewController.swift */,
 				77297F941DC997280026A26B /* MeetingTableViewController.swift */,
 				778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */,
 				77A49DA41DD6AC10002495DF /* AttendantViewController.swift */,
@@ -101,7 +102,6 @@
 				770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */,
 				770F82C81DBA847000B68E6F /* Info.plist */,
 				770F82C31DBA847000B68E6F /* Assets.xcassets */,
-				777BB03D1DEE366F0019ADCA /* AgendaModalViewController.swift */,
 			);
 			path = "Meeting Notes";
 			sourceTree = "<group>";
