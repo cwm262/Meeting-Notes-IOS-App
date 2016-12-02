@@ -57,6 +57,11 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         
     }
     
+    func goToNextModal(path: IndexPath){
+        self.presentedViewController?.dismiss(animated: true, completion: nil)
+        self.tableView(self.agendaTableView, didSelectRowAt: path)
+    }
+    
     func willEnterForeground(){
         if checkForTableViewTransition == true {
             let path = IndexPath(row: self.currentAgenda, section: 0)
@@ -123,6 +128,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
             let modalViewController = self.storyboard?.instantiateViewController(withIdentifier: "myModal") as! AgendaModalViewController
             modalViewController.modalPresentationStyle = .overCurrentContext
+            modalViewController.modalTransitionStyle = .crossDissolve
             modalViewController.meeting = self.meeting
             modalViewController.agenda = agenda
             modalViewController.timer = self.timer
@@ -221,7 +227,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         return cell!
     }
 
-    @IBAction func meetingDidStart(_ sender: Any) {
+    @IBAction func didStartMeeting(_ sender: Any) {
         meetingBegin = true
         currentAgenda = 0
         //agendaTimer.invalidate()
