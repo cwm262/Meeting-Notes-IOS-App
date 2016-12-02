@@ -17,6 +17,7 @@
     <entity name="Meeting" representedClassName="Meeting" syncable="YES" codeGenerationType="class">
         <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
         <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
         <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
         <relationship name="agendas" optional="YES" toMany="YES" minCount="1" deletionRule="Cascade" ordered="YES" destinationEntity="Agenda" inverseName="meeting" inverseEntity="Agenda" syncable="YES"/>
@@ -25,6 +26,6 @@
     <elements>
         <element name="Agenda" positionX="-38" positionY="207" width="128" height="120"/>
         <element name="Attendant" positionX="232" positionY="50" width="128" height="118"/>
-        <element name="Meeting" positionX="-63" positionY="-18" width="128" height="135"/>
+        <element name="Meeting" positionX="-63" positionY="-18" width="128" height="150"/>
     </elements>
 </model>

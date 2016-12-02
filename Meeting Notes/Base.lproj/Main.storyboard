@@ -590,6 +590,9 @@
                                         <rect key="frame" x="44" y="262" width="49" height="33"/>
                                         <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="17"/>
                                         <state key="normal" title="Pause"/>
+                                        <connections>
+                                            <action selector="changeTimerState:" destination="oO3-KB-hL7" eventType="touchUpInside" id="lXO-3Z-GRC"/>
+                                        </connections>
                                     </button>
                                     <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="YjT-Zd-l1w">
                                         <rect key="frame" x="209" y="262" width="45" height="33"/>
@@ -626,7 +629,7 @@
                                         <constraints>
                                             <constraint firstAttribute="height" constant="60" id="vhz-OK-A5z"/>
                                         </constraints>
-                                        <mutableString key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</mutableString>
+                                        <string key="text">Lorem ipsum dolor sit er elit lamet, consectetaur cillium adipisicing pecu, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia deserunt mollit anim id est laborum. Nam liber te conscient to factor tum poen legum odioque civiuda.</string>
                                         <fontDescription key="fontDescription" type="system" pointSize="14"/>
                                         <textInputTraits key="textInputTraits" autocapitalizationType="sentences"/>
                                     </textView>
@@ -667,6 +670,7 @@
                     <connections>
                         <outlet property="modalView" destination="2XN-cl-UxY" id="ncG-EE-gqh"/>
                         <outlet property="notesTextView" destination="4vV-tl-rZm" id="rdJ-D9-clB"/>
+                        <outlet property="pauseResumeBtn" destination="bk1-EJ-1bg" id="XJz-z6-dJt"/>
                         <outlet property="taskTextView" destination="RRb-Tp-SUT" id="HZf-Ff-8Yp"/>
                         <outlet property="taskTitle" destination="5qB-pa-7wa" id="TJ5-7j-1Um"/>
                         <outlet property="timerLabel" destination="cdv-gv-4eV" id="hA1-9t-fBZ"/>
