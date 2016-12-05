@@ -28,6 +28,9 @@ class CreateAgendaViewController: UIViewController {
         super.viewDidLoad()
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CreateAgendaViewController.addAgenda))
+        
+        taskField.layer.borderWidth = 1
+        taskField.layer.borderColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1).cgColor
     }
 
     override func didReceiveMemoryWarning() {
