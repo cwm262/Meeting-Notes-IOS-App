@@ -10,7 +10,6 @@ import UIKit
 
 class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    @IBOutlet weak var titleLabel: UILabel!
     @IBOutlet weak var locationLabel: UILabel!
     @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var startLabel: UILabel!
@@ -39,7 +38,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         participantTableView.allowsSelection = false
         
         if let meeting = meeting {
-            titleLabel.text = meeting.title
+            title = meeting.title
             locationLabel.text = meeting.location
             descriptionTextView.text = meeting.desc
             
@@ -233,6 +232,17 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         //agendaTimer.invalidate()
         let path = IndexPath(row: 0, section: 0)
         tableView(self.agendaTableView, didSelectRowAt: path)
+    }
+    
+    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        if segue.identifier == "showNotes" {
+            let notesViewController = segue.destination as! NotesViewController
+            if let meeting = meeting {
+                notesViewController.notes = meeting.notes
+                notesViewController.meeting = meeting
+            }
+            
+        }
     }
     
     
