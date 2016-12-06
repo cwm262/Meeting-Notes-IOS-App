@@ -20,7 +20,10 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var notesField: UITextView!
     
     @IBOutlet weak var agendaTableView: UITableView!
-    @IBOutlet weak var timerBtn: UIButton!
+    @IBOutlet weak var agendaIsDoneSwitch: UISwitch!
+    
+    @IBOutlet weak var timerStartBtn: UIButton!
+    @IBOutlet weak var timerPauseBtn: UIButton!
     
     var meeting: Meeting?
     var meetingAgendas: [Agenda]?
@@ -31,10 +34,22 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var cancelAction = UIAlertAction()
     var timer: Int = 0
     var currentAgenda = 0
-    var meetingBegin = false
-    var checkForTableViewTransition = false
+    var oldPath: IndexPath?
+    var agendaTimer = Timer()
+    var runningTimer = false
+    var runningAgenda: Int = 0
+    
+    var timerArray: [Int] = []
     
     override func viewWillAppear(_ animated: Bool) {
+        agendaIsDoneSwitch.isEnabled = false
+        timerStartBtn.isEnabled = false
+        timerPauseBtn.isEnabled = false
+        currentAgendaLabel.text = "None"
+        currentAgendaLabel.isEnabled = false
+        currentTimerLabel.text = "00:00:00"
+        currentTimerLabel.isEnabled = false
+        
         let border = CALayer()
         border.frame = CGRect.init(x: 0, y: self.metaDataView.frame.height - 1.0, width: self.metaDataView.frame.width, height: 1.0)
         border.backgroundColor = UIColor.blue.cgColor
@@ -43,10 +58,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        //metaDataView.layer.borderWidth = 1
-        //metaDataView.layer.borderColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1).cgColor
-        //participantTableView.allowsSelection = false
         
         if let meeting = meeting {
             title = meeting.title
@@ -82,10 +93,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                     let currentAgenda = i as! Agenda
                     meetingAgendas!.append(currentAgenda)
                     duration += currentAgenda.duration
+                    timerArray.append(Int(currentAgenda.duration))
                 }
                 calculateAndSetDuration(duration: duration, field: durationLabel)
+                
             }
         }
+        
     }
     
     func loadAttendants(){
@@ -117,6 +131,27 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     @IBAction func startTimer(_ sender: Any) {
+        if !runningTimer {
+            agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
+            runningTimer = true
+        }
+
+        runningAgenda = currentAgenda
+    }
+    @IBAction func pauseTimer(_ sender: Any) {
+        runningTimer = false
+        agendaTimer.invalidate()
+    }
+    
+    func countdown() {
+        if timerArray[runningAgenda] > 0 {
+            timerArray[runningAgenda] -= 1
+            let timeString: String = timeFormatted(totalSeconds: timerArray[currentAgenda])
+            currentTimerLabel.text = timeString
+        } else {
+            agendaTimer.invalidate()
+        }
+        
     }
     
     func timeFormatted(totalSeconds: Int) -> String {
@@ -125,23 +160,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         let hours: Int = totalSeconds / 3600
         return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
-    
-    func showAgenda(indexPath: IndexPath) {
-        
-        if let agenda = meetingAgendas?[indexPath.row] {
-            
-            alert = UIAlertController(title: "\(agenda.title!)", message: "\(agenda.task!)", preferredStyle: .alert)
-            cancelAction = UIAlertAction(title: "Close", style: .cancel, handler: {
-                (action) in
-                self.agendaTableView.cellForRow(at: indexPath)?.isSelected = false
-            })
-            alert.addAction(cancelAction)
-            
-            present(alert, animated: true, completion: nil)
-            
-        }
-        
-    }
+
     
     func numberOfSections(in tableView: UITableView) -> Int {
         return 1
@@ -155,26 +174,40 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             count = meetingAgendas?.count
         }
         
-//        if tableView == self.participantTableView {
-//            count = meetingAttendants?.count
-//        }
-        
         return count!
     }
     
     func selectAgenda(indexPath: IndexPath){
         if let agenda = meetingAgendas?[indexPath.row] {
             currentAgendaLabel.text = agenda.title
-            currentTimerLabel.text = timeFormatted(totalSeconds: Int(agenda.duration))
+            currentAgendaLabel.isEnabled = true
+            currentAgenda = indexPath.row
+            currentTimerLabel.text = timeFormatted(totalSeconds: timerArray[currentAgenda])
+            currentTimerLabel.isEnabled = true
+            agendaIsDoneSwitch.isOn = agenda.isDone
+            agendaIsDoneSwitch.isEnabled = true
         }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        if let oldPath = oldPath {
+            tableView.cellForRow(at: oldPath)?.isSelected = false
+        }
+        oldPath = nil
         
         if tableView == self.agendaTableView {
             selectAgenda(indexPath: indexPath)
-            //showAgenda(indexPath: indexPath)
+            
         }
+        timerStartBtn.isEnabled = true
+        timerPauseBtn.isEnabled = true
+    }
+    
+    func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
+        timerStartBtn.isEnabled = true
+        timerPauseBtn.isEnabled = true
+        
+        
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -199,11 +232,28 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         cell.openAgendaModalBtn.tag = indexPath.row
         cell.openAgendaModalBtn.addTarget(self, action:#selector(self.openAgendaModal(_:)),for: .touchUpInside)
         
-        cell.agendaSwitch.isOn = (meetingAgendas?[indexPath.row].isDone)!
-        cell.agendaSwitch.tag = indexPath.row
-        cell.agendaSwitch.addTarget(self, action: #selector(self.toggleAgendaState(_:)), for: .touchUpInside)
+        
+        if (meetingAgendas?[indexPath.row].isDone)! {
+            cell.accessoryType = .checkmark
+        }else {
+            cell.accessoryType = .none
+        }
         
         return cell
+    }
+    
+    @IBAction func toggleAgendaState(_ sender: Any) {
+        if let agenda = meetingAgendas?[currentAgenda] {
+            if agendaIsDoneSwitch.isOn {
+                agenda.isDone = true
+            }else {
+                agenda.isDone = false
+            }
+            DatabaseController.saveContext()
+            agendaTableView.reloadData()
+            oldPath = IndexPath(row: currentAgenda, section: 0)
+            agendaTableView.cellForRow(at: oldPath!)?.isSelected = true
+        }
     }
     
     @IBAction func openAgendaModal(_ sender: AnyObject){
@@ -215,18 +265,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
             present(alert, animated: true, completion: nil)
             
-        }
-    }
-    
-    @IBAction func toggleAgendaState(_ sender: AnyObject){
-        if let agenda = meetingAgendas?[sender.tag] {
-            let sender = sender as! UISwitch
-            if sender.isOn{
-                agenda.isDone = true
-            }else {
-                agenda.isDone = false
-            }
-            DatabaseController.saveContext()
         }
     }
     

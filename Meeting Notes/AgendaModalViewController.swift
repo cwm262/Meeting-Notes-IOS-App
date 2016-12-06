@@ -90,7 +90,7 @@ class AgendaModalViewController: UIViewController, UITextViewDelegate {
                 //showMeetingController?.goToNextModal(path: path)
                 
             } else {
-                showMeetingController?.meetingBegin = false
+                //showMeetingController?.meetingBegin = false
             }
             meeting!.notes = notesTextView.text
             DatabaseController.saveContext()
