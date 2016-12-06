@@ -16,6 +16,7 @@
 		771FF8E01DF52F1600F1AA18 /* NotesViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 771FF8DF1DF52F1600F1AA18 /* NotesViewController.swift */; };
 		7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727C2481DDA3F9300051506 /* AgendaViewController.swift */; };
 		77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77297F941DC997280026A26B /* MeetingTableViewController.swift */; };
+		7749DA5E1DF677750027A5EF /* AgendaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */; };
 		774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */; };
 		776B237E1DDF8034000F2F29 /* ShowMeetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */; };
 		777BB03E1DEE366F0019ADCA /* AgendaModalViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 777BB03D1DEE366F0019ADCA /* AgendaModalViewController.swift */; };
@@ -38,6 +39,7 @@
 		771FF8DF1DF52F1600F1AA18 /* NotesViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NotesViewController.swift; sourceTree = "<group>"; };
 		7727C2481DDA3F9300051506 /* AgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
 		77297F941DC997280026A26B /* MeetingTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingTableViewController.swift; sourceTree = "<group>"; };
+		7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaTableViewCell.swift; sourceTree = "<group>"; };
 		774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingAttendant.swift; sourceTree = "<group>"; };
 		776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowMeetingViewController.swift; sourceTree = "<group>"; };
 		777BB03D1DEE366F0019ADCA /* AgendaModalViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaModalViewController.swift; sourceTree = "<group>"; };
@@ -105,6 +107,7 @@
 				770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */,
 				770F82C81DBA847000B68E6F /* Info.plist */,
 				770F82C31DBA847000B68E6F /* Assets.xcassets */,
+				7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */,
 			);
 			path = "Meeting Notes";
 			sourceTree = "<group>";
@@ -201,6 +204,7 @@
 				771FF8E01DF52F1600F1AA18 /* NotesViewController.swift in Sources */,
 				7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */,
 				770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */,
+				7749DA5E1DF677750027A5EF /* AgendaTableViewCell.swift in Sources */,
 				776B237E1DDF8034000F2F29 /* ShowMeetingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;

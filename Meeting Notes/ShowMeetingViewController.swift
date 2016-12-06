@@ -17,6 +17,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var descriptionField: UILabel!
     @IBOutlet weak var currentAgendaLabel: UILabel!
     @IBOutlet weak var currentTimerLabel: UILabel!
+    @IBOutlet weak var notesField: UITextView!
     
     @IBOutlet weak var agendaTableView: UITableView!
     @IBOutlet weak var timerBtn: UIButton!
@@ -57,7 +58,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
             startLabel.text = "\(startDateString)"
             durationLabel.text = "0 hr 0 min"
-            
+            notesField.text = meeting.notes
             
         }
         
@@ -178,41 +179,55 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         
-        var cell:UITableViewCell?
+        let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath) as! AgendaTableViewCell
         
-        if tableView == self.agendaTableView {
-            cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
-            cell?.textLabel?.text = meetingAgendas?[indexPath.row].title
-            if let duration = meetingAgendas?[indexPath.row].duration {
-                if duration == 60 {
-                    cell?.detailTextLabel?.text = "1 min"
-                }else if duration > 60 && duration < 3600 {
-                    let numMinutes = duration / 60
-                    cell?.detailTextLabel?.text = "\(numMinutes) min"
-                }else if duration > 3600 {
-                    let numHours = duration / 3600
-                    let numMinutes = (duration % 3600) / 60
-                    cell?.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
-                }
+        cell.titleLabel.text = meetingAgendas?[indexPath.row].title
+        
+        if let duration = meetingAgendas?[indexPath.row].duration {
+            if duration == 60 {
+                cell.durationLabel.text = "1 min"
+            }else if duration > 60 && duration < 3600 {
+                let numMinutes = duration / 60
+                cell.durationLabel.text = "\(numMinutes) min"
+            }else if duration > 3600 {
+                let numHours = duration / 3600
+                let numMinutes = (duration % 3600) / 60
+                cell.durationLabel.text = "\(numHours) hr \(numMinutes) min"
             }
-            
         }
         
-//        if tableView == self.participantTableView {
-//            cell = tableView.dequeueReusableCell(withIdentifier: "viewParticipantCell", for: indexPath)
-//            let givenName = meetingAttendants?[indexPath.row].givenName
-//            let familyName = meetingAttendants?[indexPath.row].familyName
-//            let email = meetingAttendants?[indexPath.row].email
-//            let titleString: String?
-//            if let givenName = givenName, let familyName = familyName {
-//                titleString = givenName + " " + familyName
-//                cell?.textLabel?.text = titleString
-//            }
-//            if let email = email {
-//                cell?.detailTextLabel?.text = email
-//            }
-//        }
-        return cell!
+        cell.openAgendaModalBtn.tag = indexPath.row
+        cell.openAgendaModalBtn.addTarget(self, action:#selector(self.openAgendaModal(_:)),for: .touchUpInside)
+        
+        cell.agendaSwitch.isOn = (meetingAgendas?[indexPath.row].isDone)!
+        cell.agendaSwitch.tag = indexPath.row
+        cell.agendaSwitch.addTarget(self, action: #selector(self.toggleAgendaState(_:)), for: .touchUpInside)
+        
+        return cell
+    }
+    
+    @IBAction func openAgendaModal(_ sender: AnyObject){
+        if let agenda = meetingAgendas?[sender.tag] {
+            
+            alert = UIAlertController(title: "\(agenda.title!)", message: "\(agenda.task!)", preferredStyle: .alert)
+            cancelAction = UIAlertAction(title: "Close", style: .cancel, handler: nil)
+            alert.addAction(cancelAction)
+            
+            present(alert, animated: true, completion: nil)
+            
+        }
+    }
+    
+    @IBAction func toggleAgendaState(_ sender: AnyObject){
+        if let agenda = meetingAgendas?[sender.tag] {
+            let sender = sender as! UISwitch
+            if sender.isOn{
+                agenda.isDone = true
+            }else {
+                agenda.isDone = false
+            }
+            DatabaseController.saveContext()
+        }
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
