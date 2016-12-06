@@ -18,6 +18,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var currentAgendaLabel: UILabel!
     @IBOutlet weak var currentTimerLabel: UILabel!
     @IBOutlet weak var notesField: UITextView!
+    @IBOutlet weak var numberParticipantsField: UILabel!
     
     @IBOutlet weak var agendaTableView: UITableView!
     @IBOutlet weak var agendaIsDoneSwitch: UISwitch!
@@ -29,6 +30,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var meetingAgendas: [Agenda]?
     var meetingAttendants: [Attendant]?
     var duration: Int32 = 0
+    var numParticipants: Int = 0
     
     var alert = UIAlertController()
     var cancelAction = UIAlertAction()
@@ -49,6 +51,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         currentAgendaLabel.isEnabled = false
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.isEnabled = false
+        notesField.isHidden = true
         
         let border = CALayer()
         border.frame = CGRect.init(x: 0, y: self.metaDataView.frame.height - 1.0, width: self.metaDataView.frame.width, height: 1.0)
@@ -64,12 +67,15 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             locationLabel.text = meeting.location
             descriptionField.text = meeting.desc
             
+            if let participants = meeting.attendants {
+                numParticipants = participants.count
+            }
             let startDate = meeting.startTime as! Date
             let startDateString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .short)
             
             startLabel.text = "\(startDateString)"
             durationLabel.text = "0 hr 0 min"
-            notesField.text = meeting.notes
+            numberParticipantsField.text = "\(numParticipants)"
             
         }
         
@@ -82,6 +88,11 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
         // Dispose of any resources that can be recreated.
+    }
+    
+    override func willMove(toParentViewController parent: UIViewController?) {
+        meetingAgendas?[currentAgenda].notes = notesField.text
+        DatabaseController.saveContext()
     }
     
     func loadAgendas(){
@@ -186,6 +197,8 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             currentTimerLabel.isEnabled = true
             agendaIsDoneSwitch.isOn = agenda.isDone
             agendaIsDoneSwitch.isEnabled = true
+            notesField.text = agenda.notes
+            notesField.isHidden = false
         }
     }
     
@@ -206,7 +219,8 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
         timerStartBtn.isEnabled = true
         timerPauseBtn.isEnabled = true
-        
+        meetingAgendas?[indexPath.row].notes = notesField.text
+        DatabaseController.saveContext()
         
     }
     
@@ -264,17 +278,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             alert.addAction(cancelAction)
             
             present(alert, animated: true, completion: nil)
-            
-        }
-    }
-    
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        if segue.identifier == "showNotes" {
-            let notesViewController = segue.destination as! NotesViewController
-            if let meeting = meeting {
-                notesViewController.notes = meeting.notes
-                notesViewController.meeting = meeting
-            }
             
         }
     }
