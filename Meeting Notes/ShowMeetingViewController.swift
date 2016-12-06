@@ -10,13 +10,16 @@ import UIKit
 
 class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
+    @IBOutlet weak var metaDataView: UIView!
     @IBOutlet weak var locationLabel: UILabel!
-    @IBOutlet weak var descriptionTextView: UITextView!
     @IBOutlet weak var startLabel: UILabel!
     @IBOutlet weak var durationLabel: UILabel!
+    @IBOutlet weak var descriptionField: UILabel!
+    @IBOutlet weak var currentAgendaLabel: UILabel!
+    @IBOutlet weak var currentTimerLabel: UILabel!
     
     @IBOutlet weak var agendaTableView: UITableView!
-    @IBOutlet weak var participantTableView: UITableView!
+    @IBOutlet weak var timerBtn: UIButton!
     
     var meeting: Meeting?
     var meetingAgendas: [Agenda]?
@@ -30,17 +33,24 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var meetingBegin = false
     var checkForTableViewTransition = false
     
+    override func viewWillAppear(_ animated: Bool) {
+        let border = CALayer()
+        border.frame = CGRect.init(x: 0, y: self.metaDataView.frame.height - 1.0, width: self.metaDataView.frame.width, height: 1.0)
+        border.backgroundColor = UIColor.blue.cgColor
+        self.metaDataView.layer.addSublayer(border)
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        //NotificationCenter.default.addObserver(self, selector: #selector(willEnterForeground), name: .UI, object: nil)
-        
-        participantTableView.allowsSelection = false
+        //metaDataView.layer.borderWidth = 1
+        //metaDataView.layer.borderColor = UIColor(red: 0/255, green: 122/255, blue: 255/255, alpha: 1).cgColor
+        //participantTableView.allowsSelection = false
         
         if let meeting = meeting {
             title = meeting.title
             locationLabel.text = meeting.location
-            descriptionTextView.text = meeting.desc
+            descriptionField.text = meeting.desc
             
             let startDate = meeting.startTime as! Date
             let startDateString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .short)
@@ -55,18 +65,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         loadAttendants()
         
     }
-    
-    func goToNextModal(path: IndexPath){
-        self.presentedViewController?.dismiss(animated: true, completion: nil)
-        self.tableView(self.agendaTableView, didSelectRowAt: path)
-    }
-    
-    func willEnterForeground(){
-        if checkForTableViewTransition == true {
-            let path = IndexPath(row: self.currentAgenda, section: 0)
-            self.tableView(self.agendaTableView, didSelectRowAt: path)
-        }
-    }
+
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
@@ -116,35 +115,21 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    func runMeeting(indexPath: IndexPath) {
-        
-        if let agenda = meetingAgendas?[indexPath.row] {
-            
-            self.agendaTableView.cellForRow(at: indexPath)?.isSelected = true
-            
-            timer = Int(agenda.duration)
-            
-            
-            let modalViewController = self.storyboard?.instantiateViewController(withIdentifier: "myModal") as! AgendaModalViewController
-            modalViewController.modalPresentationStyle = .overCurrentContext
-            modalViewController.modalTransitionStyle = .crossDissolve
-            modalViewController.meeting = self.meeting
-            modalViewController.agenda = agenda
-            modalViewController.timer = self.timer
-            modalViewController.showMeetingController = self
-            present(modalViewController, animated: true, completion: nil)
-            
-            
-            
-        }
-        
+    @IBAction func startTimer(_ sender: Any) {
+    }
+    
+    func timeFormatted(totalSeconds: Int) -> String {
+        let seconds: Int = totalSeconds % 60
+        let minutes: Int = (totalSeconds / 60) % 60
+        let hours: Int = totalSeconds / 3600
+        return String(format: "%02d:%02d:%02d", hours, minutes, seconds)
     }
     
     func showAgenda(indexPath: IndexPath) {
         
         if let agenda = meetingAgendas?[indexPath.row] {
             
-            alert = UIAlertController(title: "\(agenda.title!)", message: "Task: \(agenda.task!)", preferredStyle: .alert)
+            alert = UIAlertController(title: "\(agenda.title!)", message: "\(agenda.task!)", preferredStyle: .alert)
             cancelAction = UIAlertAction(title: "Close", style: .cancel, handler: {
                 (action) in
                 self.agendaTableView.cellForRow(at: indexPath)?.isSelected = false
@@ -169,21 +154,25 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             count = meetingAgendas?.count
         }
         
-        if tableView == self.participantTableView {
-            count = meetingAttendants?.count
-        }
+//        if tableView == self.participantTableView {
+//            count = meetingAttendants?.count
+//        }
         
         return count!
+    }
+    
+    func selectAgenda(indexPath: IndexPath){
+        if let agenda = meetingAgendas?[indexPath.row] {
+            currentAgendaLabel.text = agenda.title
+            currentTimerLabel.text = timeFormatted(totalSeconds: Int(agenda.duration))
+        }
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if tableView == self.agendaTableView {
-            if meetingBegin {
-                runMeeting(indexPath: indexPath)
-            } else {
-                showAgenda(indexPath: indexPath)
-            }
+            selectAgenda(indexPath: indexPath)
+            //showAgenda(indexPath: indexPath)
         }
     }
     
@@ -209,29 +198,21 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
         
-        if tableView == self.participantTableView {
-            cell = tableView.dequeueReusableCell(withIdentifier: "viewParticipantCell", for: indexPath)
-            let givenName = meetingAttendants?[indexPath.row].givenName
-            let familyName = meetingAttendants?[indexPath.row].familyName
-            let email = meetingAttendants?[indexPath.row].email
-            let titleString: String?
-            if let givenName = givenName, let familyName = familyName {
-                titleString = givenName + " " + familyName
-                cell?.textLabel?.text = titleString
-            }
-            if let email = email {
-                cell?.detailTextLabel?.text = email
-            }
-        }
+//        if tableView == self.participantTableView {
+//            cell = tableView.dequeueReusableCell(withIdentifier: "viewParticipantCell", for: indexPath)
+//            let givenName = meetingAttendants?[indexPath.row].givenName
+//            let familyName = meetingAttendants?[indexPath.row].familyName
+//            let email = meetingAttendants?[indexPath.row].email
+//            let titleString: String?
+//            if let givenName = givenName, let familyName = familyName {
+//                titleString = givenName + " " + familyName
+//                cell?.textLabel?.text = titleString
+//            }
+//            if let email = email {
+//                cell?.detailTextLabel?.text = email
+//            }
+//        }
         return cell!
-    }
-
-    @IBAction func didStartMeeting(_ sender: Any) {
-        meetingBegin = true
-        currentAgenda = 0
-        //agendaTimer.invalidate()
-        let path = IndexPath(row: 0, section: 0)
-        tableView(self.agendaTableView, didSelectRowAt: path)
     }
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
