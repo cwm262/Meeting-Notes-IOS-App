@@ -51,12 +51,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         currentAgendaLabel.isEnabled = false
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.isEnabled = false
-        notesField.isHidden = true
-        
-        let border = CALayer()
-        border.frame = CGRect.init(x: 0, y: self.metaDataView.frame.height - 1.0, width: self.metaDataView.frame.width, height: 1.0)
-        border.backgroundColor = UIColor.blue.cgColor
-        self.metaDataView.layer.addSublayer(border)
+        notesField.isEditable = false
     }
     
     override func viewDidLoad() {
@@ -198,7 +193,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             agendaIsDoneSwitch.isOn = agenda.isDone
             agendaIsDoneSwitch.isEnabled = true
             notesField.text = agenda.notes
-            notesField.isHidden = false
+            notesField.isEditable = true
         }
     }
     
