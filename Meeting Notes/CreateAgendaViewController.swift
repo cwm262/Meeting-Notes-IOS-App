@@ -10,7 +10,7 @@ import UIKit
 import CoreData
 
 protocol AgendaSharing {
-    func shareAgenda()
+    func shareAgenda(agenda: Agenda?)
 }
 
 class CreateAgendaViewController: UIViewController {
@@ -45,9 +45,13 @@ class CreateAgendaViewController: UIViewController {
         agenda?.setValue(duration, forKey: "duration")
         if let meeting = meeting, let agenda = agenda {
             meeting.addToAgendas(agenda)
+            DatabaseController.saveContext()
+            self.meetingTableController?.shareAgenda(agenda: nil)
+        }else{
+            self.meetingTableController?.shareAgenda(agenda: agenda)
         }
-        DatabaseController.saveContext()
-        self.meetingTableController?.shareAgenda()
+        
+        
         
         _ = navigationController?.popViewController(animated: true)
     }
