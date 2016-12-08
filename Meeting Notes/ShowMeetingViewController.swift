@@ -106,6 +106,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                 DatabaseController.saveContext()
             }
         }
+        navigationController?.toolbar.isHidden = false
     }
     
     func loadAgendas(){
