@@ -99,7 +99,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                     let currentAgenda = i as! Agenda
                     meetingAgendas!.append(currentAgenda)
                     duration += currentAgenda.duration
-                    timerArray.append(Int(currentAgenda.duration))
+                    timerArray.append(0)
                 }
                 calculateAndSetDuration(duration: duration, field: durationLabel)
                 
@@ -124,7 +124,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     func calculateAndSetDuration(duration: Int32, field: UILabel){
         if duration == 60 {
             field.text = "1 min"
-        }else if duration > 60 && duration < 3600 {
+        }else if duration > 60 && duration <= 3600 {
             let numMinutes = duration / 60
             field.text = "\(numMinutes) min"
         }else if duration > 3600 {
@@ -150,12 +150,21 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func countdown() {
-        if timerArray[runningAgenda] > 0 {
-            timerArray[runningAgenda] -= 1
+        let time = meetingAgendas?[runningAgenda].duration
+        if timerArray[runningAgenda] < Int(time!){
+            timerArray[runningAgenda] += 1
             let timeString: String = timeFormatted(totalSeconds: timerArray[currentAgenda])
             currentTimerLabel.text = timeString
+            currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         } else {
-            agendaTimer.invalidate()
+            timerArray[runningAgenda] += 1
+            let timeString: String = timeFormatted(totalSeconds: timerArray[currentAgenda])
+            currentTimerLabel.text = timeString
+            currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+        }
+        
+        if runningAgenda != currentAgenda {
+            currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         }
         
     }
@@ -198,6 +207,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        let time = meetingAgendas?[runningAgenda].duration
         if let oldPath = oldPath {
             tableView.cellForRow(at: oldPath)?.isSelected = false
         }
@@ -205,15 +215,20 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         
         if tableView == self.agendaTableView {
             selectAgenda(indexPath: indexPath)
-            
         }
         timerStartBtn.isEnabled = true
         timerPauseBtn.isEnabled = true
+        
+        if timerArray[runningAgenda] < Int(time!){
+            currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        } else if currentAgenda != runningAgenda{
+            currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        } else {
+            currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+        }
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        timerStartBtn.isEnabled = true
-        timerPauseBtn.isEnabled = true
         meetingAgendas?[indexPath.row].notes = notesField.text
         DatabaseController.saveContext()
         
@@ -228,7 +243,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         if let duration = meetingAgendas?[indexPath.row].duration {
             if duration == 60 {
                 cell.durationLabel.text = "1 min"
-            }else if duration > 60 && duration < 3600 {
+            }else if duration > 60 && duration <= 3600 {
                 let numMinutes = duration / 60
                 cell.durationLabel.text = "\(numMinutes) min"
             }else if duration > 3600 {
@@ -255,6 +270,8 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         if let agenda = meetingAgendas?[currentAgenda] {
             if agendaIsDoneSwitch.isOn {
                 agenda.isDone = true
+                runningTimer = false
+                agendaTimer.invalidate()
             }else {
                 agenda.isDone = false
             }
