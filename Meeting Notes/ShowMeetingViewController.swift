@@ -43,6 +43,11 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     var timerArray: [Int] = []
     
+    override func viewWillDisappear(_ animated: Bool) {
+        runningTimer = false
+        agendaTimer.invalidate()
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         agendaIsDoneSwitch.isEnabled = false
         timerStartBtn.isEnabled = false
