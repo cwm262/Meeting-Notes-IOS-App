@@ -8,12 +8,16 @@
 
 import UIKit
 
-class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
 
     @IBOutlet weak var currentAgendaLabel: UILabel!
-    @IBOutlet weak var currentTimerLabel: UILabel!
     @IBOutlet weak var notesField: UITextView!
+    @IBOutlet weak var currentTimerLabel: UILabel! {
+        didSet {
+            currentTimerLabel.font = currentTimerLabel.font.monospacedDigitFont
+        }
+    }
     
     @IBOutlet weak var metaDataTableView: UITableView!
     @IBOutlet weak var agendaTableView: UITableView!
@@ -39,7 +43,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     var timerArray: [Int] = []
     
-    var metaLabels = ["Location", "Start Time", "Description", "Duration", "Participants"]
+    var metaLabels = ["Location", "Date", "Description", "Duration", "Participants"]
     var metaData = [String]()
     var durText: String = ""
     
@@ -170,15 +174,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     func countdown() {
         let time = meetingAgendas?[runningAgenda].duration
+        
+        timerArray[runningAgenda] += 1
+        let timeString: String = timeFormatted(totalSeconds: timerArray[currentAgenda])
+        currentTimerLabel.text = timeString
         if timerArray[runningAgenda] < Int(time!){
-            timerArray[runningAgenda] += 1
-            let timeString: String = timeFormatted(totalSeconds: timerArray[currentAgenda])
-            currentTimerLabel.text = timeString
             currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         } else {
-            timerArray[runningAgenda] += 1
-            let timeString: String = timeFormatted(totalSeconds: timerArray[currentAgenda])
-            currentTimerLabel.text = timeString
             currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
         }
         
@@ -242,9 +244,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         timerStartBtn.isEnabled = true
         timerPauseBtn.isEnabled = true
         
-        if timerArray[runningAgenda] < Int(time!){
-            currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        } else if currentAgenda != runningAgenda{
+        if timerArray[runningAgenda] < Int(time!) || currentAgenda != runningAgenda{
             currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
         } else {
             currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
@@ -302,6 +302,20 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         return cellReturn
+    }
+    
+    func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        var header: String?
+        
+//        if tableView == self.metaDataTableView {
+//            header = "Meeting Info"
+//        }
+        
+        if tableView == self.agendaTableView {
+            header = "Agendas"
+        }
+        
+        return header
     }
     
     @IBAction func toggleAgendaState(_ sender: Any) {
