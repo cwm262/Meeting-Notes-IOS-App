@@ -8,12 +8,16 @@
 
 import UIKit
 
-class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
 
     @IBOutlet weak var currentAgendaLabel: UILabel!
-    @IBOutlet weak var currentTimerLabel: UILabel!
     @IBOutlet weak var notesField: UITextView!
+    @IBOutlet weak var currentTimerLabel: UILabel! {
+        didSet {
+            currentTimerLabel.font = currentTimerLabel.font.monospacedDigitFont
+        }
+    }
     
     @IBOutlet weak var metaDataTableView: UITableView!
     @IBOutlet weak var agendaTableView: UITableView!
@@ -39,7 +43,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     var timerArray: [Int] = []
     
-    var metaLabels = ["Location", "Start Time", "Description", "Duration", "Participants"]
+    var metaLabels = ["Location", "Date", "Description", "Duration", "Participants"]
     var metaData = [String]()
     var durText: String = ""
     
