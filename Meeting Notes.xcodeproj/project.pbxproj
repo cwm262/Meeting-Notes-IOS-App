@@ -7,6 +7,8 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		178297BD1DFA2AD400C1801F /* Font+MonospacedDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */; };
+		770EE7441DF7D34800A37A8D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770EE7431DF7D34800A37A8D /* MessageUI.framework */; };
 		770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */; };
 		770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F82B91DBA847000B68E6F /* AppDelegate.swift */; };
 		770F82BF1DBA847000B68E6F /* Main.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 770F82BD1DBA847000B68E6F /* Main.storyboard */; };
@@ -15,7 +17,9 @@
 		770F82C71DBA847000B68E6F /* LaunchScreen.storyboard in Resources */ = {isa = PBXBuildFile; fileRef = 770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */; };
 		7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727C2481DDA3F9300051506 /* AgendaViewController.swift */; };
 		77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77297F941DC997280026A26B /* MeetingTableViewController.swift */; };
+		7749DA5E1DF677750027A5EF /* AgendaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */; };
 		774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */; };
+		776B237E1DDF8034000F2F29 /* ShowMeetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */; };
 		778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */; };
 		77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A49DA41DD6AC10002495DF /* AttendantViewController.swift */; };
 		77A49DD21DD7EC96002495DF /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A49DD11DD7EC96002495DF /* DatabaseController.swift */; };
@@ -24,6 +28,8 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Font+MonospacedDigits.swift"; sourceTree = "<group>"; };
+		770EE7431DF7D34800A37A8D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAgendaViewController.swift; sourceTree = "<group>"; };
 		770F82B61DBA847000B68E6F /* Meeting Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Meeting Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
 		770F82B91DBA847000B68E6F /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
@@ -34,7 +40,9 @@
 		770F82C81DBA847000B68E6F /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		7727C2481DDA3F9300051506 /* AgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
 		77297F941DC997280026A26B /* MeetingTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingTableViewController.swift; sourceTree = "<group>"; };
+		7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaTableViewCell.swift; sourceTree = "<group>"; };
 		774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingAttendant.swift; sourceTree = "<group>"; };
+		776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowMeetingViewController.swift; sourceTree = "<group>"; };
 		778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingsTblViewController.swift; sourceTree = "<group>"; };
 		77A49DA41DD6AC10002495DF /* AttendantViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttendantViewController.swift; sourceTree = "<group>"; };
 		77A49DD11DD7EC96002495DF /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
@@ -47,6 +55,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				770EE7441DF7D34800A37A8D /* MessageUI.framework in Frameworks */,
 				77EC02121DD26E42006E8A1C /* Contacts.framework in Frameworks */,
 				77EC02131DD26E42006E8A1C /* ContactsUI.framework in Frameworks */,
 			);
@@ -89,13 +98,16 @@
 				77297F941DC997280026A26B /* MeetingTableViewController.swift */,
 				778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */,
 				77A49DA41DD6AC10002495DF /* AttendantViewController.swift */,
+				776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */,
 				770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */,
 				7727C2481DDA3F9300051506 /* AgendaViewController.swift */,
+				178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */,
 				770F82BD1DBA847000B68E6F /* Main.storyboard */,
 				770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */,
 				770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */,
 				770F82C81DBA847000B68E6F /* Info.plist */,
 				770F82C31DBA847000B68E6F /* Assets.xcassets */,
+				7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */,
 			);
 			path = "Meeting Notes";
 			sourceTree = "<group>";
@@ -103,6 +115,7 @@
 		77EC020F1DD26E42006E8A1C /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				770EE7431DF7D34800A37A8D /* MessageUI.framework */,
 				77EC02101DD26E42006E8A1C /* Contacts.framework */,
 				77EC02111DD26E42006E8A1C /* ContactsUI.framework */,
 			);
@@ -182,6 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
+				178297BD1DFA2AD400C1801F /* Font+MonospacedDigits.swift in Sources */,
 				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */,
 				77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */,
@@ -190,6 +204,8 @@
 				77A49DD21DD7EC96002495DF /* DatabaseController.swift in Sources */,
 				7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */,
 				770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */,
+				7749DA5E1DF677750027A5EF /* AgendaTableViewCell.swift in Sources */,
+				776B237E1DDF8034000F2F29 /* ShowMeetingViewController.swift in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
