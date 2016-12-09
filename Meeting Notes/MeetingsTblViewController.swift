@@ -92,7 +92,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     func editMeeting(indexPath: IndexPath) {
         let row = indexPath.row
         let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "MeetingTableViewController") as? MeetingTableViewController
-        nextViewController?.meeting = meetings[row]
+        nextViewController?.meeting = filteredMeetings[row]
         self.navigationController?.pushViewController(nextViewController!, animated: true)
     }
     

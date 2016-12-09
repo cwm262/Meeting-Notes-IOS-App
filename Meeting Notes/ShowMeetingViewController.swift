@@ -62,21 +62,16 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         super.viewDidLoad()
         
         navigationController?.toolbar.isHidden = true
+        notesField.alpha = 0.50
         
         if let meeting = meeting {
             title = meeting.title
-            //locationLabel.text = meeting.location
-            //descriptionField.text = meeting.desc
             
             if let participants = meeting.attendants {
                 numParticipants = participants.count
             }
             let startDate = meeting.startTime as! Date
             let startDateString = DateFormatter.localizedString(from: startDate, dateStyle: .medium, timeStyle: .short)
-            
-            //startLabel.text = "\(startDateString)"
-            //durationLabel.text = "0 hr 0 min"
-            //numberParticipantsField.text = "\(numParticipants)"
             
             loadAgendas()
             loadAttendants()
@@ -228,6 +223,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             agendaIsDoneSwitch.isEnabled = true
             notesField.text = agenda.notes
             notesField.isEditable = true
+            notesField.alpha = 1
         }
     }
     

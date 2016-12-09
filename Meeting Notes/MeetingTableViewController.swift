@@ -34,6 +34,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var descriptionField: UITextView!
     @IBOutlet weak var durationField: UILabel!
     
+    @IBOutlet weak var addParticipantBtn: UIBarButtonItem!
     //MARK: Booleans for Whether or Not Section is Expanded
     
     var startDatePickerHidden: Bool = true
@@ -47,6 +48,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         title = "New Meeting"
         
         navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(MeetingTableViewController.saveMeeting))
+        titleField.borderStyle = .none
+        locationField.borderStyle = .none
         
         if let meeting = meeting {
             title = "Edit Meeting"
@@ -302,6 +305,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if indexPath.section == 0 || (indexPath.section == 2 && indexPath.row == 2) {
+            tableView.cellForRow(at: indexPath)?.selectionStyle = UITableViewCellSelectionStyle.none
+        }
+        
         if indexPath.section == 2 && indexPath.row == 0 {
             startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&startDatePickerHidden)
