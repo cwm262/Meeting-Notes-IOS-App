@@ -89,15 +89,23 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         super.didReceiveMemoryWarning()
     }
     
-    func shareAgenda(agenda: Agenda) {
-        if self.meetingAgendas != nil {
-            self.meetingAgendas!.append(agenda)
+    func shareAgenda(agenda: Agenda?) {
+        if let agenda = agenda {
+            if self.meetingAgendas != nil {
+                self.meetingAgendas!.append(agenda)
+            }else{
+                self.meetingAgendas = [Agenda]()
+                self.meetingAgendas!.append(agenda)
+            }
+            duration += agenda.duration
+            calculateAndSetDuration(duration: duration)
         }else{
-            self.meetingAgendas = [Agenda]()
-            self.meetingAgendas!.append(agenda)
+            loadAgendas()
         }
-        duration += agenda.duration
-        calculateAndSetDuration(duration: duration)
+        
+        let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
+        agendaController.agendas = meetingAgendas
+        agendaController.agendaTableView.reloadData()
         
         
     }

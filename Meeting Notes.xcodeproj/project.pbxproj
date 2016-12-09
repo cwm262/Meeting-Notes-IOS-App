@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		178297BD1DFA2AD400C1801F /* Font+MonospacedDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */; };
 		770EE7441DF7D34800A37A8D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770EE7431DF7D34800A37A8D /* MessageUI.framework */; };
 		770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */; };
 		770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 770F82B91DBA847000B68E6F /* AppDelegate.swift */; };
@@ -27,6 +28,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Font+MonospacedDigits.swift"; sourceTree = "<group>"; };
 		770EE7431DF7D34800A37A8D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
 		770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAgendaViewController.swift; sourceTree = "<group>"; };
 		770F82B61DBA847000B68E6F /* Meeting Notes.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = "Meeting Notes.app"; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -99,6 +101,7 @@
 				776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */,
 				770F30BF1DD842E000CE493B /* CreateAgendaViewController.swift */,
 				7727C2481DDA3F9300051506 /* AgendaViewController.swift */,
+				178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */,
 				770F82BD1DBA847000B68E6F /* Main.storyboard */,
 				770F82C51DBA847000B68E6F /* LaunchScreen.storyboard */,
 				770F82C01DBA847000B68E6F /* Meeting_Notes.xcdatamodeld */,
@@ -192,6 +195,7 @@
 			buildActionMask = 2147483647;
 			files = (
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
+				178297BD1DFA2AD400C1801F /* Font+MonospacedDigits.swift in Sources */,
 				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */,
 				77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */,

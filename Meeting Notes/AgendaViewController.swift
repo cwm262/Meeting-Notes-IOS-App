@@ -52,7 +52,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         if let duration = agendas?[indexPath.row].duration {
             if duration == 60 {
                 cell.detailTextLabel?.text = "1 min"
-            }else if duration > 60 && duration < 3600 {
+            }else if duration > 60 && duration <= 3600 {
                 let numMinutes = duration / 60
                 cell.detailTextLabel?.text = "\(numMinutes) min"
             }else if duration > 3600 {
