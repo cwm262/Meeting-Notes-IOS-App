@@ -13,19 +13,28 @@ protocol AgendaSharing {
     func shareAgenda(agenda: Agenda?)
 }
 
-class CreateAgendaViewController: UIViewController {
+class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
     var agenda: Agenda?
     var meetingTableController: AgendaSharing?
     var meeting: Meeting?
     var meetingAgendas: [Agenda]?
 
-    @IBOutlet weak var titleField: UITextField!
-    @IBOutlet weak var taskField: UITextView!
     @IBOutlet weak var countdownTimer: UIDatePicker!
+    @IBOutlet weak var taskTextView: UITextView!
+    
+    @IBOutlet weak var titleTableView: UITableView!
+    @IBOutlet weak var taskView: UIView!
+    
+    override func viewWillAppear(_ animated: Bool) {
+        navigationController?.toolbar.isHidden = true
+    }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        taskView.layer.borderWidth = 1
+        taskView.layer.borderColor = UIColor(ciColor: CIColor(red: 224.0/255.0, green: 224.0/255.0, blue: 224.0/255.0, alpha: 1.0)).cgColor
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CreateAgendaViewController.addAgenda))
     }
@@ -36,11 +45,13 @@ class CreateAgendaViewController: UIViewController {
     }
     
     func addAgenda(){
+        let titleCell = titleTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CreateAgendaTitleTableViewCell
+        
         let context = DatabaseController.getContext()
         let desc = NSEntityDescription.entity(forEntityName: "Agenda", in: context)
         agenda = Agenda(entity: desc!, insertInto: context)
-        agenda?.setValue(titleField.text, forKey: "title")
-        agenda?.setValue(taskField.text, forKey: "task")
+        agenda?.setValue(titleCell.titleField.text, forKey: "title")
+        agenda?.setValue(taskTextView.text, forKey: "task")
         let duration = countdownTimer?.countDownDuration
         agenda?.setValue(duration, forKey: "duration")
         if let meeting = meeting, let agenda = agenda {
@@ -51,14 +62,29 @@ class CreateAgendaViewController: UIViewController {
             self.meetingTableController?.shareAgenda(agenda: agenda)
         }
         
-        
-        
         _ = navigationController?.popViewController(animated: true)
     }
     
+    func numberOfSections(in tableView: UITableView) -> Int {
+        return 1
+    }
     
-    
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        return 1
+    }
 
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        
+        var cell = UITableViewCell()
+        
+        if tableView == self.titleTableView {
+            cell = tableView.dequeueReusableCell(withIdentifier: "titleCell", for: indexPath) as! CreateAgendaTitleTableViewCell
+            
+        }
+        
+        return cell
+    }
+    
     /*
     // MARK: - Navigation
 

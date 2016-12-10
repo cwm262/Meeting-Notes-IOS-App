@@ -84,6 +84,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        navigationController?.toolbar.isHidden = false
         tableView.reloadData()
         let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
         agendaController.agendas = meetingAgendas
