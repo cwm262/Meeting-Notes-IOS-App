@@ -79,6 +79,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
 
         }
         
+        if descriptionField.text.characters.count == 0 {
+            descriptionField.text = "Description"
+            descriptionField.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
+        }
+        
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
 
     }
@@ -178,7 +183,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         if let meeting = meeting {
             meeting.title = titleField.text
             meeting.location = locationField.text
-            meeting.desc = descriptionField.text
+            if descriptionField.text == "Description" {
+                meeting.desc = ""
+            } else {
+                meeting.desc = descriptionField.text
+            }
             meeting.startTime = startTimeDatePicker.date as NSDate?
             
             if let meetingAttendants = meetingAttendants{
@@ -381,6 +390,29 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         }
         else {
             return super.tableView(tableView, heightForRowAt: indexPath)
+        }
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor != UIColor.black {
+            textView.textColor = UIColor.black
+            textView.text = ""
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        let strArr = Array(textView.text.characters)
+        var allSpaces = true
+        
+        for letter in strArr {
+            if letter != " " {
+                allSpaces = false
+            }
+        }
+        
+        if strArr.count == 0 || allSpaces {
+            textView.text = "Description"
+            textView.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
         }
     }
     

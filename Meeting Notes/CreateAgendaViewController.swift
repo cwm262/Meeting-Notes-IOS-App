@@ -35,6 +35,9 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         
         taskView.layer.borderWidth = 1
         taskView.layer.borderColor = UIColor(ciColor: CIColor(red: 224.0/255.0, green: 224.0/255.0, blue: 224.0/255.0, alpha: 1.0)).cgColor
+        
+        taskTextView.text = "Task"
+        taskTextView.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CreateAgendaViewController.addAgenda))
     }
@@ -51,7 +54,11 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         let desc = NSEntityDescription.entity(forEntityName: "Agenda", in: context)
         agenda = Agenda(entity: desc!, insertInto: context)
         agenda?.setValue(titleCell.titleField.text, forKey: "title")
-        agenda?.setValue(taskTextView.text, forKey: "task")
+        if taskTextView.text == "Task" {
+            agenda?.setValue("", forKey: "task")
+        } else {
+            agenda?.setValue(taskTextView.text, forKey: "task")
+        }
         let duration = countdownTimer?.countDownDuration
         agenda?.setValue(duration, forKey: "duration")
         if let meeting = meeting, let agenda = agenda {
@@ -83,6 +90,29 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         }
         
         return cell
+    }
+    
+    func textViewDidBeginEditing(_ textView: UITextView) {
+        if textView.textColor != UIColor.black {
+            textView.textColor = UIColor.black
+            textView.text = ""
+        }
+    }
+    
+    func textViewDidEndEditing(_ textView: UITextView) {
+        let strArr = Array(textView.text.characters)
+        var allSpaces = true
+ 
+        for letter in strArr {
+            if letter != " " {
+                allSpaces = false
+            }
+        }
+        
+        if strArr.count == 0 || allSpaces {
+            textView.text = "Task"
+            textView.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
+        }
     }
     
     /*
