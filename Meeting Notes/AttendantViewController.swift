@@ -19,6 +19,10 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if (attendants?.count)! <= 3 {
+            attendantTableView.isScrollEnabled = false
+        }
+        
         attendantTableView.setEditing(true, animated: true)
         
         // Do any additional setup after loading the view.

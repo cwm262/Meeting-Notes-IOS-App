@@ -19,6 +19,10 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        if (agendas?.count)! <= 3 {
+            agendaTableView.isScrollEnabled = false
+        }
+        
         agendaTableView.setEditing(true, animated: true)
         
     }
