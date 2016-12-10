@@ -47,11 +47,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         
         title = "New Meeting"
         
-        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Save", style: .plain, target: self, action: #selector(MeetingTableViewController.saveMeeting))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(title: "Add", style: .plain, target: self, action: #selector(MeetingTableViewController.saveMeeting))
         titleField.borderStyle = .none
         locationField.borderStyle = .none
         
         if let meeting = meeting {
+            navigationItem.rightBarButtonItem?.title = "Done"
+            navigationItem.rightBarButtonItem?.style = .done
             title = "Edit Meeting"
             titleField.text = meeting.title
             locationField.text = meeting.location

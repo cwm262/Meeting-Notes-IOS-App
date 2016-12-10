@@ -56,13 +56,12 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.isEnabled = false
         notesField.isEditable = false
+        navigationController?.toolbar.isHidden = true
+        notesField.alpha = 0.50
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
-        navigationController?.toolbar.isHidden = true
-        notesField.alpha = 0.50
         
         if let meeting = meeting {
             title = meeting.title
@@ -301,6 +300,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
+        
         var header: String?
         
 //        if tableView == self.metaDataTableView {
@@ -312,6 +312,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         return header
+    }
+    
+    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+        if (scrollView.contentOffset.y > 60) {
+            
+            scrollView.setContentOffset(CGPoint.init(x: 0, y: 60), animated: true)
+        }
     }
     
     @IBAction func toggleAgendaState(_ sender: Any) {
