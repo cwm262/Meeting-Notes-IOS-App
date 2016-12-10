@@ -155,6 +155,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if let agendas = agendas {
             if agendas.count > 3 {
+                agendaTableView.flashScrollIndicators()
                 return true
             }
         }

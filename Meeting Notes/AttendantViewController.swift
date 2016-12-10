@@ -40,6 +40,7 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         
         if let attendants = attendants {
             if attendants.count > 3 {
+                attendantTableView.flashScrollIndicators()
                 return true
             }
         }

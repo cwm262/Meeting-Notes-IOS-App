@@ -89,7 +89,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         agendaController.agendas = meetingAgendas
         agendaController.agendaTableView.reloadData()
         
-        agendaController.agendaTableView.isScrollEnabled = agendaController.checkScroll()
+        let scrollEnabled = agendaController.checkScroll()
+        if scrollEnabled {
+            agendaController.agendaTableView.flashScrollIndicators()
+        }
+        agendaController.agendaTableView.isScrollEnabled = scrollEnabled
     }
     
     override func didReceiveMemoryWarning() {
@@ -290,7 +294,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                 embeddedController.attendants = meetingAttendants
                 embeddedController.attendantTableView.reloadData()
                 
-                embeddedController.attendantTableView.isScrollEnabled = embeddedController.checkScroll()
+                let scrollEnabled = embeddedController.checkScroll()
+                if scrollEnabled {
+                    embeddedController.attendantTableView.flashScrollIndicators()
+                }
+                embeddedController.attendantTableView.isScrollEnabled = scrollEnabled
             }else{
                 let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
                 let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
