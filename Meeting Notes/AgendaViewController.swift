@@ -19,9 +19,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        if (agendas?.count)! <= 3 {
-            agendaTableView.isScrollEnabled = false
-        }
+        agendaTableView.isScrollEnabled = checkScroll()
         
         agendaTableView.setEditing(true, animated: true)
         
@@ -78,6 +76,14 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         agendas?.insert(sourceRow!, at: destinationIndexPath.row)
         DatabaseController.saveContext()
         
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
@@ -139,10 +145,23 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
             parentController.agendasToBeDeleted = agendasToBeDeleted
             
             agendaTableView.deleteRows(at: [indexPath], with: .fade)
+            parentController.tableView.reloadData()
+            
+            agendaTableView.isScrollEnabled = checkScroll()
         }
     }
     
-
+    func checkScroll() -> Bool {
+        
+        if let agendas = agendas {
+            if agendas.count > 3 {
+                return true
+            }
+        }
+        
+        return false
+    }
+    
     /*
     // MARK: - Navigation
 

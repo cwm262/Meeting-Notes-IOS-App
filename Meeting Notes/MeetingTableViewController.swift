@@ -39,6 +39,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     var startDatePickerHidden: Bool = true
     var descTextHidden: Bool = true
+    var attendantsHidden: Bool = true
     
     //MARK: DidLoad and WillAppear Functions
     
@@ -88,6 +89,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
         agendaController.agendas = meetingAgendas
         agendaController.agendaTableView.reloadData()
+        
+        agendaController.agendaTableView.isScrollEnabled = agendaController.checkScroll()
     }
     
     override func didReceiveMemoryWarning() {
@@ -288,6 +291,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                 embeddedController.attendants = meetingAttendants
                 embeddedController.attendantTableView.reloadData()
                 
+                embeddedController.attendantTableView.isScrollEnabled = embeddedController.checkScroll()
             }else{
                 let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
                 let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -320,9 +324,47 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
         }
+        if indexPath.section == 4 && indexPath.row == 0 {
+            fieldViewToggled(&attendantsHidden)
+        }
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
+        
+        if indexPath.section == 4 && indexPath.row == 0 {
+            
+            if let attendants = meetingAttendants {
+                let height = attendants.count * 32
+                
+                if height > 96 {
+                    return 96
+                } else {
+                    return CGFloat(height)
+                }
+                
+            } else {
+                return 0
+            }
+            
+        }
+        
+        if indexPath.section == 3 && indexPath.row == 0 {
+            
+            if let agendas = meetingAgendas {
+                let height = agendas.count * 32
+                
+                if height > 96 {
+                    return 96
+                } else {
+                    return CGFloat(height)
+                }
+                
+            } else {
+                return 0
+            }
+            
+        }
+        
         if startDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
             startTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
