@@ -39,7 +39,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     var startDatePickerHidden: Bool = true
     var descTextHidden: Bool = true
-    var attendantsHidden: Bool = true
     
     //MARK: DidLoad and WillAppear Functions
     
@@ -324,9 +323,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
         }
-        if indexPath.section == 4 && indexPath.row == 0 {
-            fieldViewToggled(&attendantsHidden)
-        }
+
     }
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
