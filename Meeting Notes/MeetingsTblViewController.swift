@@ -131,6 +131,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         
         cell.textLabel?.text = filteredMeetings[indexPath.row].title //Set cell title
         cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString!, dateStyle: .medium, timeStyle: .short)
+        cell.detailTextLabel?.font = cell.detailTextLabel?.font.monospacedDigitFont
         
         return cell
     }

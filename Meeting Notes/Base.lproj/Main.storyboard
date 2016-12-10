@@ -602,15 +602,15 @@
                         </connections>
                     </tableView>
                     <toolbarItems>
-                        <barButtonItem title="Agendas" id="N6B-et-yTB">
-                            <connections>
-                                <segue destination="Nfn-xf-8SX" kind="show" identifier="createAgendaSegue" id="1VG-UA-FkB"/>
-                            </connections>
-                        </barButtonItem>
-                        <barButtonItem style="plain" systemItem="flexibleSpace" id="4wo-0Y-1jN"/>
                         <barButtonItem title="Participants" id="tCF-Mg-3Dc">
                             <connections>
                                 <action selector="importParticipant:" destination="aW5-Lf-IzT" id="GEy-dl-efB"/>
+                            </connections>
+                        </barButtonItem>
+                        <barButtonItem style="plain" systemItem="flexibleSpace" id="4wo-0Y-1jN"/>
+                        <barButtonItem title="Agendas" id="N6B-et-yTB">
+                            <connections>
+                                <segue destination="Nfn-xf-8SX" kind="show" identifier="createAgendaSegue" id="1VG-UA-FkB"/>
                             </connections>
                         </barButtonItem>
                     </toolbarItems>
