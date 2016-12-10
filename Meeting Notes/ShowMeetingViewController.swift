@@ -75,6 +75,10 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             loadAgendas()
             loadAttendants()
             
+            if (meetingAgendas?.count)! <= 3 {
+                agendaTableView.isScrollEnabled = false
+            }
+            
             metaData.append("\(meeting.location!)")
             metaData.append("\(startDateString)")
             metaData.append("\(meeting.desc!)")
@@ -299,6 +303,15 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         return cellReturn
     }
     
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        
+        if tableView == self.agendaTableView {
+            return 30
+        }
+        
+        return tableView.sectionHeaderHeight
+    }
+    
     func tableView(_ tableView: UITableView, titleForHeaderInSection section: Int) -> String? {
         
         var header: String?
@@ -312,13 +325,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         return header
-    }
-    
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
-        if (scrollView.contentOffset.y > 60) {
-            
-            scrollView.setContentOffset(CGPoint.init(x: 0, y: 60), animated: true)
-        }
     }
     
     @IBAction func toggleAgendaState(_ sender: Any) {
