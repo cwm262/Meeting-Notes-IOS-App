@@ -168,7 +168,6 @@
 				TargetAttributes = {
 					770F82B51DBA847000B68E6F = {
 						CreatedOnToolsVersion = 8.0;
-						DevelopmentTeam = VSRTDN5JQA;
 						ProvisioningStyle = Automatic;
 					};
 				};
@@ -350,10 +349,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = VSRTDN5JQA;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Meeting Notes/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "edu.missouri.cs.Meeting-Notes2016";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.missouri.cs.Meeting-Notes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
@@ -364,10 +363,10 @@
 			buildSettings = {
 				ASSETCATALOG_COMPILER_APPICON_NAME = AppIcon;
 				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
-				DEVELOPMENT_TEAM = VSRTDN5JQA;
+				DEVELOPMENT_TEAM = "";
 				INFOPLIST_FILE = "Meeting Notes/Info.plist";
 				LD_RUNPATH_SEARCH_PATHS = "$(inherited) @executable_path/Frameworks";
-				PRODUCT_BUNDLE_IDENTIFIER = "edu.missouri.cs.Meeting-Notes2016";
+				PRODUCT_BUNDLE_IDENTIFIER = "edu.missouri.cs.Meeting-Notes";
 				PRODUCT_NAME = "$(TARGET_NAME)";
 				SWIFT_VERSION = 3.0;
 			};
