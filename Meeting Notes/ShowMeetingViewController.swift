@@ -174,6 +174,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         agendaTimer.invalidate()
         timerArray[runningAgenda] = 0
         currentTimerLabel.text = "00:00:00"
+        currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
     }
     
     func countdown() {
