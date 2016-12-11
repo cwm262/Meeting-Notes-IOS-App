@@ -122,10 +122,10 @@
                                                 </constraints>
                                                 <prototypes>
                                                     <tableViewCell clipsSubviews="YES" contentMode="scaleToFill" selectionStyle="blue" hidesAccessoryWhenEditing="NO" indentationLevel="1" indentationWidth="0.0" reuseIdentifier="agendaCell" id="VdM-QA-RJG" customClass="AgendaTableViewCell" customModule="Meeting_Notes" customModuleProvider="target">
-                                                        <rect key="frame" x="0.0" y="55.5" width="375" height="40"/>
+                                                        <rect key="frame" x="0.0" y="56" width="375" height="40"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" tableViewCell="VdM-QA-RJG" id="tbi-La-P9I">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="39"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Label" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="G8q-fi-PsS">
@@ -149,6 +149,9 @@
                                                                 <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="infoLight" showsTouchWhenHighlighted="YES" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="zkr-KL-SNp">
                                                                     <rect key="frame" x="8" y="8" width="22" height="22"/>
                                                                 </button>
+                                                                <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="X9f-XU-ZA8">
+                                                                    <rect key="frame" x="318" y="5" width="51" height="31"/>
+                                                                </switch>
                                                             </subviews>
                                                             <constraints>
                                                                 <constraint firstItem="G8q-fi-PsS" firstAttribute="leading" secondItem="zkr-KL-SNp" secondAttribute="trailing" constant="20" id="EHU-UH-qwP"/>
@@ -156,10 +159,13 @@
                                                                 <constraint firstItem="fjc-YU-KwS" firstAttribute="leading" secondItem="G8q-fi-PsS" secondAttribute="trailing" constant="2" id="U1y-zg-8pI"/>
                                                                 <constraint firstItem="G8q-fi-PsS" firstAttribute="top" secondItem="tbi-La-P9I" secondAttribute="topMargin" constant="2" id="cUJ-9o-K5m"/>
                                                                 <constraint firstItem="fjc-YU-KwS" firstAttribute="top" secondItem="tbi-La-P9I" secondAttribute="topMargin" constant="5" id="iQa-UW-wqB"/>
+                                                                <constraint firstItem="X9f-XU-ZA8" firstAttribute="centerY" secondItem="tbi-La-P9I" secondAttribute="centerY" id="iqr-ad-Ftd"/>
+                                                                <constraint firstAttribute="trailingMargin" secondItem="X9f-XU-ZA8" secondAttribute="trailing" id="kxx-3V-wcd"/>
                                                                 <constraint firstAttribute="leadingMargin" secondItem="zkr-KL-SNp" secondAttribute="leading" id="rgN-B7-MBg"/>
                                                             </constraints>
                                                         </tableViewCellContentView>
                                                         <connections>
+                                                            <outlet property="doneSwitch" destination="X9f-XU-ZA8" id="oBB-JU-JeD"/>
                                                             <outlet property="durationLabel" destination="fjc-YU-KwS" id="sQa-3m-SXc"/>
                                                             <outlet property="openAgendaModalBtn" destination="zkr-KL-SNp" id="KWr-RR-k3w"/>
                                                             <outlet property="titleLabel" destination="G8q-fi-PsS" id="qsW-Po-jHH"/>
@@ -194,25 +200,13 @@
                                                 <nil key="highlightedColor"/>
                                             </label>
                                             <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="LPf-qJ-JYx">
-                                                <rect key="frame" x="202" y="446" width="44" height="30"/>
+                                                <rect key="frame" x="206" y="446" width="44" height="30"/>
                                                 <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
                                                 <state key="normal" title="Pause"/>
                                                 <connections>
                                                     <action selector="pauseTimer:" destination="IEX-vb-w68" eventType="touchUpInside" id="9cT-je-GJh"/>
                                                 </connections>
                                             </button>
-                                            <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="251" verticalHuggingPriority="251" text="Finished" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="aNw-xu-xh6">
-                                                <rect key="frame" x="8" y="383" width="65" height="21"/>
-                                                <fontDescription key="fontDescription" style="UICTFontTextStyleBody"/>
-                                                <nil key="textColor"/>
-                                                <nil key="highlightedColor"/>
-                                            </label>
-                                            <switch opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" contentHorizontalAlignment="center" contentVerticalAlignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="hju-Gh-69F">
-                                                <rect key="frame" x="312" y="378" width="51" height="31"/>
-                                                <connections>
-                                                    <action selector="toggleAgendaState:" destination="IEX-vb-w68" eventType="valueChanged" id="JmS-SV-cly"/>
-                                                </connections>
-                                            </switch>
                                             <textView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" textAlignment="natural" translatesAutoresizingMaskIntoConstraints="NO" id="1Pb-3x-wnh">
                                                 <rect key="frame" x="0.0" y="484" width="375" height="158"/>
                                                 <color key="backgroundColor" cocoaTouchSystemColor="tableCellGroupedBackgroundColor"/>
@@ -237,18 +231,18 @@
                                                         <rect key="frame" x="0.0" y="28" width="375" height="36"/>
                                                         <autoresizingMask key="autoresizingMask"/>
                                                         <tableViewCellContentView key="contentView" opaque="NO" clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="center" tableViewCell="5dW-Pw-OWL" id="Ol5-i5-57f">
-                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="35.5"/>
+                                                            <rect key="frame" x="0.0" y="0.0" width="375" height="35"/>
                                                             <autoresizingMask key="autoresizingMask"/>
                                                             <subviews>
                                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Title" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="RhZ-Ii-QJg">
-                                                                    <rect key="frame" x="15" y="8" width="33.5" height="20.5"/>
+                                                                    <rect key="frame" x="15" y="7" width="34" height="21"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <nil key="textColor"/>
                                                                     <nil key="highlightedColor"/>
                                                                 </label>
                                                                 <label opaque="NO" multipleTouchEnabled="YES" contentMode="left" text="Detail" textAlignment="right" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" id="rt4-qb-IRl">
-                                                                    <rect key="frame" x="316" y="8" width="44" height="20.5"/>
+                                                                    <rect key="frame" x="316" y="7" width="44" height="21"/>
                                                                     <autoresizingMask key="autoresizingMask"/>
                                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                                     <color key="textColor" white="0.66666666666666663" alpha="1" colorSpace="calibratedWhite"/>
@@ -272,35 +266,39 @@
                                                     <action selector="startTimer:" destination="IEX-vb-w68" eventType="touchUpInside" id="NMf-qq-be1"/>
                                                 </connections>
                                             </button>
+                                            <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" buttonType="roundedRect" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="gnZ-kF-mSG">
+                                                <rect key="frame" x="279" y="446" width="41" height="30"/>
+                                                <fontDescription key="fontDescription" type="system" weight="semibold" pointSize="15"/>
+                                                <state key="normal" title="Reset"/>
+                                                <connections>
+                                                    <action selector="resetTimer:" destination="IEX-vb-w68" eventType="touchUpInside" id="XiA-De-lV6"/>
+                                                </connections>
+                                            </button>
                                         </subviews>
                                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
                                         <constraints>
-                                            <constraint firstItem="hju-Gh-69F" firstAttribute="trailing" secondItem="acm-2A-vd9" secondAttribute="trailing" id="2dF-bF-tDo"/>
                                             <constraint firstItem="0Sb-nM-W4v" firstAttribute="leading" secondItem="NFy-sh-n9Y" secondAttribute="leading" id="4dv-9G-jjp"/>
-                                            <constraint firstItem="aNw-xu-xh6" firstAttribute="leading" secondItem="NFy-sh-n9Y" secondAttribute="leading" constant="8" id="5j2-SU-1IT"/>
                                             <constraint firstItem="Y0s-bC-IN5" firstAttribute="top" secondItem="IIq-4f-wQn" secondAttribute="bottom" constant="8" symbolic="YES" id="9MO-2c-Vh7"/>
                                             <constraint firstItem="MGG-ea-UYc" firstAttribute="top" secondItem="5lz-58-0dK" secondAttribute="bottom" constant="8" id="Dmo-4Z-Bcr"/>
                                             <constraint firstAttribute="trailing" secondItem="acm-2A-vd9" secondAttribute="trailing" constant="14" id="EQX-vL-Jf7"/>
-                                            <constraint firstItem="hju-Gh-69F" firstAttribute="top" secondItem="acm-2A-vd9" secondAttribute="bottom" constant="3" id="KO7-Ic-TLa"/>
+                                            <constraint firstItem="gnZ-kF-mSG" firstAttribute="leading" secondItem="LPf-qJ-JYx" secondAttribute="trailing" constant="29" id="G68-tD-f5m"/>
+                                            <constraint firstAttribute="trailing" secondItem="gnZ-kF-mSG" secondAttribute="trailing" constant="55" id="JCN-dw-UGe"/>
                                             <constraint firstItem="acm-2A-vd9" firstAttribute="centerY" secondItem="MGG-ea-UYc" secondAttribute="centerY" id="LDf-0w-7PX"/>
                                             <constraint firstItem="MGG-ea-UYc" firstAttribute="leading" secondItem="NFy-sh-n9Y" secondAttribute="leading" constant="8" id="LsQ-Sm-13V"/>
-                                            <constraint firstItem="IIq-4f-wQn" firstAttribute="top" secondItem="hju-Gh-69F" secondAttribute="bottom" constant="8" id="Lw7-Il-cRb"/>
                                             <constraint firstItem="0Sb-nM-W4v" firstAttribute="top" secondItem="NFy-sh-n9Y" secondAttribute="top" id="Pc0-nY-I2p"/>
                                             <constraint firstItem="0Sb-nM-W4v" firstAttribute="trailing" secondItem="5lz-58-0dK" secondAttribute="trailing" id="PjC-ji-g4d"/>
-                                            <constraint firstAttribute="trailing" secondItem="LPf-qJ-JYx" secondAttribute="trailing" constant="129" id="SLc-JD-eNw"/>
                                             <constraint firstItem="Y0s-bC-IN5" firstAttribute="leading" secondItem="NFy-sh-n9Y" secondAttribute="leading" constant="128" id="Wh9-fH-d6C"/>
+                                            <constraint firstItem="IIq-4f-wQn" firstAttribute="top" secondItem="acm-2A-vd9" secondAttribute="bottom" constant="42" id="YLW-Rp-k2P"/>
                                             <constraint firstItem="0Sb-nM-W4v" firstAttribute="leading" secondItem="5lz-58-0dK" secondAttribute="leading" id="bGy-r8-bTO"/>
                                             <constraint firstItem="IIq-4f-wQn" firstAttribute="centerX" secondItem="NFy-sh-n9Y" secondAttribute="centerX" id="cIM-rT-bUc"/>
                                             <constraint firstItem="1Pb-3x-wnh" firstAttribute="top" secondItem="Y0s-bC-IN5" secondAttribute="bottom" constant="8" id="eCl-WH-Yyg"/>
                                             <constraint firstItem="5lz-58-0dK" firstAttribute="top" secondItem="0Sb-nM-W4v" secondAttribute="bottom" constant="16" id="hIn-t2-aeE"/>
                                             <constraint firstItem="acm-2A-vd9" firstAttribute="leading" secondItem="MGG-ea-UYc" secondAttribute="trailing" constant="93" id="kyy-oF-h6v"/>
-                                            <constraint firstItem="hju-Gh-69F" firstAttribute="centerY" secondItem="aNw-xu-xh6" secondAttribute="centerY" id="p2P-O6-gJe"/>
+                                            <constraint firstItem="1Pb-3x-wnh" firstAttribute="top" secondItem="gnZ-kF-mSG" secondAttribute="bottom" constant="8" id="qy4-pF-9Lo"/>
                                             <constraint firstItem="0Sb-nM-W4v" firstAttribute="centerX" secondItem="1Pb-3x-wnh" secondAttribute="centerX" id="tw7-o6-m57"/>
                                             <constraint firstItem="1Pb-3x-wnh" firstAttribute="leading" secondItem="NFy-sh-n9Y" secondAttribute="leading" id="vzZ-ma-YOD"/>
                                             <constraint firstItem="LPf-qJ-JYx" firstAttribute="top" secondItem="IIq-4f-wQn" secondAttribute="bottom" constant="8" id="xMb-y6-x4s"/>
                                             <constraint firstAttribute="trailing" secondItem="0Sb-nM-W4v" secondAttribute="trailing" id="yBa-VD-zYe"/>
-                                            <constraint firstItem="aNw-xu-xh6" firstAttribute="top" secondItem="MGG-ea-UYc" secondAttribute="bottom" constant="8" symbolic="YES" id="yOc-8u-zpv"/>
-                                            <constraint firstItem="aNw-xu-xh6" firstAttribute="leading" secondItem="MGG-ea-UYc" secondAttribute="leading" id="z8N-OK-6Fd"/>
                                             <constraint firstAttribute="trailing" secondItem="1Pb-3x-wnh" secondAttribute="trailing" id="zdP-iZ-IyL"/>
                                         </constraints>
                                     </view>
@@ -329,13 +327,13 @@
                     <freeformSimulatedSizeMetrics key="simulatedDestinationMetrics"/>
                     <size key="freeformSize" width="375" height="800"/>
                     <connections>
-                        <outlet property="agendaIsDoneSwitch" destination="hju-Gh-69F" id="iI9-Nt-UiC"/>
                         <outlet property="agendaTableView" destination="5lz-58-0dK" id="ur4-2Q-K61"/>
                         <outlet property="currentAgendaLabel" destination="acm-2A-vd9" id="2SX-cg-FnC"/>
                         <outlet property="currentTimerLabel" destination="IIq-4f-wQn" id="5sI-Tb-33W"/>
                         <outlet property="metaDataTableView" destination="0Sb-nM-W4v" id="vqA-Qx-jiH"/>
                         <outlet property="notesField" destination="1Pb-3x-wnh" id="kpc-Fn-vpJ"/>
                         <outlet property="timerPauseBtn" destination="LPf-qJ-JYx" id="0eK-Ja-32t"/>
+                        <outlet property="timerResetBtn" destination="gnZ-kF-mSG" id="ccm-gU-Ey8"/>
                         <outlet property="timerStartBtn" destination="Y0s-bC-IN5" id="GE1-B0-oSD"/>
                     </connections>
                 </viewController>

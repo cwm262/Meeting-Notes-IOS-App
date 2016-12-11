@@ -21,10 +21,10 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     @IBOutlet weak var metaDataTableView: UITableView!
     @IBOutlet weak var agendaTableView: UITableView!
-    @IBOutlet weak var agendaIsDoneSwitch: UISwitch!
     
     @IBOutlet weak var timerStartBtn: UIButton!
     @IBOutlet weak var timerPauseBtn: UIButton!
+    @IBOutlet weak var timerResetBtn: UIButton!
     
     var meeting: Meeting?
     var meetingAgendas: [Agenda]?
@@ -48,7 +48,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var durText: String = ""
     
     override func viewWillAppear(_ animated: Bool) {
-        agendaIsDoneSwitch.isEnabled = false
         timerStartBtn.isEnabled = false
         timerPauseBtn.isEnabled = false
         currentAgendaLabel.text = "None"
@@ -170,6 +169,13 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         agendaTimer.invalidate()
     }
     
+    @IBAction func resetTimer(_ sender: Any) {
+        runningTimer = false
+        agendaTimer.invalidate()
+        timerArray[runningAgenda] = 0
+        currentTimerLabel.text = "00:00:00"
+    }
+    
     func countdown() {
         let time = meetingAgendas?[runningAgenda].duration
         
@@ -222,8 +228,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             currentAgenda = indexPath.row
             currentTimerLabel.text = timeFormatted(totalSeconds: timerArray[currentAgenda])
             currentTimerLabel.isEnabled = true
-            agendaIsDoneSwitch.isOn = agenda.isDone
-            agendaIsDoneSwitch.isEnabled = true
             notesField.text = agenda.notes
             notesField.isEditable = true
             notesField.alpha = 1
@@ -287,12 +291,19 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                 }
             }
             
+            cell.doneSwitch.tag = indexPath.row
+            
+            if let agendas = meetingAgendas {
+                cell.doneSwitch.isOn = agendas[indexPath.row].isDone
+            }
+            cell.doneSwitch.addTarget(self, action: #selector(self.toggleAgendaState(_:)), for: .touchUpInside)
+            
             cell.openAgendaModalBtn.tag = indexPath.row
             cell.openAgendaModalBtn.addTarget(self, action:#selector(self.openAgendaModal(_:)),for: .touchUpInside)
             
             
             if (meetingAgendas?[indexPath.row].isDone)! {
-                cell.accessoryType = .checkmark
+                //cell.accessoryType = .checkmark
             }else {
                 cell.accessoryType = .none
             }
@@ -327,9 +338,12 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         return header
     }
     
-    @IBAction func toggleAgendaState(_ sender: Any) {
-        if let agenda = meetingAgendas?[currentAgenda] {
-            if agendaIsDoneSwitch.isOn {
+    @IBAction func toggleAgendaState(_ sender: AnyObject) {
+        
+        let cell = agendaTableView.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! AgendaTableViewCell
+        
+        if let agenda = meetingAgendas?[sender.tag] {
+            if cell.doneSwitch.isOn {
                 agenda.isDone = true
                 runningTimer = false
                 agendaTimer.invalidate()
