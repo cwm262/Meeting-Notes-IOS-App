@@ -24,7 +24,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     //MARK: IBOutlets
 
-    @IBOutlet weak var startTimeLabel: UILabel!
+    @IBOutlet weak var startTimeLabel: UILabel! {
+        didSet {
+            startTimeLabel.font = startTimeLabel.font.monospacedDigitFont
+        }
+    }
     
     @IBOutlet weak var startTimeDatePicker: UIDatePicker!
     
@@ -34,11 +38,18 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var descriptionField: UITextView!
     @IBOutlet weak var durationField: UILabel!
     
-    @IBOutlet weak var addParticipantBtn: UIBarButtonItem!
     //MARK: Booleans for Whether or Not Section is Expanded
     
     var startDatePickerHidden: Bool = true
     var descTextHidden: Bool = true
+    
+    var descLoaded: Bool = false
+    var dateLoaded: Bool = false
+    
+    //MARK: Dynamic cells
+    
+    var descCell = UITableViewCell()
+    var dateCell = UITableViewCell()
     
     //MARK: DidLoad and WillAppear Functions
     
@@ -333,10 +344,14 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         }
         
         if indexPath.section == 2 && indexPath.row == 0 {
+            dateCell = tableView.cellForRow(at: IndexPath(row: 0, section: 2))!
+            dateLoaded = true
             startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&startDatePickerHidden)
         }
         if indexPath.section == 1 && indexPath.row == 0 {
+            descCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1))!
+            descLoaded = true
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
         }
@@ -380,10 +395,16 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         }
         
         if startDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
+            if dateLoaded {
+                dateCell.isSelected = false
+            }
             startTimeLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
         }
         else if descTextHidden && indexPath.section == 1 && indexPath.row == 1{
+            if descLoaded {
+                descCell.isSelected = false
+            }
             descriptionLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
             return 0
         }

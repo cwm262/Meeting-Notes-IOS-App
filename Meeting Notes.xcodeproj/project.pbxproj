@@ -7,6 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		174A353A1DFCAF4A004E9177 /* CreateAgendaTimerTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 174A35391DFCAF4A004E9177 /* CreateAgendaTimerTableViewCell.swift */; };
 		178297BD1DFA2AD400C1801F /* Font+MonospacedDigits.swift in Sources */ = {isa = PBXBuildFile; fileRef = 178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */; };
 		17BF422A1DFC6B5B00505229 /* CreateAgendaTitleTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 17BF42291DFC6B5B00505229 /* CreateAgendaTitleTableViewCell.swift */; };
 		770EE7441DF7D34800A37A8D /* MessageUI.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 770EE7431DF7D34800A37A8D /* MessageUI.framework */; };
@@ -29,6 +30,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		174A35391DFCAF4A004E9177 /* CreateAgendaTimerTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAgendaTimerTableViewCell.swift; sourceTree = "<group>"; };
 		178297BC1DFA2AD400C1801F /* Font+MonospacedDigits.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Font+MonospacedDigits.swift"; sourceTree = "<group>"; };
 		17BF42291DFC6B5B00505229 /* CreateAgendaTitleTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CreateAgendaTitleTableViewCell.swift; sourceTree = "<group>"; };
 		770EE7431DF7D34800A37A8D /* MessageUI.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = MessageUI.framework; path = System/Library/Frameworks/MessageUI.framework; sourceTree = SDKROOT; };
@@ -69,6 +71,7 @@
 		17BF422B1DFC717D00505229 /* Custom Cells */ = {
 			isa = PBXGroup;
 			children = (
+				174A35391DFCAF4A004E9177 /* CreateAgendaTimerTableViewCell.swift */,
 				17BF42291DFC6B5B00505229 /* CreateAgendaTitleTableViewCell.swift */,
 				7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */,
 			);
@@ -214,6 +217,7 @@
 				774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */,
 				770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */,
 				77A49DD21DD7EC96002495DF /* DatabaseController.swift in Sources */,
+				174A353A1DFCAF4A004E9177 /* CreateAgendaTimerTableViewCell.swift in Sources */,
 				7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */,
 				770F30C01DD842E000CE493B /* CreateAgendaViewController.swift in Sources */,
 				7749DA5E1DF677750027A5EF /* AgendaTableViewCell.swift in Sources */,
