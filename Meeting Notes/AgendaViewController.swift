@@ -141,6 +141,10 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
             
             agendaTableView.deleteRows(at: [indexPath], with: .fade)
             agendaTableView.reloadData()
+            
+            if myAgendaSet?.count == 0 {
+                _ = navigationController?.popViewController(animated: true)
+            }
         }
     }
 

@@ -39,7 +39,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         }
         
         if noAgendas && agenda == nil {
-            _ = navigationController?.popViewController(animated: true)
+            _ = navigationController?.popViewController(animated: false)
         }
     }
 
