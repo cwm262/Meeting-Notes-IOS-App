@@ -73,7 +73,8 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         let duration = timerCell.countdownTimer.countDownDuration
         agenda?.setValue(duration, forKey: "duration")
         if let agenda = agenda {
-            agendaViewController?.myAgendaSet?.add(agenda)
+            //agendaViewController?.myAgendaSet?.add(agenda)
+            self.meeting?.addToAgendas(agenda)
         }
         
         _ = navigationController?.popViewController(animated: true)

@@ -17,7 +17,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
 
     var meeting: Meeting?
     var meetingAttendants: [MeetingAttendant]?
-    var meetingAgendas: [Agenda]?
     var attendantsToBeDeleted: [Attendant]?
     var agendasToBeDeleted: [Agenda]?
     var duration: Int32 = 0
@@ -230,6 +229,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
 //                meeting.removeFromAgendas(agendaTBD)
 //            }
 //        }
+        
         DatabaseController.saveContext()
 
         _ = navigationController?.popToRootViewController(animated: true)

@@ -14,6 +14,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     var agendasToBeDeleted: [Agenda]?
     var meeting: Meeting?
     var myAgendaSet: NSMutableOrderedSet?
+    var meetingTableViewController: MeetingTableViewController?
 
     @IBOutlet weak var agendaTableView: UITableView!
     
@@ -34,7 +35,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        DatabaseController.getContext().refreshAllObjects()
+        //DatabaseController.getContext().refreshAllObjects()
         agendaTableView.reloadData()
         
     }

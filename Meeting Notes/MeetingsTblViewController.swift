@@ -39,6 +39,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        DatabaseController.getContext().reset()
         navigationController?.setToolbarHidden(false, animated: false)
         meetings = getMeetings()
         tableView.reloadData()
