@@ -27,6 +27,8 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         if editingAttendants {
             let addButton = UIBarButtonSystemItem.add
             navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.importParticipant))
+        } else {
+            attendantTableView.allowsSelection = false
         }
         
         if let meeting = meeting {
@@ -66,14 +68,29 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
             let email: String? = contact.emailAddresses.first?.value as String?
             
             if let givenName = givenName, let familyName = familyName, let email = email{
-                let context = DatabaseController.getContext()
-                let desc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
-                let newAttendant = Attendant(entity: desc!, insertInto: context)
-                newAttendant.setValue(givenName, forKey: "givenName")
-                newAttendant.setValue(familyName, forKey: "familyName")
-                newAttendant.setValue(email, forKey: "email")
-                self.meeting?.addToAttendants(newAttendant)
-                print(self.meeting)
+                var alreadyAdded: Bool = false
+                for attendant in (meeting?.attendants)! {
+                    if email == (attendant as! Attendant).email {
+                        alreadyAdded = true
+                    }
+                }
+                
+                if !alreadyAdded {
+                    let context = DatabaseController.getContext()
+                    let desc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
+                    let newAttendant = Attendant(entity: desc!, insertInto: context)
+                    newAttendant.setValue(givenName, forKey: "givenName")
+                    newAttendant.setValue(familyName, forKey: "familyName")
+                    newAttendant.setValue(email, forKey: "email")
+                    self.meeting?.addToAttendants(newAttendant)
+                } else {
+                    let alert = UIAlertController(title: "Contact Already Imported", message: "\(givenName) \(familyName) has already been imported into this meeting", preferredStyle: .alert)
+                    let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                    alert.addAction(confirmAction)
+                    picker.dismiss(animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
+                }
+                
             }else{
                 let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
                 let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -140,7 +157,11 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
-        return UITableViewCellEditingStyle.delete
+        if editingAttendants {
+            return UITableViewCellEditingStyle.delete
+        } else {
+            return UITableViewCellEditingStyle.none
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
