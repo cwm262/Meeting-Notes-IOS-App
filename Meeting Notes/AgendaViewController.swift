@@ -10,22 +10,31 @@ import UIKit
 
 class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var agendas: [Agenda]?
+    var agendas = [Agenda]()
     var agendasToBeDeleted: [Agenda]?
     var meeting: Meeting?
+    var myAgendaSet: NSMutableOrderedSet?
 
     @IBOutlet weak var agendaTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        agendaTableView.isScrollEnabled = checkScroll()
+        title = "Agendas"
         
         agendaTableView.setEditing(true, animated: true)
+        
+        let addButton = UIBarButtonSystemItem.add
+        navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.addAgenda))
+        
+        if let meeting = meeting {
+            myAgendaSet = meeting.mutableOrderedSetValue(forKey: "agendas")
+        }
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        DatabaseController.getContext().refreshAllObjects()
         agendaTableView.reloadData()
         
     }
@@ -40,8 +49,8 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let agendas = agendas {
-            return agendas.count
+        if let myAgendaSet = myAgendaSet {
+            return myAgendaSet.count
         }else {
             return 0
         }
@@ -50,36 +59,27 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
         
-        cell.textLabel?.text = agendas?[indexPath.row].title
-        if let duration = agendas?[indexPath.row].duration {
-            if duration == 60 {
-                cell.detailTextLabel?.text = "1 min"
-            }else if duration > 60 && duration <= 3600 {
-                let numMinutes = duration / 60
-                cell.detailTextLabel?.text = "\(numMinutes) min"
-            }else if duration > 3600 {
-                let numHours = duration / 3600
-                let numMinutes = (duration % 3600) / 60
-                cell.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
-            }
-        }
+        let agendas = myAgendaSet?.array as! [Agenda]
+        let agenda = agendas[indexPath.row]
+        cell.textLabel?.text = agenda.title
+        
+        let duration = agenda.duration
+        
+        cell.detailTextLabel?.text = TimerController.calculate(duration: duration)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let sourceRow = agendas?[sourceIndexPath.row]
-        let myAgendaSet = meeting?.mutableOrderedSetValue(forKey: "agendas")
+        let sourceRow = myAgendaSet?[sourceIndexPath.row]
         myAgendaSet?.removeObject(at: sourceIndexPath.row)
-        myAgendaSet?.insert(sourceRow!, at: destinationIndexPath.row)
-        agendas?.remove(at: sourceIndexPath.row)
-        agendas?.insert(sourceRow!, at: destinationIndexPath.row)
-        DatabaseController.saveContext()
+        myAgendaSet?.insert(sourceRow, at: destinationIndexPath.row)
+        //DatabaseController.saveContext()
         
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
+        return 30.0
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
@@ -106,6 +106,47 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         }
     }
     
+    func addAgenda(){
+        let createAgendaViewController = storyboard?.instantiateViewController(withIdentifier: "createAgendaViewController") as! CreateAgendaViewController
+        createAgendaViewController.meeting = self.meeting
+        createAgendaViewController.agendaViewController = self
+        navigationController?.pushViewController(createAgendaViewController, animated: true)
+    }
+    
+//    func shareAgenda(agenda: Agenda?) {
+//        if let agenda = agenda {
+//            agendas.append(agenda)
+//        }else{
+//            agendas = [Agenda]()
+//            if let coreDataAgendas = meeting?.agendas {
+//                for agenda in coreDataAgendas {
+//                    if let currentAgenda = agenda as? Agenda {
+//                        agendas.append(currentAgenda)
+//                    }
+//                }
+//            }
+//            agendaTableView.reloadData()
+//            
+//        }
+//        
+//        
+//    }
+    
+//    func loadAgendas(){
+//        if let meeting = meeting {
+//            if let agendas = meeting.agendas {
+//                meetingAgendas = [Agenda]()
+//                duration = 0
+//                for i in agendas {
+//                    let currentAgenda = i as! Agenda
+//                    meetingAgendas!.append(currentAgenda)
+//                    duration += currentAgenda.duration
+//                }
+//                calculateAndSetDuration(duration: duration)
+//            }
+//        }
+//    }
+    
     func confirmDelete(indexPath: IndexPath) {
         let alert = UIAlertController(title: "Delete Agenda", message: "Are you sure you want to delete this agenda?", preferredStyle: .actionSheet)
         
@@ -128,40 +169,15 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func deleteAgenda(indexPath: IndexPath) {
         let row = indexPath.row
         
-        if (row < agendas!.count) {
-        
-            if var agendasToBeDeleted = agendasToBeDeleted {
-                agendasToBeDeleted.append(agendas![row])
-            }else {
-                agendasToBeDeleted = [Agenda]()
-                agendasToBeDeleted!.append(agendas![row])
-            }
+        if (row < (myAgendaSet?.count)!) {
             
-            agendas!.remove(at: row)
-            
-            let parentController: MeetingTableViewController = self.parent as! MeetingTableViewController
-        
-            parentController.meetingAgendas = agendas
-            parentController.agendasToBeDeleted = agendasToBeDeleted
+            myAgendaSet?.remove(at: row)
             
             agendaTableView.deleteRows(at: [indexPath], with: .fade)
-            parentController.tableView.reloadData()
-            
-            agendaTableView.isScrollEnabled = checkScroll()
+            agendaTableView.reloadData()
         }
     }
-    
-    func checkScroll() -> Bool {
-        
-        if let agendas = agendas {
-            if agendas.count > 3 {
-                agendaTableView.flashScrollIndicators()
-                return true
-            }
-        }
-        
-        return false
-    }
+
     
     /*
     // MARK: - Navigation

@@ -23,6 +23,7 @@
 		774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */; };
 		776B237E1DDF8034000F2F29 /* ShowMeetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */; };
 		778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */; };
+		77A2DBCD1DFDF06D008B8F80 /* TimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A2DBCC1DFDF06D008B8F80 /* TimerController.swift */; };
 		77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A49DA41DD6AC10002495DF /* AttendantViewController.swift */; };
 		77A49DD21DD7EC96002495DF /* DatabaseController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A49DD11DD7EC96002495DF /* DatabaseController.swift */; };
 		77EC02121DD26E42006E8A1C /* Contacts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 77EC02101DD26E42006E8A1C /* Contacts.framework */; };
@@ -48,6 +49,7 @@
 		774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingAttendant.swift; sourceTree = "<group>"; };
 		776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowMeetingViewController.swift; sourceTree = "<group>"; };
 		778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingsTblViewController.swift; sourceTree = "<group>"; };
+		77A2DBCC1DFDF06D008B8F80 /* TimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimerController.swift; path = ../TimerController.swift; sourceTree = "<group>"; };
 		77A49DA41DD6AC10002495DF /* AttendantViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AttendantViewController.swift; sourceTree = "<group>"; };
 		77A49DD11DD7EC96002495DF /* DatabaseController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatabaseController.swift; sourceTree = "<group>"; };
 		77EC02101DD26E42006E8A1C /* Contacts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Contacts.framework; path = System/Library/Frameworks/Contacts.framework; sourceTree = SDKROOT; };
@@ -108,6 +110,7 @@
 			children = (
 				770F82B91DBA847000B68E6F /* AppDelegate.swift */,
 				77A49DD11DD7EC96002495DF /* DatabaseController.swift */,
+				77A2DBCC1DFDF06D008B8F80 /* TimerController.swift */,
 				770F30BE1DD83F9300CE493B /* Models */,
 				17BF422B1DFC717D00505229 /* Custom Cells */,
 				77297F941DC997280026A26B /* MeetingTableViewController.swift */,
@@ -210,6 +213,7 @@
 			files = (
 				770F82C21DBA847000B68E6F /* Meeting_Notes.xcdatamodeld in Sources */,
 				178297BD1DFA2AD400C1801F /* Font+MonospacedDigits.swift in Sources */,
+				77A2DBCD1DFDF06D008B8F80 /* TimerController.swift in Sources */,
 				17BF422A1DFC6B5B00505229 /* CreateAgendaTitleTableViewCell.swift in Sources */,
 				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */,

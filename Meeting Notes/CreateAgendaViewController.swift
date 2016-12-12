@@ -16,9 +16,8 @@ protocol AgendaSharing {
 class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
     var agenda: Agenda?
-    var meetingTableController: AgendaSharing?
     var meeting: Meeting?
-    var meetingAgendas: [Agenda]?
+    var agendaViewController: AgendaViewController?
 
     @IBOutlet weak var countdownTimer: UIDatePicker!
     @IBOutlet weak var taskTextView: UITextView!
@@ -32,6 +31,12 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.toolbar.isHidden = true
     }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        if let agendaViewController = agendaViewController {
+            agendaViewController.agendaTableView.reloadData()
+        }
+    }
 
     override func viewDidLoad() {
         super.viewDidLoad()
@@ -44,7 +49,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         taskTextView.text = "Task"
         taskTextView.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
 
-        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(CreateAgendaViewController.addAgenda))
+        navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneAddingAgenda))
     }
 
     override func didReceiveMemoryWarning() {
@@ -52,7 +57,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         // Dispose of any resources that can be recreated.
     }
     
-    func addAgenda(){
+    func doneAddingAgenda(){
         let titleCell = titleTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CreateAgendaTitleTableViewCell
         let timerCell = timerTableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! CreateAgendaTimerTableViewCell
         
@@ -67,12 +72,8 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         }
         let duration = timerCell.countdownTimer.countDownDuration
         agenda?.setValue(duration, forKey: "duration")
-        if let meeting = meeting, let agenda = agenda {
-            meeting.addToAgendas(agenda)
-            DatabaseController.saveContext()
-            self.meetingTableController?.shareAgenda(agenda: nil)
-        }else{
-            self.meetingTableController?.shareAgenda(agenda: agenda)
+        if let agenda = agenda {
+            agendaViewController?.myAgendaSet?.add(agenda)
         }
         
         _ = navigationController?.popViewController(animated: true)

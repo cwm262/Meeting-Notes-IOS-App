@@ -11,16 +11,18 @@ import CoreData
 import Contacts
 import ContactsUI
 
-class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate, AgendaSharing {
+class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate {
     
     //MARK: Meeting Variables
-    
+
     var meeting: Meeting?
     var meetingAttendants: [MeetingAttendant]?
     var meetingAgendas: [Agenda]?
     var attendantsToBeDeleted: [Attendant]?
     var agendasToBeDeleted: [Agenda]?
     var duration: Int32 = 0
+    var meetingSaved: Bool = false
+    var context: NSManagedObjectContext?
     
     //MARK: IBOutlets
 
@@ -62,12 +64,16 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         titleField.borderStyle = .none
         locationField.borderStyle = .none
         
+        context = DatabaseController.getContext()
+        
         if let meeting = meeting {
+            meetingSaved = true
             navigationItem.rightBarButtonItem?.title = "Save"
             title = "Edit Meeting"
             titleField.text = meeting.title
             locationField.text = meeting.location
             descriptionField.text = meeting.desc
+            durationField.text = TimerController.calculate(duration: meeting.duration)
             let str = meeting.desc?.characters
             if let str = str {
                 var descLbl = ""
@@ -83,10 +89,14 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                 }
                 descriptionLabel.text = descLbl
             }
-            
             startTimeDatePicker.date = meeting.startTime as! Date
-            
-
+        
+        }else {
+            if let context = context {
+                let desc = NSEntityDescription.entity(forEntityName: "Meeting", in: context)
+                meeting = Meeting(entity: desc!, insertInto: context)
+                DatabaseController.saveContext()
+            }
         }
         
         if descriptionField.text.characters.count == 0 {
@@ -98,74 +108,52 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
 
     }
     
+    override func viewWillDisappear(_ animated: Bool) {
+        if !meetingSaved, let meeting = meeting {
+            DatabaseController.getContext().delete(meeting)
+            DatabaseController.saveContext()
+        }
+        
+    }
+    
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.toolbar.isHidden = false
         tableView.reloadData()
-        let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
-        agendaController.agendas = meetingAgendas
-        agendaController.agendaTableView.reloadData()
+        //let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
+        //agendaController.agendas = meetingAgendas
+        //agendaController.agendaTableView.reloadData()
         
-        let scrollEnabled = agendaController.checkScroll()
-        if scrollEnabled {
-            agendaController.agendaTableView.flashScrollIndicators()
-        }
-        agendaController.agendaTableView.isScrollEnabled = scrollEnabled
+//        let scrollEnabled = agendaController.checkScroll()
+//        if scrollEnabled {
+//            agendaController.agendaTableView.flashScrollIndicators()
+//        }
+//        agendaController.agendaTableView.isScrollEnabled = scrollEnabled
     }
     
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
     }
     
-    func shareAgenda(agenda: Agenda?) {
-        if let agenda = agenda {
-            if self.meetingAgendas != nil {
-                self.meetingAgendas!.append(agenda)
-            }else{
-                self.meetingAgendas = [Agenda]()
-                self.meetingAgendas!.append(agenda)
-            }
-            duration += agenda.duration
-            calculateAndSetDuration(duration: duration)
-        }else{
-            loadAgendas()
-        }
-        
-        let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
-        agendaController.agendas = meetingAgendas
-        agendaController.agendaTableView.reloadData()
-        
-        
-    }
-    
-    func calculateAndSetDuration(duration: Int32){
-        if duration == 60 {
-            durationField.text = "1 min"
-        }else if duration > 60 && duration < 3600 {
-            let numMinutes = duration / 60
-            durationField.text = "\(numMinutes) min"
-        }else if duration > 3600 {
-            let numHours = duration / 3600
-            let numMinutes = (duration % 3600) / 60
-            durationField.text = "\(numHours) hr \(numMinutes) min"
-        }
-    }
-    
-    //MARK: Functions that Load from DB or Save to DB
-    
-    func loadAgendas(){
-        if let meeting = meeting {
-            if let agendas = meeting.agendas {
-                meetingAgendas = [Agenda]()
-                duration = 0
-                for i in agendas {
-                    let currentAgenda = i as! Agenda
-                    meetingAgendas!.append(currentAgenda)
-                    duration += currentAgenda.duration
-                }
-                calculateAndSetDuration(duration: duration)
-            }
-        }
-    }
+//    func shareAgenda(agenda: Agenda?) {
+//        if let agenda = agenda {
+//            if self.meetingAgendas != nil {
+//                self.meetingAgendas!.append(agenda)
+//            }else{
+//                self.meetingAgendas = [Agenda]()
+//                self.meetingAgendas!.append(agenda)
+//            }
+//            duration += agenda.duration
+//            durationField.text = TimerController.calculateAndSetDuration(duration: duration)
+//        }else{
+//            loadAgendas()
+//        }
+//        
+//        let agendaController: AgendaViewController = self.childViewControllers[0] as! AgendaViewController
+//        agendaController.agendas = meetingAgendas
+//        agendaController.agendaTableView.reloadData()
+//        
+//        
+//    }
     
     func loadAttendants(){
         if let meeting = meeting{
@@ -185,88 +173,67 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     func saveMeeting(){
-        let context = DatabaseController.getContext()
-        if meeting == nil {
-            let desc = NSEntityDescription.entity(forEntityName: "Meeting", in: context)
-            meeting = Meeting(entity: desc!, insertInto: context)
+        meetingSaved = true
+        meeting?.title = titleField.text
+        meeting?.location = locationField.text
+        if descriptionField.text == "Description" {
+            meeting?.desc = ""
+        } else {
+            meeting?.desc = descriptionField.text
         }
-        if let meeting = meeting {
-            meeting.title = titleField.text
-            meeting.location = locationField.text
-            if descriptionField.text == "Description" {
-                meeting.desc = ""
-            } else {
-                meeting.desc = descriptionField.text
-            }
-            meeting.startTime = startTimeDatePicker.date as NSDate?
-            
-            if let meetingAttendants = meetingAttendants{
-                for meetingAttendant in meetingAttendants{
-                    if let ma = meeting.attendants {
-                        var alreadyAdded = false
-                        for m in ma {
-                            let curr = m as! Attendant
-                            if curr.email == meetingAttendant.email {
-                                alreadyAdded = true
-                            }
-                        }
-                        if(!alreadyAdded){
-                            let attendantDesc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
-                            let attendant = Attendant(entity: attendantDesc!, insertInto: context)
-                            attendant.setValue(meetingAttendant.givenName, forKey: "givenName")
-                            attendant.setValue(meetingAttendant.familyName, forKey: "familyName")
-                            attendant.setValue(meetingAttendant.email, forKey: "email")
-                            
-                            meeting.addToAttendants(attendant)
-                        }
-                    }else{
-                        let attendantDesc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
-                        let attendant = Attendant(entity: attendantDesc!, insertInto: context)
-                        attendant.setValue(meetingAttendant.givenName, forKey: "givenName")
-                        attendant.setValue(meetingAttendant.familyName, forKey: "familyName")
-                        attendant.setValue(meetingAttendant.email, forKey: "email")
-                        
-                        meeting.addToAttendants(attendant)
-                    }
-                    
-                }
-                
-            }
-            if let meetingAgendas = meetingAgendas {
-                if let savedAgendas = meeting.agendas as? Set<Agenda>, savedAgendas.count > 0 {
-                    for meetingAgenda in meetingAgendas {
-                        for savedAgenda in savedAgendas {
-                            if savedAgenda === meetingAgenda {
-                                savedAgenda.duration = meetingAgenda.duration
-                                savedAgenda.task = meetingAgenda.task
-                                savedAgenda.title = meetingAgenda.title
-                            }else{
-                                meeting.addToAgendas(meetingAgenda)
-                            }
-                        }
-                    }
-                }else{
-                    for meetingAgenda in meetingAgendas {
-                        meeting.addToAgendas(meetingAgenda)
-                    }
-                }
-            }
-            if let attendantsToBeDeleted = attendantsToBeDeleted {
-                for attendantTBD in attendantsToBeDeleted {
-                    meeting.removeFromAttendants(attendantTBD)
-                }
-            }
-            if let agendasToBeDeleted = agendasToBeDeleted {
-                for agendaTBD in agendasToBeDeleted {
-                    meeting.removeFromAgendas(agendaTBD)
-                }
-            }
-            DatabaseController.saveContext()
-        }
+        meeting?.startTime = startTimeDatePicker.date as NSDate?
+        
+//        if let meetingAttendants = meetingAttendants{
+//            for meetingAttendant in meetingAttendants{
+//                if let ma = meeting?.attendants {
+//                    var alreadyAdded = false
+//                    for m in ma {
+//                        let curr = m as! Attendant
+//                        if curr.email == meetingAttendant.email {
+//                            alreadyAdded = true
+//                        }
+//                    }
+//                    if(!alreadyAdded){
+//                        let attendantDesc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
+//                        let attendant = Attendant(entity: attendantDesc!, insertInto: context)
+//                        attendant.setValue(meetingAttendant.givenName, forKey: "givenName")
+//                        attendant.setValue(meetingAttendant.familyName, forKey: "familyName")
+//                        attendant.setValue(meetingAttendant.email, forKey: "email")
+//                        
+//                        meeting?.addToAttendants(attendant)
+//                    }
+//                }else{
+//                    let attendantDesc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
+//                    let attendant = Attendant(entity: attendantDesc!, insertInto: context)
+//                    attendant.setValue(meetingAttendant.givenName, forKey: "givenName")
+//                    attendant.setValue(meetingAttendant.familyName, forKey: "familyName")
+//                    attendant.setValue(meetingAttendant.email, forKey: "email")
+//                    
+//                    meeting?.addToAttendants(attendant)
+//                }
+//                
+//            }
+//            
+//        }
+//        if let meetingAgendas = meetingAgendas {
+//            for meetingAgenda in meetingAgendas {
+//                meeting.addToAgendas(meetingAgenda)
+//            }
+//        }
+//        if let attendantsToBeDeleted = attendantsToBeDeleted {
+//            for attendantTBD in attendantsToBeDeleted {
+//                meeting.removeFromAttendants(attendantTBD)
+//            }
+//        }
+//        if let agendasToBeDeleted = agendasToBeDeleted {
+//            for agendaTBD in agendasToBeDeleted {
+//                meeting.removeFromAgendas(agendaTBD)
+//            }
+//        }
+        DatabaseController.saveContext()
 
         _ = navigationController?.popToRootViewController(animated: true)
     }
-    
     //MARK: Datepicker Functions
     
     @IBAction func startDatePickerValueChanged(_ sender: Any) {
@@ -360,40 +327,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     override func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         
-        if indexPath.section == 4 && indexPath.row == 0 {
-            
-            if let attendants = meetingAttendants {
-                let height = attendants.count * 32
-                
-                if height > 96 {
-                    return 96
-                } else {
-                    return CGFloat(height)
-                }
-                
-            } else {
-                return 0
-            }
-            
-        }
-        
-        if indexPath.section == 3 && indexPath.row == 0 {
-            
-            if let agendas = meetingAgendas {
-                let height = agendas.count * 32
-                
-                if height > 96 {
-                    return 96
-                } else {
-                    return CGFloat(height)
-                }
-                
-            } else {
-                return 0
-            }
-            
-        }
-        
         if startDatePickerHidden && indexPath.section == 2 && indexPath.row == 1 {
             if dateLoaded {
                 dateCell.isSelected = false
@@ -477,17 +410,16 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.attendants = meetingAttendants
         }else if segue.identifier == "agendaViewSegue" {
-            loadAgendas()
+            meetingSaved = true
             let agendaViewController = segue.destination as! AgendaViewController
-            agendaViewController.agendas = meetingAgendas
             agendaViewController.meeting = self.meeting
-        }else if segue.identifier == "createAgendaSegue" {
-            let createAgendaViewController = segue.destination as! CreateAgendaViewController
-            createAgendaViewController.meetingTableController = self
-            createAgendaViewController.meeting = self.meeting
-            createAgendaViewController.meetingAgendas = self.meetingAgendas
+//        }else if segue.identifier == "createAgendaSegue" {
+//            let createAgendaViewController = segue.destination as! CreateAgendaViewController
+//            createAgendaViewController.meetingTableController = self
+//            createAgendaViewController.meeting = self.meeting
+//            createAgendaViewController.meetingAgendas = self.meetingAgendas
+//        }
         }
     }
-    
 
 }
