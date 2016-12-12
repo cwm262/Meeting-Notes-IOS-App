@@ -14,8 +14,6 @@ import ContactsUI
 class AttendantViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CNContactPickerDelegate {
 
     var meeting: Meeting?
-    var attendants: [MeetingAttendant]?
-    var attendantsToBeDeleted: [Attendant] = [Attendant]()
     
     @IBOutlet weak var attendantTableView: UITableView!
     
@@ -53,24 +51,14 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
             let email: String? = contact.emailAddresses.first?.value as String?
             
             if let givenName = givenName, let familyName = familyName, let email = email{
-                if let currAttendants = attendants{
-                    var alreadyAdded = false
-                    for meetingAttendant in currAttendants{
-                        if meetingAttendant.email == email {
-                            alreadyAdded = true
-                        }
-                    }
-                    if(!alreadyAdded){
-                        let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
-                        attendants!.append(newAttendant)
-                    }
-                }else{
-                    let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
-                    attendants = [MeetingAttendant]()
-                    attendants!.append(newAttendant)
-                }
-                
-                attendantTableView.reloadData()
+                let context = DatabaseController.getContext()
+                let desc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
+                let newAttendant = Attendant(entity: desc!, insertInto: context)
+                newAttendant.setValue(givenName, forKey: "givenName")
+                newAttendant.setValue(familyName, forKey: "familyName")
+                newAttendant.setValue(email, forKey: "email")
+                self.meeting?.addToAttendants(newAttendant)
+                print(self.meeting)
             }else{
                 let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
                 let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -79,34 +67,21 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
                 self.present(alert, animated: true, completion: nil)
             }
         }
+        attendantTableView.reloadData()
     }
     
     func deleteAttendant(indexPath: IndexPath) {
         let row = indexPath.row
         
-        if (row < attendants!.count) {
-            let attendant = attendants![row]
-            attendants!.remove(at: row)
-            
-            let parentController: MeetingTableViewController = self.parent as! MeetingTableViewController
-            if let meeting = parentController.meeting {
-                var targetAttendant: Attendant?
-                if let storedAttendants = meeting.attendants{
-                    for i in storedAttendants {
-                        let current = i as! Attendant
-                        if current.email == attendant.email {
-                            targetAttendant = current
-                        }
-                    }
-                }
-                if let targetAttendant = targetAttendant{
-                    attendantsToBeDeleted.append(targetAttendant)
-                }
+        if let meeting = meeting, let attendants = meeting.attendants {
+            if row < attendants.count {
+                let attendant = attendants[row] as! Attendant
+                meeting.removeFromAttendants(attendant)
             }
-            
-            attendantTableView.deleteRows(at: [indexPath], with: .fade)
-            attendantTableView.reloadData()
         }
+            
+        attendantTableView.deleteRows(at: [indexPath], with: .fade)
+        attendantTableView.reloadData()
     }
     
     func confirmDelete(indexPath: IndexPath) {
@@ -134,7 +109,7 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let attendants = attendants{
+        if let meeting = meeting, let attendants = meeting.attendants{
             return attendants.count
         }else{
             return 0
@@ -156,20 +131,22 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "attendantCell", for: indexPath)
         
-        let givenName = attendants?[indexPath.row].givenName
-        let familyName = attendants?[indexPath.row].familyName
-        let email = attendants?[indexPath.row].email
-        let titleString: String?
-        
-        if let givenName = givenName, let familyName = familyName {
-            titleString = givenName + " " + familyName
-            cell.textLabel?.text = titleString
+        if let meeting = meeting, let attendants = meeting.attendants {
+            let attendant = attendants[indexPath.row] as! Attendant
+            let givenName = attendant.givenName
+            let familyName = attendant.familyName
+            let email = attendant.email
+            let titleString: String?
+            
+            if let givenName = givenName, let familyName = familyName {
+                titleString = givenName + " " + familyName
+                cell.textLabel?.text = titleString
+            }
+            if let email = email {
+                cell.detailTextLabel?.text = email
+            }
+            
         }
-        if let email = email {
-            cell.detailTextLabel?.text = email
-        }
-        
-        
         
         return cell
     }
