@@ -328,9 +328,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         
         var header: String?
         
-//        if tableView == self.metaDataTableView {
-//            header = "Meeting Info"
-//        }
         
         if tableView == self.agendaTableView {
             header = "Agendas"

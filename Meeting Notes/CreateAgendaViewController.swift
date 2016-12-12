@@ -54,7 +54,6 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func doneAddingAgenda(){
@@ -73,7 +72,6 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         let duration = timerCell.countdownTimer.countDownDuration
         agenda?.setValue(duration, forKey: "duration")
         if let agenda = agenda {
-            //agendaViewController?.myAgendaSet?.add(agenda)
             self.meeting?.addToAgendas(agenda)
         }
         
@@ -179,35 +177,10 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
     
-    func calculateAndSetDuration(duration: Int32){
-        
-        if duration == 60 {
-            durCell.detailTextLabel?.text = "1 min"
-        }else if duration > 60 && duration < 3600 {
-            let numMinutes = duration / 60
-            durCell.detailTextLabel?.text = "\(numMinutes) min"
-        }else if duration > 3600 {
-            let numHours = duration / 3600
-            let numMinutes = (duration % 3600) / 60
-            durCell.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
-        }
-    }
-    
     @IBAction func changedTimerVal(_ sender: Any) {
         let timerCell = timerTableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! CreateAgendaTimerTableViewCell
         
-        calculateAndSetDuration(duration: Int32(timerCell.countdownTimer.countDownDuration))
+        durCell.detailTextLabel?.text = TimerController.calculate(duration: Int32(timerCell.countdownTimer.countDownDuration))
     }
-
-    
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
