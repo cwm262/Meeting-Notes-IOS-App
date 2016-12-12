@@ -38,6 +38,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var descriptionLabel: UILabel!
     @IBOutlet weak var descriptionField: UITextView!
     @IBOutlet weak var durationField: UILabel!
+    @IBOutlet weak var agendaCountLabel: UILabel!
     
     //MARK: Booleans for Whether or Not Section is Expanded
     
@@ -72,7 +73,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             titleField.text = meeting.title
             locationField.text = meeting.location
             descriptionField.text = meeting.desc
-            durationField.text = TimerController.calculate(duration: meeting.duration)
+            if meeting.duration > 0 {
+                durationField.text = TimerController.calculate(duration: meeting.duration)
+            }
+            
+            if (meeting.agendas?.count)! > 0 {
+                agendaCountLabel.text = "\(meeting.agendas?.count)"
+            }
             let str = meeting.desc?.characters
             if let str = str {
                 var descLbl = ""
@@ -116,8 +123,19 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     override func viewWillAppear(_ animated: Bool) {
-        navigationController?.toolbar.isHidden = false
         tableView.reloadData()
+        if let agendas = meeting?.agendas, agendas.count > 0 {
+            duration = 0
+            for agenda in agendas {
+                duration += (agenda as AnyObject).duration
+            }
+            durationField.text = TimerController.calculate(duration: duration)
+            agendaCountLabel.text = "\(agendas.count)"
+        } else {
+            durationField.text = "No Agendas"
+            agendaCountLabel.text = "None"
+        }
+        navigationController?.toolbar.isHidden = false
     }
     
     override func didReceiveMemoryWarning() {
@@ -151,7 +169,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             meeting?.desc = descriptionField.text
         }
         meeting?.startTime = startTimeDatePicker.date as NSDate?
-        
+        if let agendas = meeting?.agendas {
+            duration = 0
+            for agenda in agendas {
+                duration += (agenda as AnyObject).duration
+            }
+            meeting?.duration = duration
+        }
         DatabaseController.saveContext()
 
         _ = navigationController?.popToRootViewController(animated: true)
@@ -203,12 +227,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
                 let embeddedController: AttendantViewController = self.childViewControllers[1] as! AttendantViewController
                 embeddedController.attendants = meetingAttendants
                 embeddedController.attendantTableView.reloadData()
-                
-                let scrollEnabled = embeddedController.checkScroll()
-                if scrollEnabled {
-                    embeddedController.attendantTableView.flashScrollIndicators()
-                }
-                embeddedController.attendantTableView.isScrollEnabled = scrollEnabled
             }else{
                 let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
                 let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
@@ -336,6 +354,8 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             meetingSaved = true
             let agendaViewController = segue.destination as! AgendaViewController
             agendaViewController.meeting = self.meeting
+        } else if segue.identifier == "attendantViewSegue" {
+            //let attendantViewController = segue.destination as! AttendantViewController
         }
     }
 
