@@ -95,6 +95,12 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     override func viewWillDisappear(_ animated: Bool) {
+        for cell in agendaTableView.visibleCells {
+            cell.isSelected = false
+        }
+        for cell in metaDataTableView.visibleCells {
+            cell.isSelected = false
+        }
         runningTimer = false
         agendaTimer.invalidate()
     }
