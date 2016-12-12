@@ -18,6 +18,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
     var agenda: Agenda?
     var meeting: Meeting?
     var agendaViewController: AgendaViewController?
+    var noAgendas: Bool = false
 
     @IBOutlet weak var countdownTimer: UIDatePicker!
     @IBOutlet weak var taskTextView: UITextView!
@@ -36,6 +37,10 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         if let agendaViewController = agendaViewController {
             agendaViewController.agendaTableView.reloadData()
         }
+        
+        if noAgendas && agenda == nil {
+            _ = navigationController?.popViewController(animated: true)
+        }
     }
 
     override func viewDidLoad() {
@@ -50,6 +55,13 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         taskTextView.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
 
         navigationItem.rightBarButtonItem = UIBarButtonItem(barButtonSystemItem: .done, target: self, action: #selector(self.doneAddingAgenda))
+        
+        if let meeting = meeting, let agendas = meeting.agendas {
+            if agendas.count == 0 {
+                noAgendas = true
+            }
+        }
+    
     }
 
     override func didReceiveMemoryWarning() {

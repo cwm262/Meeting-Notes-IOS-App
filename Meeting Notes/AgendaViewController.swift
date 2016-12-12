@@ -9,8 +9,10 @@
 import UIKit
 
 class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
+    
     var meeting: Meeting?
     var myAgendaSet: NSMutableOrderedSet?
+    var animate: Bool = true
 
     @IBOutlet weak var agendaTableView: UITableView!
     
@@ -26,15 +28,17 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if let meeting = meeting {
             myAgendaSet = meeting.mutableOrderedSetValue(forKey: "agendas")
-//            if myAgendaSet?.count == 0 {
-//                addAgenda()
-//            }
+            if myAgendaSet?.count == 0 || myAgendaSet == nil {
+                animate = false
+                addAgenda()
+            }
         }
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         agendaTableView.reloadData()
+        animate = true
     }
 
     override func didReceiveMemoryWarning() {
@@ -105,7 +109,7 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         let createAgendaViewController = storyboard?.instantiateViewController(withIdentifier: "createAgendaViewController") as! CreateAgendaViewController
         createAgendaViewController.meeting = self.meeting
         createAgendaViewController.agendaViewController = self
-        navigationController?.pushViewController(createAgendaViewController, animated: true)
+        navigationController?.pushViewController(createAgendaViewController, animated: animate)
     }
 
     

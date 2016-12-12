@@ -263,6 +263,19 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
         }
+        
+        if indexPath.section == 3 && indexPath.row == 0 {
+            var animate: Bool = true
+            if meeting?.agendas?.count == 0 || meeting?.agendas == nil {
+                animate = false
+            } else {
+                animate = true
+            }
+            let agendaViewController = storyboard?.instantiateViewController(withIdentifier: "agendaViewController") as! AgendaViewController
+            agendaViewController.meeting = self.meeting
+            meetingSaved = true
+            navigationController?.pushViewController(agendaViewController, animated: animate)
+        }
 
     }
     
@@ -358,5 +371,5 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             //let attendantViewController = segue.destination as! AttendantViewController
         }
     }
-
+    
 }
