@@ -39,6 +39,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        DatabaseController.getContext().reset()
         navigationController?.setToolbarHidden(false, animated: false)
         meetings = getMeetings()
         tableView.reloadData()
@@ -92,7 +93,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     func editMeeting(indexPath: IndexPath) {
         let row = indexPath.row
         let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "MeetingTableViewController") as? MeetingTableViewController
-        nextViewController?.meeting = meetings[row]
+        nextViewController?.meeting = filteredMeetings[row]
         self.navigationController?.pushViewController(nextViewController!, animated: true)
     }
     
@@ -131,6 +132,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         
         cell.textLabel?.text = filteredMeetings[indexPath.row].title //Set cell title
         cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString!, dateStyle: .medium, timeStyle: .short)
+        cell.detailTextLabel?.font = cell.detailTextLabel?.font.monospacedDigitFont
         
         return cell
     }

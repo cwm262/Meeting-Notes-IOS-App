@@ -1,19 +1,16 @@
 //
-//  AgendaTableViewCell.swift
+//  CreateAgendaTimerTableViewCell.swift
 //  Meeting Notes
 //
-//  Created by Cody McCarson on 12/5/16.
+//  Created by Ben Friedman on 12/10/16.
 //  Copyright © 2016 Cody W McCarson. All rights reserved.
 //
 
 import UIKit
 
-class AgendaTableViewCell: UITableViewCell {
+class CreateAgendaTimerTableViewCell: UITableViewCell {
 
-    @IBOutlet weak var titleLabel: UILabel!
-    @IBOutlet weak var durationLabel: UILabel!
-    @IBOutlet weak var openAgendaModalBtn: UIButton!
-    @IBOutlet weak var doneSwitch: UISwitch!
+    @IBOutlet weak var countdownTimer: UIDatePicker!
     
     override func awakeFromNib() {
         super.awakeFromNib()

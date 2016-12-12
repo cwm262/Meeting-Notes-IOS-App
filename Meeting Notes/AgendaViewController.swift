@@ -10,27 +10,39 @@ import UIKit
 
 class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource {
     
-    var agendas: [Agenda]?
-    var agendasToBeDeleted: [Agenda]?
     var meeting: Meeting?
+    var myAgendaSet: NSMutableOrderedSet?
+    var animate: Bool = true
 
     @IBOutlet weak var agendaTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        title = "Agendas"
+        
         agendaTableView.setEditing(true, animated: true)
+        
+        let addButton = UIBarButtonSystemItem.add
+        navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.addAgenda))
+        
+        if let meeting = meeting {
+            myAgendaSet = meeting.mutableOrderedSetValue(forKey: "agendas")
+            if myAgendaSet?.count == 0 || myAgendaSet == nil {
+                animate = false
+                addAgenda()
+            }
+        }
         
     }
     
     override func viewWillAppear(_ animated: Bool) {
         agendaTableView.reloadData()
-        
+        animate = true
     }
 
     override func didReceiveMemoryWarning() {
         super.didReceiveMemoryWarning()
-        // Dispose of any resources that can be recreated.
     }
     
     func numberOfSections(in tableView: UITableView) -> Int {
@@ -38,8 +50,8 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     }
     
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        if let agendas = agendas {
-            return agendas.count
+        if let myAgendaSet = myAgendaSet {
+            return myAgendaSet.count
         }else {
             return 0
         }
@@ -48,33 +60,29 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "agendaCell", for: indexPath)
         
-        cell.textLabel?.text = agendas?[indexPath.row].title
-        if let duration = agendas?[indexPath.row].duration {
-            if duration == 60 {
-                cell.detailTextLabel?.text = "1 min"
-            }else if duration > 60 && duration <= 3600 {
-                let numMinutes = duration / 60
-                cell.detailTextLabel?.text = "\(numMinutes) min"
-            }else if duration > 3600 {
-                let numHours = duration / 3600
-                let numMinutes = (duration % 3600) / 60
-                cell.detailTextLabel?.text = "\(numHours) hr \(numMinutes) min"
-            }
-        }
+        let agenda = myAgendaSet?[indexPath.row] as! Agenda
+        cell.textLabel?.text = agenda.title
+        
+        let duration = agenda.duration
+        
+        cell.detailTextLabel?.text = TimerController.calculate(duration: duration)
         
         return cell
     }
     
     func tableView(_ tableView: UITableView, moveRowAt sourceIndexPath: IndexPath, to destinationIndexPath: IndexPath) {
-        let sourceRow = agendas?[sourceIndexPath.row]
-        let myAgendaSet = meeting?.mutableOrderedSetValue(forKey: "agendas")
-        //myAgendaSet?.exchangeObject(at: sourceIndexPath.row, withObjectAt: destinationIndexPath.row)
+        let sourceRow = myAgendaSet?[sourceIndexPath.row]
         myAgendaSet?.removeObject(at: sourceIndexPath.row)
         myAgendaSet?.insert(sourceRow!, at: destinationIndexPath.row)
-        agendas?.remove(at: sourceIndexPath.row)
-        agendas?.insert(sourceRow!, at: destinationIndexPath.row)
-        DatabaseController.saveContext()
         
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return 50.0
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
     }
     
     func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
@@ -96,6 +104,14 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
             // Create a new instance of the appropriate class, insert it into the array, and add a new row to the table view
         }
     }
+    
+    func addAgenda(){
+        let createAgendaViewController = storyboard?.instantiateViewController(withIdentifier: "createAgendaViewController") as! CreateAgendaViewController
+        createAgendaViewController.meeting = self.meeting
+        createAgendaViewController.agendaViewController = self
+        navigationController?.pushViewController(createAgendaViewController, animated: animate)
+    }
+
     
     func confirmDelete(indexPath: IndexPath) {
         let alert = UIAlertController(title: "Delete Agenda", message: "Are you sure you want to delete this agenda?", preferredStyle: .actionSheet)
@@ -119,35 +135,13 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
     func deleteAgenda(indexPath: IndexPath) {
         let row = indexPath.row
         
-        if (row < agendas!.count) {
-        
-            if var agendasToBeDeleted = agendasToBeDeleted {
-                agendasToBeDeleted.append(agendas![row])
-            }else {
-                agendasToBeDeleted = [Agenda]()
-                agendasToBeDeleted!.append(agendas![row])
-            }
+        if (row < (myAgendaSet?.count)!) {
             
-            agendas!.remove(at: row)
-            
-            let parentController: MeetingTableViewController = self.parent as! MeetingTableViewController
-        
-            parentController.meetingAgendas = agendas
-            parentController.agendasToBeDeleted = agendasToBeDeleted
+            myAgendaSet?.removeObject(at: row)
             
             agendaTableView.deleteRows(at: [indexPath], with: .fade)
+            agendaTableView.reloadData()
         }
     }
-    
-
-    /*
-    // MARK: - Navigation
-
-    // In a storyboard-based application, you will often want to do a little preparation before navigation
-    override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
-        // Get the new view controller using segue.destinationViewController.
-        // Pass the selected object to the new view controller.
-    }
-    */
 
 }
