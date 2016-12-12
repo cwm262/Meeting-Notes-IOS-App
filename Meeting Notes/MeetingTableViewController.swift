@@ -8,17 +8,12 @@
 
 import UIKit
 import CoreData
-import Contacts
-import ContactsUI
 
-class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate, CNContactPickerDelegate {
+class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UITextViewDelegate {
     
     //MARK: Meeting Variables
 
     var meeting: Meeting?
-    var meetingAttendants: [MeetingAttendant]?
-    var attendantsToBeDeleted: [Attendant]?
-    var agendasToBeDeleted: [Agenda]?
     var duration: Int32 = 0
     var meetingSaved: Bool = false
     var context: NSManagedObjectContext?
@@ -142,23 +137,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         super.didReceiveMemoryWarning()
     }
     
-    func loadAttendants(){
-        if let meeting = meeting{
-            if let attendants = meeting.attendants {
-                meetingAttendants = [MeetingAttendant]()
-                for attendant in attendants {
-                    let currentAttendant = attendant as! Attendant
-                    let givenName = currentAttendant.givenName
-                    let familyName = currentAttendant.familyName
-                    let email = currentAttendant.email
-                    let meetingAttendant = MeetingAttendant(givenName: givenName!, familyName: familyName!, email: email!)
-                    meetingAttendants!.append(meetingAttendant)
-                }
-            }
-        }
-        
-    }
-    
     func saveMeeting(){
         meetingSaved = true
         meeting?.title = titleField.text
@@ -190,51 +168,6 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     func datePickerChanged(label: UILabel, datePicker: UIDatePicker){
         label.text = DateFormatter.localizedString(from: datePicker.date, dateStyle: .medium, timeStyle: .short)
-    }
-    
-    //MARK: Import a Contact from ContactPicker
-    
-    @IBAction func importParticipant(_ sender: Any) {
-        let contactPicker = CNContactPickerViewController()
-        contactPicker.delegate = self
-        self.present(contactPicker, animated: true, completion: nil)
-    }
-    
-    func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
-        for contact in contacts{
-            let givenName: String? = contact.givenName
-            let familyName: String? = contact.familyName
-            let email: String? = contact.emailAddresses.first?.value as String?
-            
-            if let givenName = givenName, let familyName = familyName, let email = email{
-                if let currAttendants = meetingAttendants{
-                    var alreadyAdded = false
-                    for meetingAttendant in currAttendants{
-                        if meetingAttendant.email == email {
-                            alreadyAdded = true
-                        }
-                    }
-                    if(!alreadyAdded){
-                        let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
-                        meetingAttendants!.append(newAttendant)
-                    }
-                }else{
-                    let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
-                    meetingAttendants = [MeetingAttendant]()
-                    meetingAttendants!.append(newAttendant)
-                }
-                
-                let embeddedController: AttendantViewController = self.childViewControllers[1] as! AttendantViewController
-                embeddedController.attendants = meetingAttendants
-                embeddedController.attendantTableView.reloadData()
-            }else{
-                let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
-                let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
-                alert.addAction(confirmAction)
-                picker.dismiss(animated: true, completion: nil)
-                self.present(alert, animated: true, completion: nil)
-            }
-        }
     }
     
     //MARK: Functions that Control Whether Section is Expanded or Not on Table
@@ -360,15 +293,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if (segue.identifier == "attendantViewSegue") {
-            loadAttendants()
+            meetingSaved = true
             let attendantViewController = segue.destination as! AttendantViewController
-            attendantViewController.attendants = meetingAttendants
+            attendantViewController.meeting = self.meeting
         }else if segue.identifier == "agendaViewSegue" {
             meetingSaved = true
             let agendaViewController = segue.destination as! AgendaViewController
             agendaViewController.meeting = self.meeting
-        } else if segue.identifier == "attendantViewSegue" {
-            //let attendantViewController = segue.destination as! AttendantViewController
         }
     }
     

@@ -20,9 +20,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
     var agendaViewController: AgendaViewController?
     var noAgendas: Bool = false
 
-    @IBOutlet weak var countdownTimer: UIDatePicker!
     @IBOutlet weak var taskTextView: UITextView!
-    
     @IBOutlet weak var titleTableView: UITableView!
     @IBOutlet weak var timerTableView: UITableView!
     

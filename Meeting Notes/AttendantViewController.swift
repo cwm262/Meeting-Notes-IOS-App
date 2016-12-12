@@ -8,9 +8,12 @@
 
 import UIKit
 import CoreData
+import Contacts
+import ContactsUI
 
-class AttendantViewController: UIViewController, UITableViewDataSource, UITableViewDelegate {
+class AttendantViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CNContactPickerDelegate {
 
+    var meeting: Meeting?
     var attendants: [MeetingAttendant]?
     var attendantsToBeDeleted: [Attendant] = [Attendant]()
     
@@ -20,6 +23,9 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         super.viewDidLoad()
         
         attendantTableView.setEditing(true, animated: true)
+        
+        let addButton = UIBarButtonSystemItem.add
+        navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.importParticipant))
         
         // Do any additional setup after loading the view.
     }
@@ -32,6 +38,47 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setToolbarHidden(false, animated: false)
         attendantTableView.reloadData()
+    }
+    
+    func importParticipant() {
+        let contactPicker = CNContactPickerViewController()
+        contactPicker.delegate = self
+        self.present(contactPicker, animated: true, completion: nil)
+    }
+    
+    func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
+        for contact in contacts{
+            let givenName: String? = contact.givenName
+            let familyName: String? = contact.familyName
+            let email: String? = contact.emailAddresses.first?.value as String?
+            
+            if let givenName = givenName, let familyName = familyName, let email = email{
+                if let currAttendants = attendants{
+                    var alreadyAdded = false
+                    for meetingAttendant in currAttendants{
+                        if meetingAttendant.email == email {
+                            alreadyAdded = true
+                        }
+                    }
+                    if(!alreadyAdded){
+                        let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
+                        attendants!.append(newAttendant)
+                    }
+                }else{
+                    let newAttendant = MeetingAttendant(givenName: givenName, familyName: familyName, email: email)
+                    attendants = [MeetingAttendant]()
+                    attendants!.append(newAttendant)
+                }
+                
+                attendantTableView.reloadData()
+            }else{
+                let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
+                let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                alert.addAction(confirmAction)
+                picker.dismiss(animated: true, completion: nil)
+                self.present(alert, animated: true, completion: nil)
+            }
+        }
     }
     
     func deleteAttendant(indexPath: IndexPath) {
@@ -57,13 +104,8 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
                 }
             }
             
-            
-            parentController.meetingAttendants = attendants
-            parentController.attendantsToBeDeleted = attendantsToBeDeleted
-            
             attendantTableView.deleteRows(at: [indexPath], with: .fade)
-            parentController.tableView.reloadData()
-            
+            attendantTableView.reloadData()
         }
     }
     
@@ -100,7 +142,7 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     }
     
     func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
-        return CGFloat.leastNormalMagnitude
+        return 50.0
     }
     
     func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
