@@ -27,6 +27,8 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         if editingAttendants {
             let addButton = UIBarButtonSystemItem.add
             navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.importParticipant))
+        } else {
+            attendantTableView.allowsSelection = false
         }
         
         if let meeting = meeting {

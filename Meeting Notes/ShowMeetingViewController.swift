@@ -55,12 +55,15 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.isEnabled = false
         notesField.isEditable = false
+        notesField.text = ""
         navigationController?.toolbar.isHidden = true
         notesField.alpha = 0.50
     }
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        styleTextView()
         
         if let meeting = meeting {
             title = meeting.title
@@ -108,11 +111,26 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     override func willMove(toParentViewController parent: UIViewController?) {
         if let agendas = meetingAgendas {
             if agendas.count > 0 {
-                meetingAgendas?[currentAgenda].notes = notesField.text
+                if notesField.text == "Notes" {
+                    meetingAgendas?[currentAgenda].notes = ""
+                } else {
+                    meetingAgendas?[currentAgenda].notes = notesField.text
+                }
                 DatabaseController.saveContext()
             }
         }
         navigationController?.toolbar.isHidden = false
+    }
+    
+    func styleTextView() {
+        notesField.layer.borderWidth = 1
+        notesField.layer.borderColor = UIColor(ciColor: CIColor(red: 224.0/255.0, green: 224.0/255.0, blue: 224.0/255.0, alpha: 1.0)).cgColor
+        
+        
+        notesField.textContainerInset = UIEdgeInsets(top: 15.0, left: 14.0, bottom: 15.0, right: 14.0)
+        
+        //notesField.text = "Notes"
+        //notesField.textColor = UIColor(red: 199.0/255.0, green: 199.0/255.0, blue: 205.0/255.0, alpha: 1.0)
     }
     
     func loadAgendas(){
