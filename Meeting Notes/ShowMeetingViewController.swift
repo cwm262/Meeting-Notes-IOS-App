@@ -10,8 +10,6 @@ import UIKit
 
 class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
     
-
-    @IBOutlet weak var currentAgendaLabel: UILabel!
     @IBOutlet weak var notesField: UITextView!
     @IBOutlet weak var currentTimerLabel: UILabel! {
         didSet {
@@ -50,8 +48,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(_ animated: Bool) {
         timerStartBtn.isEnabled = false
         timerPauseBtn.isEnabled = false
-        currentAgendaLabel.text = "None"
-        currentAgendaLabel.isEnabled = false
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.isEnabled = false
         notesField.isEditable = false
@@ -103,6 +99,16 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         for cell in metaDataTableView.visibleCells {
             cell.isSelected = false
+        }
+        if let agendas = meetingAgendas {
+            if agendas.count > 0 {
+                if notesField.text == "Notes" {
+                    meetingAgendas?[currentAgenda].notes = ""
+                } else {
+                    meetingAgendas?[currentAgenda].notes = notesField.text
+                }
+                DatabaseController.saveContext()
+            }
         }
         runningTimer = false
         agendaTimer.invalidate()
@@ -231,8 +237,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     func selectAgenda(indexPath: IndexPath){
         if let agenda = meetingAgendas?[indexPath.row] {
-            currentAgendaLabel.text = agenda.title
-            currentAgendaLabel.isEnabled = true
             currentAgenda = indexPath.row
             currentTimerLabel.text = timeFormatted(totalSeconds: timerArray[currentAgenda])
             currentTimerLabel.isEnabled = true
