@@ -19,6 +19,10 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewDidLoad() {
         super.viewDidLoad()
         
+        attendantTableView.isScrollEnabled = checkScroll()
+        
+        attendantTableView.setEditing(true, animated: true)
+        
         // Do any additional setup after loading the view.
     }
     
@@ -30,6 +34,18 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
     override func viewWillAppear(_ animated: Bool) {
         navigationController?.setToolbarHidden(false, animated: false)
         attendantTableView.reloadData()
+    }
+    
+    func checkScroll() -> Bool {
+        
+        if let attendants = attendants {
+            if attendants.count > 3 {
+                attendantTableView.flashScrollIndicators()
+                return true
+            }
+        }
+        
+        return false
     }
     
     func deleteAttendant(indexPath: IndexPath) {
@@ -60,6 +76,9 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
             parentController.attendantsToBeDeleted = attendantsToBeDeleted
             
             attendantTableView.deleteRows(at: [indexPath], with: .fade)
+            parentController.tableView.reloadData()
+            
+            attendantTableView.isScrollEnabled = checkScroll()
         }
     }
     
@@ -93,6 +112,18 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         }else{
             return 0
         }
+    }
+    
+    func tableView(_ tableView: UITableView, heightForHeaderInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, heightForFooterInSection section: Int) -> CGFloat {
+        return CGFloat.leastNormalMagnitude
+    }
+    
+    func tableView(_ tableView: UITableView, editingStyleForRowAt indexPath: IndexPath) -> UITableViewCellEditingStyle {
+        return UITableViewCellEditingStyle.delete
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {

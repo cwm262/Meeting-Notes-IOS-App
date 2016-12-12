@@ -8,8 +8,9 @@
 
 import UIKit
 import CoreData
+import MessageUI
 
-class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating {
+class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UISearchResultsUpdating, MFMailComposeViewControllerDelegate {
     
     var meetings = [Meeting]()
     var filteredMeetings = [Meeting]()
@@ -91,7 +92,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     func editMeeting(indexPath: IndexPath) {
         let row = indexPath.row
         let nextViewController = self.storyboard?.instantiateViewController(withIdentifier: "MeetingTableViewController") as? MeetingTableViewController
-        nextViewController?.meeting = meetings[row]
+        nextViewController?.meeting = filteredMeetings[row]
         self.navigationController?.pushViewController(nextViewController!, animated: true)
     }
     
@@ -130,6 +131,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         
         cell.textLabel?.text = filteredMeetings[indexPath.row].title //Set cell title
         cell.detailTextLabel?.text = DateFormatter.localizedString(from: startTimeString!, dateStyle: .medium, timeStyle: .short)
+        cell.detailTextLabel?.font = cell.detailTextLabel?.font.monospacedDigitFont
         
         return cell
     }
@@ -147,7 +149,12 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         }
         editAction.backgroundColor = #colorLiteral(red: 0.3411764801, green: 0.6235294342, blue: 0.1686274558, alpha: 1)
         
-        return [deleteAction, editAction]
+        let shareAction = UITableViewRowAction(style: UITableViewRowActionStyle.default, title: "Share") { (action , indexPath) -> Void in
+            self.shareMeeting(indexPath: indexPath)
+        }
+        shareAction.backgroundColor = #colorLiteral(red: 0.2588235438, green: 0.7568627596, blue: 0.9686274529, alpha: 1)
+        
+        return [deleteAction, editAction, shareAction]
     }
     
     func changeFilter() {
@@ -189,13 +196,63 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    func shareMeeting(indexPath: IndexPath){
+        let title = filteredMeetings[indexPath.row].title!
+        let location = filteredMeetings[indexPath.row].location!
+        let startTime = filteredMeetings[indexPath.row].startTime!
+        let start = DateFormatter.localizedString(from: startTime as Date, dateStyle: .medium, timeStyle: .short)
+        let description = filteredMeetings[indexPath.row].desc!
+        var attendees = [String]()
+        
+        if MFMailComposeViewController.canSendMail() {
+            let compose = MFMailComposeViewController()
+            compose.mailComposeDelegate = self
+            
+            if let attendants = filteredMeetings[indexPath.row].attendants {
+                for attendant in attendants {
+                    let currentAttendant = attendant as? Attendant
+                    attendees.append((currentAttendant?.email)!)
+                    
+                }
+            }
+            
+            compose.setToRecipients(attendees)
+            compose.setSubject(filteredMeetings[indexPath.row].title!)
+            compose.setMessageBody("<h2>\(title) </h2> <br /> Location/Time: \(location) <br />Start Time: \(start)<br /> Description: \(description)" , isHTML: true)
+            
+            // Present the view controller modally.
+            self.present(compose, animated: true, completion: nil)
+            
+            
+            
+            
+        }
+            
+        else {
+            let alert = UIAlertController(title: "Cannot send mail", message: "Cannot Send Mail", preferredStyle: .alert)
+            
+            let okAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+            alert.addAction(okAction)
+            present(alert, animated: true, completion: nil)
+        }
+        
+        
+    }
+    
+    func mailComposeController(_ controller: MFMailComposeViewController,
+                               didFinishWith result: MFMailComposeResult, error: Error?) {
+        
+        controller.dismiss(animated: true, completion: nil)
+        
+    }
+    
     
     //MARK: Prepare for Segue
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
         if(segue.identifier == "show"),
-            let destination = segue.destination as? MeetingTableViewController,
+            let destination = segue.destination as? ShowMeetingViewController,
             let indexPath = tableView.indexPathForSelectedRow {
-                destination.meeting = filteredMeetings[indexPath.row]
+            destination.meeting = filteredMeetings[indexPath.row]
         }
     }
 }
