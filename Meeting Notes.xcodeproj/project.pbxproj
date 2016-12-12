@@ -20,7 +20,6 @@
 		7727C2491DDA3F9300051506 /* AgendaViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7727C2481DDA3F9300051506 /* AgendaViewController.swift */; };
 		77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77297F941DC997280026A26B /* MeetingTableViewController.swift */; };
 		7749DA5E1DF677750027A5EF /* AgendaTableViewCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */; };
-		774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */ = {isa = PBXBuildFile; fileRef = 774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */; };
 		776B237E1DDF8034000F2F29 /* ShowMeetingViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */; };
 		778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */; };
 		77A2DBCD1DFDF06D008B8F80 /* TimerController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 77A2DBCC1DFDF06D008B8F80 /* TimerController.swift */; };
@@ -46,7 +45,6 @@
 		7727C2481DDA3F9300051506 /* AgendaViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaViewController.swift; sourceTree = "<group>"; };
 		77297F941DC997280026A26B /* MeetingTableViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingTableViewController.swift; sourceTree = "<group>"; };
 		7749DA5D1DF677750027A5EF /* AgendaTableViewCell.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AgendaTableViewCell.swift; sourceTree = "<group>"; };
-		774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingAttendant.swift; sourceTree = "<group>"; };
 		776B237D1DDF8034000F2F29 /* ShowMeetingViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ShowMeetingViewController.swift; sourceTree = "<group>"; };
 		778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MeetingsTblViewController.swift; sourceTree = "<group>"; };
 		77A2DBCC1DFDF06D008B8F80 /* TimerController.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TimerController.swift; path = ../TimerController.swift; sourceTree = "<group>"; };
@@ -80,14 +78,6 @@
 			name = "Custom Cells";
 			sourceTree = "<group>";
 		};
-		770F30BE1DD83F9300CE493B /* Models */ = {
-			isa = PBXGroup;
-			children = (
-				774EF8F91DD2E9C800EE9174 /* MeetingAttendant.swift */,
-			);
-			name = Models;
-			sourceTree = "<group>";
-		};
 		770F82AD1DBA847000B68E6F = {
 			isa = PBXGroup;
 			children = (
@@ -111,7 +101,6 @@
 				770F82B91DBA847000B68E6F /* AppDelegate.swift */,
 				77A49DD11DD7EC96002495DF /* DatabaseController.swift */,
 				77A2DBCC1DFDF06D008B8F80 /* TimerController.swift */,
-				770F30BE1DD83F9300CE493B /* Models */,
 				17BF422B1DFC717D00505229 /* Custom Cells */,
 				77297F941DC997280026A26B /* MeetingTableViewController.swift */,
 				778D1FD61DCC4B9600269ECE /* MeetingsTblViewController.swift */,
@@ -218,7 +207,6 @@
 				778D1FD71DCC4B9600269ECE /* MeetingsTblViewController.swift in Sources */,
 				77A49DA51DD6AC10002495DF /* AttendantViewController.swift in Sources */,
 				77297F951DC997280026A26B /* MeetingTableViewController.swift in Sources */,
-				774EF8FA1DD2E9C800EE9174 /* MeetingAttendant.swift in Sources */,
 				770F82BA1DBA847000B68E6F /* AppDelegate.swift in Sources */,
 				77A49DD21DD7EC96002495DF /* DatabaseController.swift in Sources */,
 				174A353A1DFCAF4A004E9177 /* CreateAgendaTimerTableViewCell.swift in Sources */,

@@ -34,6 +34,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var descriptionField: UITextView!
     @IBOutlet weak var durationField: UILabel!
     @IBOutlet weak var agendaCountLabel: UILabel!
+    @IBOutlet weak var attendantCountLabel: UILabel!
     
     //MARK: Booleans for Whether or Not Section is Expanded
     
@@ -74,6 +75,10 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             
             if (meeting.agendas?.count)! > 0 {
                 agendaCountLabel.text = "\(meeting.agendas?.count)"
+            }
+            
+            if (meeting.attendants?.count)! > 0 {
+                attendantCountLabel.text = "\(meeting.attendants?.count)"
             }
             let str = meeting.desc?.characters
             if let str = str {
@@ -119,6 +124,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     override func viewWillAppear(_ animated: Bool) {
         tableView.reloadData()
+        
         if let agendas = meeting?.agendas, agendas.count > 0 {
             duration = 0
             for agenda in agendas {
@@ -130,6 +136,13 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             durationField.text = "No Agendas"
             agendaCountLabel.text = "None"
         }
+        
+        if let attendants = meeting?.attendants, attendants.count > 0 {
+            attendantCountLabel.text = "\(attendants.count)"
+        } else {
+            attendantCountLabel.text = "None"
+        }
+    
         navigationController?.toolbar.isHidden = false
     }
     
@@ -208,6 +221,20 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             agendaViewController.meeting = self.meeting
             meetingSaved = true
             navigationController?.pushViewController(agendaViewController, animated: animate)
+        }
+        
+        if indexPath.section == 4 && indexPath.row == 0 {
+            var animate: Bool = true
+            if meeting?.attendants?.count == 0 || meeting?.attendants == nil {
+                animate = false
+            } else {
+                animate = true
+            }
+            let attendantViewController = storyboard?.instantiateViewController(withIdentifier: "attendantViewController") as! AttendantViewController
+            attendantViewController.meeting = self.meeting
+            attendantViewController.editingAttendants = true
+            meetingSaved = true
+            navigationController?.pushViewController(attendantViewController, animated: animate)
         }
 
     }
@@ -292,12 +319,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     //MARK: Prepare for Segue
     
     override func prepare(for segue: UIStoryboardSegue, sender: Any?) {
+        meetingSaved = true
         if (segue.identifier == "attendantViewSegue") {
-            meetingSaved = true
             let attendantViewController = segue.destination as! AttendantViewController
             attendantViewController.meeting = self.meeting
         }else if segue.identifier == "agendaViewSegue" {
-            meetingSaved = true
             let agendaViewController = segue.destination as! AgendaViewController
             agendaViewController.meeting = self.meeting
         }

@@ -84,7 +84,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             metaData.append(durText)
             metaData.append("\(numParticipants)")
     
-            
         }
         
     }
@@ -121,8 +120,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                     duration += currentAgenda.duration
                     timerArray.append(0)
                 }
-                calculateAndSetDuration(duration: duration)
-                
+                durText = TimerController.calculate(duration: duration)
             }
         }
         
@@ -140,22 +138,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
-    
-    func calculateAndSetDuration(duration: Int32){
-        if duration == 60 {
-            durText = "1 min"
-        }else if duration > 60 && duration <= 3600 {
-            let numMinutes = duration / 60
-            durText = "\(numMinutes) min"
-        }else if duration > 3600 {
-            let numHours = duration / 3600
-            let numMinutes = (duration % 3600) / 60
-            let hourStr = "hr"
-            let minuteStr = "min"
-            durText = "\(numHours) \(hourStr) \(numMinutes) \(minuteStr)"
-        }
-    }
-    
     @IBAction func startTimer(_ sender: Any) {
         if !runningTimer {
             agendaTimer = Timer.scheduledTimer(timeInterval: 1, target: self, selector: #selector(countdown), userInfo: nil, repeats: true)
@@ -164,6 +146,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
 
         runningAgenda = currentAgenda
     }
+    
     @IBAction func pauseTimer(_ sender: Any) {
         runningTimer = false
         agendaTimer.invalidate()
@@ -236,6 +219,16 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        
+        if tableView == self.metaDataTableView {
+            if indexPath.section == 0 && indexPath.row == 4 {
+                let attendantViewController = storyboard?.instantiateViewController(withIdentifier: "attendantViewController") as! AttendantViewController
+                attendantViewController.meeting = self.meeting
+                attendantViewController.editingAttendants = false
+                navigationController?.pushViewController(attendantViewController, animated: true)
+            }
+        }
+        
         let time = meetingAgendas?[runningAgenda].duration
         if let oldPath = oldPath {
             tableView.cellForRow(at: oldPath)?.isSelected = false
@@ -256,9 +249,10 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
-        meetingAgendas?[indexPath.row].notes = notesField.text
-        DatabaseController.saveContext()
-        
+        if tableView == agendaTableView {
+            meetingAgendas?[indexPath.row].notes = notesField.text
+            DatabaseController.saveContext()
+        }
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -269,6 +263,10 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             let cell = tableView.dequeueReusableCell(withIdentifier: "metaCell", for: indexPath)
             cell.textLabel!.text = metaLabels[indexPath.row]
             cell.detailTextLabel!.text = metaData[indexPath.row]
+            
+            if metaLabels[indexPath.row] == "Participants" {
+                cell.accessoryType = .disclosureIndicator
+            }
             
             cellReturn = cell
         }

@@ -14,18 +14,27 @@ import ContactsUI
 class AttendantViewController: UIViewController, UITableViewDataSource, UITableViewDelegate, CNContactPickerDelegate {
 
     var meeting: Meeting?
+    var noAttendants: Bool = false
+    var editingAttendants: Bool = false
     
     @IBOutlet weak var attendantTableView: UITableView!
     
     override func viewDidLoad() {
         super.viewDidLoad()
         
-        attendantTableView.setEditing(true, animated: true)
+        attendantTableView.setEditing(editingAttendants, animated: true)
         
-        let addButton = UIBarButtonSystemItem.add
-        navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.importParticipant))
+        if editingAttendants {
+            let addButton = UIBarButtonSystemItem.add
+            navigationItem.rightBarButtonItem = UIBarButtonItem.init(barButtonSystemItem: addButton, target: self, action: #selector(self.importParticipant))
+        }
         
-        // Do any additional setup after loading the view.
+        if let meeting = meeting {
+            if meeting.attendants?.count == 0 || meeting.attendants == nil {
+                noAttendants = true
+                importParticipant()
+            }
+        }
     }
     
     override func didReceiveMemoryWarning() {
@@ -42,6 +51,12 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         let contactPicker = CNContactPickerViewController()
         contactPicker.delegate = self
         self.present(contactPicker, animated: true, completion: nil)
+    }
+    
+    func contactPickerDidCancel(_ picker: CNContactPickerViewController) {
+        if noAttendants {
+            _ = navigationController?.popViewController(animated: true)
+        }
     }
     
     func contactPicker(_ picker: CNContactPickerViewController, didSelect contacts: [CNContact]) {
