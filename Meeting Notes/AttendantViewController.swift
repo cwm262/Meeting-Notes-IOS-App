@@ -72,6 +72,7 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
                         alreadyAdded = true
                     }
                 }
+                
                 if !alreadyAdded {
                     let context = DatabaseController.getContext()
                     let desc = NSEntityDescription.entity(forEntityName: "Attendant", in: context)
@@ -80,7 +81,14 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
                     newAttendant.setValue(familyName, forKey: "familyName")
                     newAttendant.setValue(email, forKey: "email")
                     self.meeting?.addToAttendants(newAttendant)
+                } else {
+                    let alert = UIAlertController(title: "Contact Already Imported", message: "\(givenName) \(familyName) has already been imported into this meeting", preferredStyle: .alert)
+                    let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
+                    alert.addAction(confirmAction)
+                    picker.dismiss(animated: true, completion: nil)
+                    self.present(alert, animated: true, completion: nil)
                 }
+                
             }else{
                 let alert = UIAlertController(title: "Contact Not Imported", message: "\(givenName ?? "") \(familyName ?? "") \(email ?? "") has not been added because the contact was missing either their first name, last name, or email.", preferredStyle: .alert)
                 let confirmAction = UIAlertAction(title: "Ok", style: .default, handler: nil)
