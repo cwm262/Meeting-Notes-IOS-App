@@ -22,6 +22,11 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     var agendasToBeDeleted: [Agenda]?
     var duration: Int32 = 0
     
+    //Dismissal of keyboard in Table View Controller, Title and Location are part of the Outlet collection
+    
+    var activeTextField: UITextField? = nil
+    @IBOutlet var textFields: [UITextField]!
+    
     //MARK: IBOutlets
 
     @IBOutlet weak var startTimeLabel: UILabel! {
@@ -55,6 +60,10 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        for field in textFields {
+            field.delegate = self
+        }
         
         title = "New Meeting"
         
@@ -96,6 +105,22 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         
         datePickerChanged(label: startTimeLabel, datePicker: startTimeDatePicker)
 
+    }
+    
+    //Dismiss keyboard functions
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        activeTextField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        activeTextField = nil
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        activeTextField?.resignFirstResponder()
+        
+        return true
     }
     
     override func viewWillAppear(_ animated: Bool) {
@@ -348,12 +373,16 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             dateLoaded = true
             startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&startDatePickerHidden)
+            descriptionField?.resignFirstResponder()
+            activeTextField?.resignFirstResponder()
         }
         if indexPath.section == 1 && indexPath.row == 0 {
             descCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1))!
             descLoaded = true
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
+            descriptionField?.resignFirstResponder()
+            activeTextField?.resignFirstResponder()
         }
 
     }

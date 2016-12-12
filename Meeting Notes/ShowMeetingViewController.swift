@@ -26,6 +26,8 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBOutlet weak var timerPauseBtn: UIButton!
     @IBOutlet weak var timerResetBtn: UIButton!
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     var meeting: Meeting?
     var meetingAgendas: [Agenda]?
     var meetingAttendants: [Attendant]?
@@ -47,6 +49,9 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var metaData = [String]()
     var durText: String = ""
     
+    var activeTextField: UITextField? = nil
+    let keyboardVerticalSpacing: CGFloat = 30
+    
     override func viewWillAppear(_ animated: Bool) {
         timerStartBtn.isEnabled = false
         timerPauseBtn.isEnabled = false
@@ -61,6 +66,11 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        notesField.delegate = self
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowMeetingViewController.keyboardWasShown(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowMeetingViewController.keyboardWillBeHidden(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
         
         if let meeting = meeting {
             title = meeting.title
@@ -167,6 +177,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func pauseTimer(_ sender: Any) {
         runningTimer = false
         agendaTimer.invalidate()
+        notesField?.resignFirstResponder()
     }
     
     @IBAction func resetTimer(_ sender: Any) {
@@ -175,6 +186,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         timerArray[runningAgenda] = 0
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        notesField?.resignFirstResponder()
     }
     
     func countdown() {
@@ -339,6 +351,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         return header
     }
     
+    
     @IBAction func toggleAgendaState(_ sender: AnyObject) {
         
         let cell = agendaTableView.cellForRow(at: IndexPath(row: sender.tag, section: 0)) as! AgendaTableViewCell
@@ -357,6 +370,31 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             agendaTableView.cellForRow(at: oldPath!)?.isSelected = true
         }
     }
+    func keyboardWasShown(_ aNotification: Notification) {
+        let userInfo = (aNotification as NSNotification).userInfo
+        
+        if let info = userInfo {
+            let kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue.size
+            let contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height + keyboardVerticalSpacing, 0.0)
+            
+            scrollView.contentInset = contentInsets
+            scrollView.scrollIndicatorInsets = contentInsets
+            
+            let activeTextFieldSize = CGRect(x: notesField!.frame.origin.x, y: notesField!.frame.origin.y, width: notesField!.frame.width, height: notesField!.frame.height + keyboardVerticalSpacing)
+            
+            
+            /*Necessary to tell the scroll to update after done with function, Putting in the queue delays the execution of the return. */
+            DispatchQueue.main.async(execute: {
+                self.scrollView.scrollRectToVisible(activeTextFieldSize, animated: true)
+            })
+        }
+    }
+    
+    func keyboardWillBeHidden(_ aNotification: Notification) {
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+    }
+
     
     @IBAction func openAgendaModal(_ sender: AnyObject){
         if let agenda = meetingAgendas?[sender.tag] {
@@ -369,6 +407,5 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
         }
     }
-    
     
 }

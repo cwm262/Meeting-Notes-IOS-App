@@ -118,6 +118,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         whichField = !whichField
         self.timerTableView.beginUpdates()
         self.timerTableView.endUpdates()
+        taskTextView?.resignFirstResponder()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
@@ -191,12 +192,12 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
     
+    
     @IBAction func changedTimerVal(_ sender: Any) {
         let timerCell = timerTableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! CreateAgendaTimerTableViewCell
         
         calculateAndSetDuration(duration: Int32(timerCell.countdownTimer.countDownDuration))
     }
-
     
     /*
     // MARK: - Navigation
