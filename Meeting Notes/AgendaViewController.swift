@@ -26,6 +26,9 @@ class AgendaViewController: UIViewController, UITableViewDelegate, UITableViewDa
         
         if let meeting = meeting {
             myAgendaSet = meeting.mutableOrderedSetValue(forKey: "agendas")
+            if myAgendaSet?.count == 0 {
+                addAgenda()
+            }
         }
         
     }
