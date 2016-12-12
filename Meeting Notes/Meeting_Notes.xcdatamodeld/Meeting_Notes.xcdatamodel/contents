@@ -1,0 +1,33 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<model type="com.apple.IDECoreDataModeler.DataModel" documentVersion="1.0" lastSavedToolsVersion="11542" systemVersion="15G1108" minimumToolsVersion="Automatic" sourceLanguage="Swift" userDefinedModelVersionIdentifier="">
+    <entity name="Agenda" representedClassName="Agenda" syncable="YES" codeGenerationType="class">
+        <attribute name="duration" optional="YES" attributeType="Integer 32" defaultValueString="0.0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="isDone" attributeType="Boolean" defaultValueString="NO" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="notes" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="task" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="attendants" optional="YES" toMany="YES" deletionRule="Nullify" destinationEntity="Attendant" inverseName="agenda" inverseEntity="Attendant" syncable="YES"/>
+        <relationship name="meeting" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meeting" inverseName="agendas" inverseEntity="Meeting" syncable="YES"/>
+    </entity>
+    <entity name="Attendant" representedClassName="Attendant" syncable="YES" codeGenerationType="class">
+        <attribute name="email" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="familyName" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="givenName" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="agenda" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Agenda" inverseName="attendants" inverseEntity="Agenda" syncable="YES"/>
+        <relationship name="meeting" optional="YES" maxCount="1" deletionRule="Nullify" destinationEntity="Meeting" inverseName="attendants" inverseEntity="Meeting" syncable="YES"/>
+    </entity>
+    <entity name="Meeting" representedClassName="Meeting" syncable="YES" codeGenerationType="class">
+        <attribute name="desc" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="duration" attributeType="Integer 32" defaultValueString="0" usesScalarValueType="YES" syncable="YES"/>
+        <attribute name="location" optional="YES" attributeType="String" syncable="YES"/>
+        <attribute name="startTime" optional="YES" attributeType="Date" usesScalarValueType="NO" syncable="YES"/>
+        <attribute name="title" optional="YES" attributeType="String" syncable="YES"/>
+        <relationship name="agendas" optional="YES" toMany="YES" minCount="1" deletionRule="Cascade" ordered="YES" destinationEntity="Agenda" inverseName="meeting" inverseEntity="Agenda" syncable="YES"/>
+        <relationship name="attendants" optional="YES" toMany="YES" deletionRule="Cascade" ordered="YES" destinationEntity="Attendant" inverseName="meeting" inverseEntity="Attendant" syncable="YES"/>
+    </entity>
+    <elements>
+        <element name="Agenda" positionX="-38" positionY="207" width="128" height="150"/>
+        <element name="Attendant" positionX="232" positionY="50" width="128" height="120"/>
+        <element name="Meeting" positionX="-63" positionY="-18" width="128" height="148"/>
+    </elements>
+</model>
