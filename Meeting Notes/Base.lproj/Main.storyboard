@@ -275,6 +275,7 @@
                                             </button>
                                         </subviews>
                                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                                        <gestureRecognizers/>
                                         <constraints>
                                             <constraint firstItem="0Sb-nM-W4v" firstAttribute="leading" secondItem="NFy-sh-n9Y" secondAttribute="leading" id="4dv-9G-jjp"/>
                                             <constraint firstItem="Y0s-bC-IN5" firstAttribute="top" secondItem="IIq-4f-wQn" secondAttribute="bottom" constant="4" id="9MO-2c-Vh7"/>
@@ -298,6 +299,9 @@
                                             <constraint firstAttribute="trailing" secondItem="0Sb-nM-W4v" secondAttribute="trailing" id="yBa-VD-zYe"/>
                                             <constraint firstAttribute="trailing" secondItem="1Pb-3x-wnh" secondAttribute="trailing" constant="-4" id="zdP-iZ-IyL"/>
                                         </constraints>
+                                        <connections>
+                                            <outletCollection property="gestureRecognizers" destination="9L8-iC-Hz4" appends="YES" id="Wf4-CT-9Rr"/>
+                                        </connections>
                                     </view>
                                 </subviews>
                                 <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
@@ -335,6 +339,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5nm-aB-V5r" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer cancelsTouchesInView="NO" id="9L8-iC-Hz4">
+                    <connections>
+                        <action selector="tapScreenExitTextView:" destination="IEX-vb-w68" id="hte-Q4-qfi"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="1392.8" y="-251.87406296851577"/>
         </scene>
@@ -670,6 +679,9 @@
                                                     <nil key="textColor"/>
                                                     <fontDescription key="fontDescription" type="system" pointSize="17"/>
                                                     <textInputTraits key="textInputTraits"/>
+                                                    <connections>
+                                                        <outlet property="delegate" destination="Nfn-xf-8SX" id="hTR-pK-XtA"/>
+                                                    </connections>
                                                 </textField>
                                             </subviews>
                                             <constraints>
@@ -767,6 +779,7 @@
                             </tableView>
                         </subviews>
                         <color key="backgroundColor" cocoaTouchSystemColor="groupTableViewBackgroundColor"/>
+                        <gestureRecognizers/>
                         <constraints>
                             <constraint firstItem="mwE-LA-N9s" firstAttribute="leading" secondItem="fFx-S1-TnD" secondAttribute="leadingMargin" constant="-21" id="5Ng-jW-AwB"/>
                             <constraint firstAttribute="trailingMargin" secondItem="mwE-LA-N9s" secondAttribute="trailing" constant="-21" id="8Qx-uk-SQq"/>
@@ -780,6 +793,9 @@
                             <constraint firstAttribute="trailingMargin" secondItem="BGa-VC-3tu" secondAttribute="trailing" constant="-21" id="mZX-Pv-phz"/>
                             <constraint firstItem="u2R-Sk-iXr" firstAttribute="leading" secondItem="fFx-S1-TnD" secondAttribute="leading" constant="-5" id="qEY-dQ-W4K"/>
                         </constraints>
+                        <connections>
+                            <outletCollection property="gestureRecognizers" destination="jeI-Hn-GK9" appends="YES" id="H0l-2V-chv"/>
+                        </connections>
                     </view>
                     <toolbarItems/>
                     <connections>
@@ -789,6 +805,11 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="jG1-tw-72C" userLabel="First Responder" sceneMemberID="firstResponder"/>
+                <tapGestureRecognizer cancelsTouchesInView="NO" id="jeI-Hn-GK9">
+                    <connections>
+                        <action selector="tapScreenDismissKeyboard:" destination="Nfn-xf-8SX" id="wWZ-gN-CWz"/>
+                    </connections>
+                </tapGestureRecognizer>
             </objects>
             <point key="canvasLocation" x="3097" y="1073"/>
         </scene>

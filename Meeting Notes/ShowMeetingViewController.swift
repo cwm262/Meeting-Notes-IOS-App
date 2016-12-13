@@ -457,5 +457,8 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    @IBAction func tapScreenExitTextView(_ sender: Any) {
+        notesField.resignFirstResponder()
+    }
     
 }
