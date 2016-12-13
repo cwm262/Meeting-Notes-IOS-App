@@ -210,6 +210,9 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             fieldViewToggled(&startDatePickerHidden)
             descriptionField?.resignFirstResponder()
             activeTextField?.resignFirstResponder()
+            if !descTextHidden {
+                fieldViewToggled(&descTextHidden)
+            }
         }
         if indexPath.section == 1 && indexPath.row == 0 {
             descCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1))!
@@ -218,6 +221,9 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             fieldViewToggled(&descTextHidden)
             descriptionField?.resignFirstResponder()
             activeTextField?.resignFirstResponder()
+            if !startDatePickerHidden {
+                fieldViewToggled(&startDatePickerHidden)
+            }
         }
         
         if indexPath.section == 3 && indexPath.row == 0 {
@@ -271,6 +277,9 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        if !startDatePickerHidden {
+            fieldViewToggled(&startDatePickerHidden)
+        }
         if textView.textColor != UIColor.black {
             textView.textColor = UIColor.black
             textView.text = ""
@@ -330,6 +339,12 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     //Dismiss keyboard functions
     
     func textFieldDidBeginEditing(_ textField: UITextField) {
+        if !startDatePickerHidden {
+            fieldViewToggled(&startDatePickerHidden)
+        }
+        if !descTextHidden {
+            fieldViewToggled(&descTextHidden)
+        }
         activeTextField = textField
     }
     
