@@ -157,6 +157,13 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         if tableView == self.timerTableView {
             if indexPath.row == 1 {
                 cell = tableView.dequeueReusableCell(withIdentifier: "timerCell", for: indexPath) as! CreateAgendaTimerTableViewCell
+                let cell = cell as! CreateAgendaTimerTableViewCell
+                var dateComp = DateComponents()
+                dateComp.hour = 0
+                dateComp.minute = 1
+                let calendar = NSCalendar(calendarIdentifier: NSCalendar.Identifier.gregorian)
+                let date = calendar?.date(from: dateComp)
+                cell.countdownTimer.setDate(date!, animated: true)
             } else if indexPath.row == 0 {
                 cell = tableView.dequeueReusableCell(withIdentifier: "durationCell", for: indexPath)
                 cell.detailTextLabel?.text = "1 min"
