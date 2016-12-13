@@ -17,6 +17,8 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
     }
     
+    @IBOutlet weak var scrollView: UIScrollView!
+    
     @IBOutlet weak var metaDataTableView: UITableView!
     @IBOutlet weak var agendaTableView: UITableView!
     
@@ -45,6 +47,9 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var metaData = [String]()
     var durText: String = ""
     
+    var activeTextField: UITextField? = nil
+    let keyboardVerticalSpacing: CGFloat = 30
+    
     override func viewWillAppear(_ animated: Bool) {
         timerStartBtn.isEnabled = false
         timerPauseBtn.isEnabled = false
@@ -58,6 +63,11 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowMeetingViewController.keyboardWasShown(_:)), name: NSNotification.Name.UIKeyboardDidShow, object: nil)
+        NotificationCenter.default.addObserver(self, selector: #selector(ShowMeetingViewController.keyboardWillBeHidden(_:)), name: NSNotification.Name.UIKeyboardWillHide, object: nil)
+        
+        notesField.delegate = self
         
         styleTextView()
         
@@ -180,6 +190,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     @IBAction func pauseTimer(_ sender: Any) {
         runningTimer = false
         agendaTimer.invalidate()
+        notesField?.resignFirstResponder()
     }
     
     @IBAction func resetTimer(_ sender: Any) {
@@ -188,6 +199,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         timerArray[runningAgenda] = 0
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+        notesField?.resignFirstResponder()
     }
     
     func countdown() {
@@ -249,7 +261,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
         
         if tableView == self.metaDataTableView {
-            if indexPath.section == 0 && indexPath.row == 4 {
+            if indexPath.section == 0 && indexPath.row == 4 && (meeting?.attendants?.count)! > 0 {
                 let attendantViewController = storyboard?.instantiateViewController(withIdentifier: "attendantViewController") as! AttendantViewController
                 attendantViewController.meeting = self.meeting
                 attendantViewController.editingAttendants = false
@@ -257,7 +269,15 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
         
-        let time = meetingAgendas?[runningAgenda].duration
+        if let meetingAgendas = meetingAgendas, runningAgenda < meetingAgendas.count{
+            let time = meetingAgendas[runningAgenda].duration
+            if timerArray[runningAgenda] < Int(time) || currentAgenda != runningAgenda{
+                currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
+            } else {
+                currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
+            }
+        }
+        
         if let oldPath = oldPath {
             tableView.cellForRow(at: oldPath)?.isSelected = false
         }
@@ -269,11 +289,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         timerStartBtn.isEnabled = true
         timerPauseBtn.isEnabled = true
         
-        if timerArray[runningAgenda] < Int(time!) || currentAgenda != runningAgenda{
-            currentTimerLabel.textColor = #colorLiteral(red: 0, green: 0, blue: 0, alpha: 1)
-        } else {
-            currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
-        }
+        
     }
     
     func tableView(_ tableView: UITableView, didDeselectRowAt indexPath: IndexPath) {
@@ -360,6 +376,32 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         }
         
         return header
+    }
+    
+    
+    func keyboardWasShown(_ aNotification: Notification) {
+        let userInfo = (aNotification as NSNotification).userInfo
+        
+        if let info = userInfo {
+            let kbSize = (info[UIKeyboardFrameBeginUserInfoKey] as! NSValue).cgRectValue.size
+            let contentInsets = UIEdgeInsetsMake(0.0, 0.0, kbSize.height + keyboardVerticalSpacing, 0.0)
+            
+            scrollView.contentInset = contentInsets
+            scrollView.scrollIndicatorInsets = contentInsets
+            
+            let activeTextFieldSize = CGRect(x: notesField!.frame.origin.x, y: notesField!.frame.origin.y, width: notesField!.frame.width, height: notesField!.frame.height + keyboardVerticalSpacing)
+            
+            
+            /*Necessary to tell the scroll to update after done with function, Putting in the queue delays the execution of the return. */
+            DispatchQueue.main.async(execute: {
+                self.scrollView.scrollRectToVisible(activeTextFieldSize, animated: false)
+            })
+        }
+    }
+    
+    func keyboardWillBeHidden(_ aNotification: Notification) {
+        scrollView.contentInset = UIEdgeInsets.zero
+        scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
     }
     
     @IBAction func toggleAgendaState(_ sender: AnyObject) {

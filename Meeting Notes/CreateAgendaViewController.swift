@@ -128,6 +128,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         whichField = !whichField
         self.timerTableView.beginUpdates()
         self.timerTableView.endUpdates()
+        taskTextView?.resignFirstResponder()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

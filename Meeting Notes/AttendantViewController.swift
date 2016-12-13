@@ -32,7 +32,7 @@ class AttendantViewController: UIViewController, UITableViewDataSource, UITableV
         }
         
         if let meeting = meeting {
-            if meeting.attendants?.count == 0 || meeting.attendants == nil {
+            if (meeting.attendants?.count == 0 || meeting.attendants == nil) && editingAttendants {
                 noAttendants = true
                 importParticipant()
             }
