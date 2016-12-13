@@ -53,6 +53,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     override func viewWillAppear(_ animated: Bool) {
         timerStartBtn.isEnabled = false
         timerPauseBtn.isEnabled = false
+        timerResetBtn.isEnabled = false
         currentTimerLabel.text = "00:00:00"
         currentTimerLabel.isEnabled = false
         notesField.isEditable = false
@@ -276,6 +277,9 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             } else {
                 currentTimerLabel.textColor = #colorLiteral(red: 1, green: 0, blue: 0, alpha: 1)
             }
+            timerStartBtn.isEnabled = true
+            timerPauseBtn.isEnabled = true
+            timerResetBtn.isEnabled = true
         }
         
         if let oldPath = oldPath {
@@ -286,8 +290,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         if tableView == self.agendaTableView {
             selectAgenda(indexPath: indexPath)
         }
-        timerStartBtn.isEnabled = true
-        timerPauseBtn.isEnabled = true
+        
         
         
     }
