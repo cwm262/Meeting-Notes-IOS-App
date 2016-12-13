@@ -122,7 +122,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             }
         }
         runningTimer = false
-        agendaTimer.invalidate()
+        //agendaTimer.invalidate()
     }
     
     override func willMove(toParentViewController parent: UIViewController?) {
