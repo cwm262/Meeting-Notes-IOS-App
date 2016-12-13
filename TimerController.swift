@@ -14,7 +14,7 @@ class TimerController {
         var durationString = ""
         if duration == 60 {
             durationString = "1 min"
-        }else if duration > 60 && duration < 3600 {
+        }else if duration > 60 && duration <= 3600 {
             let numMinutes = duration / 60
             durationString = "\(numMinutes) min"
         }else if duration > 3600 {
