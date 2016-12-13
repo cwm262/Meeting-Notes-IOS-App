@@ -39,6 +39,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     var oldPath: IndexPath?
     var agendaTimer = Timer()
     var runningTimer = false
+    var isCellSelected = false
     var runningAgenda: Int = 0
     
     var timerArray: [Int] = []
@@ -51,15 +52,17 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     let keyboardVerticalSpacing: CGFloat = 30
     
     override func viewWillAppear(_ animated: Bool) {
-        timerStartBtn.isEnabled = false
-        timerPauseBtn.isEnabled = false
-        timerResetBtn.isEnabled = false
-        currentTimerLabel.text = "00:00:00"
-        currentTimerLabel.isEnabled = false
-        notesField.isEditable = false
-        notesField.text = ""
+        if !runningTimer && !isCellSelected {
+            timerStartBtn.isEnabled = false
+            timerPauseBtn.isEnabled = false
+            timerResetBtn.isEnabled = false
+            currentTimerLabel.text = "00:00:00"
+            currentTimerLabel.isEnabled = false
+            notesField.isEditable = false
+            notesField.text = ""
+            notesField.alpha = 0.50
+        }
         navigationController?.toolbar.isHidden = true
-        notesField.alpha = 0.50
     }
     
     override func viewDidLoad() {
@@ -105,9 +108,6 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     override func viewWillDisappear(_ animated: Bool) {
-        for cell in agendaTableView.visibleCells {
-            cell.isSelected = false
-        }
         for cell in metaDataTableView.visibleCells {
             cell.isSelected = false
         }
@@ -121,7 +121,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
                 DatabaseController.saveContext()
             }
         }
-        runningTimer = false
+        //runningTimer = false
         //agendaTimer.invalidate()
     }
     
@@ -250,6 +250,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     func selectAgenda(indexPath: IndexPath){
         if let agenda = meetingAgendas?[indexPath.row] {
+            isCellSelected = true
             currentAgenda = indexPath.row
             currentTimerLabel.text = timeFormatted(totalSeconds: timerArray[currentAgenda])
             currentTimerLabel.isEnabled = true
