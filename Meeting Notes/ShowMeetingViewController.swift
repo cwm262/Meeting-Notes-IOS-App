@@ -313,6 +313,9 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
             if metaLabels[indexPath.row] == "Participants" {
                 cell.accessoryType = .disclosureIndicator
+                cell.selectionStyle = .none
+            } else {
+                cell.selectionStyle = .none
             }
             
             cellReturn = cell
@@ -383,6 +386,7 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     
     
     func keyboardWasShown(_ aNotification: Notification) {
+        
         let userInfo = (aNotification as NSNotification).userInfo
         
         if let info = userInfo {
@@ -403,8 +407,12 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
     }
     
     func keyboardWillBeHidden(_ aNotification: Notification) {
-        scrollView.contentInset = UIEdgeInsets.zero
+        
+        
+        scrollView.contentInset = UIEdgeInsetsMake(65.0, 0.0, 0.0, 0.0)
         scrollView.scrollIndicatorInsets = UIEdgeInsets.zero
+        
+        scrollView.setContentOffset(CGPoint.init(x: 0, y: -65), animated: true)
     }
     
     @IBAction func toggleAgendaState(_ sender: AnyObject) {
