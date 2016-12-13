@@ -339,7 +339,7 @@
                     </connections>
                 </viewController>
                 <placeholder placeholderIdentifier="IBFirstResponder" id="5nm-aB-V5r" userLabel="First Responder" sceneMemberID="firstResponder"/>
-                <tapGestureRecognizer cancelsTouchesInView="NO" id="9L8-iC-Hz4">
+                <tapGestureRecognizer cancelsTouchesInView="NO" numberOfTapsRequired="2" id="9L8-iC-Hz4">
                     <connections>
                         <action selector="tapScreenExitTextView:" destination="IEX-vb-w68" id="hte-Q4-qfi"/>
                     </connections>
