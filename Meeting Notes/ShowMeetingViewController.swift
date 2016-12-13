@@ -344,6 +344,12 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
             
             if let agendas = meetingAgendas {
                 cell.doneSwitch.isOn = agendas[indexPath.row].isDone
+                if agendas[indexPath.row].isDone {
+                    let string: String = cell.titleLabel.text!
+                    let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: string)
+                    attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: 2, range: NSMakeRange(0, attributeString.length))
+                    cell.titleLabel.attributedText = attributeString
+                }
             }
             cell.doneSwitch.addTarget(self, action: #selector(self.toggleAgendaState(_:)), for: .touchUpInside)
             
@@ -422,13 +428,18 @@ class ShowMeetingViewController: UIViewController, UITableViewDelegate, UITableV
         if let agenda = meetingAgendas?[sender.tag] {
             if cell.doneSwitch.isOn {
                 agenda.isDone = true
+                let string: String = cell.titleLabel.text!
+                let attributeString: NSMutableAttributedString =  NSMutableAttributedString(string: string)
+                attributeString.addAttribute(NSStrikethroughStyleAttributeName, value: 2, range: NSMakeRange(0, attributeString.length))
+                cell.titleLabel.attributedText = attributeString
                 runningTimer = false
                 agendaTimer.invalidate()
             }else {
                 agenda.isDone = false
+                cell.titleLabel.attributedText = nil
+                agendaTableView.reloadData()
             }
             DatabaseController.saveContext()
-            agendaTableView.reloadData()
             oldPath = IndexPath(row: currentAgenda, section: 0)
             agendaTableView.cellForRow(at: oldPath!)?.isSelected = true
         }
