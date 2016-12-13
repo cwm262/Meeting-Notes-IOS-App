@@ -117,7 +117,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
                 durCell.isSelected = false
                 return 0
             } else if !timerHidden && indexPath.row == 1 {
-                return 216
+                return 200
             }
         }
         
@@ -128,7 +128,9 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         whichField = !whichField
         self.timerTableView.beginUpdates()
         self.timerTableView.endUpdates()
-        taskTextView?.resignFirstResponder()
+        taskTextView.resignFirstResponder()
+        let cell = titleTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CreateAgendaTitleTableViewCell
+        cell.titleField.resignFirstResponder()
     }
     
     func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {

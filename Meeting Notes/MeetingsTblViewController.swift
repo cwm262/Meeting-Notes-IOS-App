@@ -27,7 +27,7 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
     
     override func viewDidLoad() {
         super.viewDidLoad()
-        
+
         title = "Meetings"
         
         searchController = UISearchController(searchResultsController: nil)
@@ -36,15 +36,23 @@ class MeetingsTblViewController: UIViewController, UITableViewDelegate, UITableV
         searchController.searchBar.sizeToFit()
         tableView.tableHeaderView = searchController.searchBar
         definesPresentationContext = true
+        
+        searchController.searchBar.searchBarStyle = .minimal
     }
     
     override func viewWillAppear(_ animated: Bool) {
+        searchController.searchBar.showsCancelButton = false
+        searchController.searchBar.text = ""
         DatabaseController.getContext().reset()
         navigationController?.setToolbarHidden(false, animated: false)
         meetings = getMeetings()
         tableView.reloadData()
         changeFilter()
         updateSearchResults(for: searchController)
+    }
+    
+    override func viewWillDisappear(_ animated: Bool) {
+        searchController.dismiss(animated: false, completion: nil)
     }
     
     override func didReceiveMemoryWarning() {
