@@ -17,6 +17,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     var duration: Int32 = 0
     var meetingSaved: Bool = false
     var context: NSManagedObjectContext?
+    var activeTextField: UITextField? = nil
     
     //MARK: IBOutlets
 
@@ -36,6 +37,7 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     @IBOutlet weak var agendaCountLabel: UILabel!
     @IBOutlet weak var attendantCountLabel: UILabel!
     
+    @IBOutlet var textFields: [UITextField]!
     //MARK: Booleans for Whether or Not Section is Expanded
     
     var startDatePickerHidden: Bool = true
@@ -53,6 +55,10 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     
     override func viewDidLoad() {
         super.viewDidLoad()
+        
+        for field in textFields {
+            field.delegate = self
+        }
         
         title = "New Meeting"
         
@@ -202,12 +208,22 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
             dateLoaded = true
             startTimeLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&startDatePickerHidden)
+            descriptionField?.resignFirstResponder()
+            activeTextField?.resignFirstResponder()
+            if !descTextHidden {
+                fieldViewToggled(&descTextHidden)
+            }
         }
         if indexPath.section == 1 && indexPath.row == 0 {
             descCell = tableView.cellForRow(at: IndexPath(row: 0, section: 1))!
             descLoaded = true
             descriptionLabel.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
             fieldViewToggled(&descTextHidden)
+            descriptionField?.resignFirstResponder()
+            activeTextField?.resignFirstResponder()
+            if !startDatePickerHidden {
+                fieldViewToggled(&startDatePickerHidden)
+            }
         }
         
         if indexPath.section == 3 && indexPath.row == 0 {
@@ -261,6 +277,9 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        if !startDatePickerHidden {
+            fieldViewToggled(&startDatePickerHidden)
+        }
         if textView.textColor != UIColor.black {
             textView.textColor = UIColor.black
             textView.text = ""
@@ -314,6 +333,29 @@ class MeetingTableViewController: UITableViewController, UITextFieldDelegate, UI
         let newLength = startingLength + lengthToAdd - lengthToReplace
         
         return newLength <= characterCountLimit
+    }
+    
+    
+    //Dismiss keyboard functions
+    
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if !startDatePickerHidden {
+            fieldViewToggled(&startDatePickerHidden)
+        }
+        if !descTextHidden {
+            fieldViewToggled(&descTextHidden)
+        }
+        activeTextField = textField
+    }
+    
+    func textFieldDidEndEditing(_ textField: UITextField) {
+        activeTextField = nil
+    }
+    
+    func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+        activeTextField?.resignFirstResponder()
+        
+        return true
     }
     
     //MARK: Prepare for Segue

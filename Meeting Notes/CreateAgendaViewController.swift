@@ -13,7 +13,7 @@ protocol AgendaSharing {
     func shareAgenda(agenda: Agenda?)
 }
 
-class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate {
+class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITableViewDataSource, UITextViewDelegate, UITextFieldDelegate {
     
     var agenda: Agenda?
     var meeting: Meeting?
@@ -117,7 +117,7 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
                 durCell.isSelected = false
                 return 0
             } else if !timerHidden && indexPath.row == 1 {
-                return 216
+                return 200
             }
         }
         
@@ -135,11 +135,15 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         if tableView == self.timerTableView {
             
             if indexPath.row == 0 {
+                taskTextView.resignFirstResponder()
+                let cell = titleTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CreateAgendaTitleTableViewCell
+                cell.titleField.resignFirstResponder()
                 let durCell = tableView.cellForRow(at: indexPath)
                 durCell?.detailTextLabel?.textColor = #colorLiteral(red: 0.7450980544, green: 0.1568627506, blue: 0.07450980693, alpha: 1)
                 fieldViewToggled(&timerHidden)
             }
         }
+        
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -154,6 +158,13 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         if tableView == self.timerTableView {
             if indexPath.row == 1 {
                 cell = tableView.dequeueReusableCell(withIdentifier: "timerCell", for: indexPath) as! CreateAgendaTimerTableViewCell
+                let cell = cell as! CreateAgendaTimerTableViewCell
+                var dateComp = DateComponents()
+                dateComp.hour = 0
+                dateComp.minute = 1
+                let calendar = NSCalendar(calendarIdentifier: NSCalendar.Identifier.gregorian)
+                let date = calendar?.date(from: dateComp)
+                cell.countdownTimer.setDate(date!, animated: true)
             } else if indexPath.row == 0 {
                 cell = tableView.dequeueReusableCell(withIdentifier: "durationCell", for: indexPath)
                 cell.detailTextLabel?.text = "1 min"
@@ -165,6 +176,9 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
     }
     
     func textViewDidBeginEditing(_ textView: UITextView) {
+        if !timerHidden {
+            fieldViewToggled(&timerHidden)
+        }
         if textView.textColor != UIColor.black {
             textView.textColor = UIColor.black
             textView.text = ""
@@ -187,10 +201,21 @@ class CreateAgendaViewController: UIViewController, UITableViewDelegate, UITable
         }
     }
     
+    func textFieldDidBeginEditing(_ textField: UITextField) {
+        if !timerHidden {
+            fieldViewToggled(&timerHidden)
+        }
+    }
+    
     @IBAction func changedTimerVal(_ sender: Any) {
         let timerCell = timerTableView.cellForRow(at: IndexPath(row: 1, section: 0)) as! CreateAgendaTimerTableViewCell
         
         durCell.detailTextLabel?.text = TimerController.calculate(duration: Int32(timerCell.countdownTimer.countDownDuration))
     }
 
+    @IBAction func tapScreenDismissKeyboard(_ sender: Any) {
+        let cell = titleTableView.cellForRow(at: IndexPath(row: 0, section: 0)) as! CreateAgendaTitleTableViewCell
+        cell.titleField.resignFirstResponder()
+        taskTextView.resignFirstResponder()
+    }
 }
